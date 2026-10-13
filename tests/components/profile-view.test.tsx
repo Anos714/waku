@@ -8,30 +8,30 @@ describe("ProfileView", () => {
   it("renders the demo profile's identity", () => {
     render(<ProfileView profile={createDemoProfile()} />);
     expect(
-      screen.getByRole("heading", { level: 1, name: "Ada Lovelace" }),
+      screen.getByRole("heading", { level: 1, name: "Rahul Sain" }),
     ).toBeInTheDocument();
-    expect(screen.getByText("Analytical Engineer & Technical Writer")).toBeInTheDocument();
+    expect(screen.getByText("Software Developer — Full Stack Developer")).toBeInTheDocument();
     // The location appears in the header and again as the contact row
     // "Based in".
-    expect(screen.getAllByText("London, England")).toHaveLength(2);
+    expect(screen.getAllByText("Alwar, Rajasthan, India")).toHaveLength(2);
   });
 
   it("renders visible social links with safe absolute hrefs", () => {
     render(<ProfileView profile={createDemoProfile()} />);
     // Social links render twice: the header row and the contact section.
-    const github = screen.getAllByRole("link", { name: "GitHub: github.com/ada" });
+    const github = screen.getAllByRole("link", { name: "GitHub: github.com/Anos714" });
     expect(github).toHaveLength(2);
     for (const link of github) {
-      expect(link).toHaveAttribute("href", "https://github.com/ada");
+      expect(link).toHaveAttribute("href", "https://github.com/Anos714");
       // Non-mailto links open safely in a new tab.
       expect(link).toHaveAttribute("rel", "noopener noreferrer");
       expect(link).toHaveAttribute("target", "_blank");
     }
 
-    const email = screen.getAllByRole("link", { name: "Email: ada@example.com" });
+    const email = screen.getAllByRole("link", { name: "Email: sainrahul374@gmail.com" });
     for (const link of email) {
       // mailto stays same-tab.
-      expect(link).toHaveAttribute("href", "mailto:ada@example.com");
+      expect(link).toHaveAttribute("href", "mailto:sainrahul374@gmail.com");
       expect(link).not.toHaveAttribute("target");
     }
   });
@@ -54,9 +54,17 @@ describe("ProfileView", () => {
   });
 
   it("hides links marked invisible", () => {
-    render(<ProfileView profile={createDemoProfile()} />);
-    // The demo's YouTube link is visible: false.
-    expect(screen.queryAllByRole("link", { name: /Ada's notebooks/i })).toHaveLength(0);
+    const profile: Profile = {
+      ...createDemoProfile(),
+      socials: [
+        ...createDemoProfile().socials,
+        { id: "hidden", platform: "youtube", label: "Unlisted channel", url: "https://www.youtube.com/@never", visible: false },
+      ],
+    };
+    render(<ProfileView profile={profile} />);
+    // An invisible link never reaches the DOM under any name.
+    expect(screen.queryAllByRole("link", { name: /Unlisted channel/i })).toHaveLength(0);
+    expect(screen.queryAllByRole("link", { name: /never/i })).toHaveLength(0);
   });
 
   it("never emits an unsafe href anywhere in the tree", () => {
@@ -108,7 +116,7 @@ describe("ProfileView", () => {
       const profile = { ...createDemoProfile(), profileDesign };
       const { unmount } = render(<ProfileView profile={profile} />);
       expect(
-        screen.getByRole("heading", { level: 1, name: "Ada Lovelace" }),
+        screen.getByRole("heading", { level: 1, name: "Rahul Sain" }),
       ).toBeInTheDocument();
       unmount();
     }
