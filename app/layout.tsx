@@ -8,6 +8,7 @@ import {
   Lora,
   JetBrains_Mono,
 } from "next/font/google";
+import { siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -55,7 +56,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://waku.local"),
+  metadataBase: new URL(siteUrl()),
   title: {
     default: "Waku — Your identity, beautifully put together.",
     template: "%s · Waku",

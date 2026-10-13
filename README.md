@@ -122,6 +122,7 @@ All values live in `.env.local` (gitignored). Full annotated copy in
 
 | Variable | Required for | Notes |
 | --- | --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | Social previews | Public origin, e.g. `https://waku.example.com`. Used as the metadata base so `/opengraph-image`, `/twitter-image` and `/site.webmanifest` resolve to absolute URLs. Defaults to `http://localhost:3000`; invalid values fall back to that rather than breaking the app. |
 | `DATABASE_URL` | Publishing, accounts, showcase | Neon Postgres connection string. Without it the editor runs on local drafts and publishing returns `503 MISSING_DATABASE`. |
 | `BETTER_AUTH_SECRET` | Sign-in | Session signing secret. `openssl rand -base64 32`. |
 | `BETTER_AUTH_URL` | Sign-in | Public origin of the instance, e.g. `http://localhost:3000`. Checked against the sign-in request's origin. |
