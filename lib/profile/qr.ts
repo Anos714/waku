@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
 
 /**
@@ -62,6 +62,15 @@ export function useCopy(): {
   copy: (value: string) => Promise<boolean>;
 } {
   const [copied, setCopied] = useState(false);
+  // Tracked so a pending "clear the copied state" timer can be cancelled —
+  // both when copy is called again and when the owner unmounts.
+  const timer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timer.current !== null) window.clearTimeout(timer.current);
+    };
+  }, []);
 
   const copy = useCallback(async (value: string) => {
     if (!value) return false;
@@ -81,7 +90,8 @@ export function useCopy(): {
         return false;
       }
       setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
+      if (timer.current !== null) window.clearTimeout(timer.current);
+      timer.current = window.setTimeout(() => setCopied(false), 2000);
       return true;
     } catch {
       return false;
