@@ -31,7 +31,7 @@ import { resolveTheme } from "@/lib/themes";
 import { sanitizeText } from "@/lib/validation/profile";
 import { qrFilename } from "@/lib/cards/export";
 import { authClient } from "@/lib/auth-client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Profile } from "@/types";
 
 function buildProfileText(profile: Profile): string {
@@ -90,6 +90,16 @@ export function SharePanel() {
   const [config, setConfig] = useState<AuthConfig | null>(null);
 
   const profileUrl = useProfileUrl(slug);
+  // The "Copied" badges for the profile text and the live link each arm a
+  // timer; both are tracked so they can be cancelled if the panel unmounts
+  // mid-countdown instead of updating state after teardown.
+  const badgeTimers = useRef<number[]>([]);
+
+  useEffect(() => {
+    return () => {
+      for (const handle of badgeTimers.current) window.clearTimeout(handle);
+    };
+  }, []);
   // Only rendered after a successful publish; before that it tracks the preview
   // link harmlessly.
   const liveUrl = useProfileUrl(liveSlug ?? slug);
@@ -191,7 +201,7 @@ export function SharePanel() {
     const ok = await copy(buildProfileText(profile));
     if (ok) {
       setTextCopied(true);
-      window.setTimeout(() => setTextCopied(false), 2000);
+      badgeTimers.current.push(window.setTimeout(() => setTextCopied(false), 2000));
     }
   }
 
@@ -200,7 +210,7 @@ export function SharePanel() {
     const ok = await copy(liveUrl);
     if (ok) {
       setLiveCopied(true);
-      window.setTimeout(() => setLiveCopied(false), 2000);
+      badgeTimers.current.push(window.setTimeout(() => setLiveCopied(false), 2000));
     }
   }
 
