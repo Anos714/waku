@@ -56,8 +56,9 @@ No account needed to build. Nothing leaves your browser until you publish.
   prompt is constrained to facts already in your profile; it may not invent
   employers, metrics or credentials. Returns three variations you approve
   individually.
-- **QR codes & sharing** — profile QR, clipboard copy, Web Share, and a plain
-  text export of the whole profile.
+- **QR codes & sharing** — profile QR colored from the profile's own theme
+  palette, clipboard copy, Web Share, and a plain text export of the whole
+  profile.
 - **Photo uploads** — Cloudinary with server-side signing; AVIF/WebP delivery
   with face-focused cropping.
 - **Graceful degradation** — no database, no OAuth secrets, no Gemini key? The
