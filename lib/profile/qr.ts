@@ -64,7 +64,7 @@ export function useCopy(): {
   const [copied, setCopied] = useState(false);
   // Tracked so a pending "clear the copied state" timer can be cancelled —
   // both when copy is called again and when the owner unmounts.
-  const timer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const timer = useRef<number | null>(null);
 
   useEffect(() => {
     return () => {
