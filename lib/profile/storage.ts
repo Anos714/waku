@@ -43,11 +43,6 @@ function migrateLegacyKey(): void {
 }
 
 /**
- * Load a saved draft. Returns the demo profile when nothing is stored, when
- * storage is unavailable (SSR, privacy mode), or when the stored payload
- * cannot be parsed — invalid input must never break rendering.
- */
-/**
  * Reads whatever draft is actually stored in this browser, or null when there
  * is nothing saved. Callers that must always hold a complete profile (the
  * editor) use `loadDraft()` instead, which falls back to the demo profile.
