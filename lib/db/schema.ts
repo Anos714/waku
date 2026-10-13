@@ -1,4 +1,4 @@
-import { boolean, index, jsonb, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { boolean, index, integer, jsonb, pgTable, text, timestamp, unique } from "drizzle-orm/pg-core";
 
 /**
  * Drizzle table definitions for the Waku database.
@@ -83,6 +83,32 @@ export const profiles = pgTable(
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (table) => [index("profiles_owner_id_idx").on(table.ownerId)],
+);
+
+/**
+ * Public feedback left by visitors on the `/rate` page. Ratings power the
+ * landing page's social-proof section once enough have collected.
+ *
+ * `fingerprint` (a hash of the request's IP + user agent) is unique, so it both
+ * dedupes submissions and lets the same visitor revise their rating instead of
+ * adding a second one. Rows are approved on write; flip `approved` to hide one
+ * without deleting it.
+ */
+export const ratings = pgTable(
+  "ratings",
+  {
+    id: text("id").primaryKey(),
+    authorName: text("author_name").notNull(),
+    rating: integer("rating").notNull(),
+    message: text("message"),
+    approved: boolean("approved").notNull().default(true),
+    fingerprint: text("fingerprint").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    unique("ratings_fingerprint_unique").on(table.fingerprint),
+    index("ratings_created_at_idx").on(table.createdAt),
+  ],
 );
 
 /** The subset of the schema Better Auth's Drizzle adapter needs. */

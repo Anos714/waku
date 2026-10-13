@@ -8,6 +8,13 @@
       "when": 1791888584187,
       "tag": "0000_init",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791899921290,
+      "tag": "0001_red_thor_girl",
+      "breakpoints": true
     }
   ]
 }

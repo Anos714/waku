@@ -1,10 +1,11 @@
 import { drizzle } from "drizzle-orm/neon-http";
 import { neon } from "@neondatabase/serverless";
+import { nanoid } from "nanoid";
 import { and, desc, eq, sql } from "drizzle-orm";
 import { profileSchema } from "@/lib/validation/profile";
 import { generateProfileSlug } from "@/lib/profile/slug";
 import type { Profile } from "@/types";
-import { account, profiles, session, user, verification } from "./db/schema";
+import { account, profiles, ratings, session, user, verification } from "./db/schema";
 
 /**
  * Server-only data access for published profiles and Better Auth, backed by
@@ -20,7 +21,7 @@ export function hasDatabase(): boolean {
   return Boolean(process.env.DATABASE_URL?.trim());
 }
 
-export { profiles, user, session, account, verification };
+export { profiles, ratings, user, session, account, verification };
 
 // Drizzle's query builder only accepts a live client, so the connection is
 // created lazily; callers must check hasDatabase() first.
@@ -100,6 +101,17 @@ const SCHEMA_STATEMENTS = [
      created_at timestamp NOT NULL DEFAULT now(),
      updated_at timestamp NOT NULL DEFAULT now()
    )`,
+  `CREATE TABLE IF NOT EXISTS "ratings" (
+     id text PRIMARY KEY,
+     author_name text NOT NULL,
+     rating integer NOT NULL,
+     message text,
+     approved boolean NOT NULL DEFAULT true,
+     fingerprint text NOT NULL,
+     created_at timestamptz NOT NULL DEFAULT now(),
+     CONSTRAINT ratings_fingerprint_unique UNIQUE (fingerprint)
+   )`,
+  `CREATE INDEX IF NOT EXISTS ratings_created_at_idx ON ratings (created_at)`,
 ];
 
 // The schema only needs creating once per process — the tables persist in the
@@ -370,5 +382,127 @@ export async function unpublishProfile(
     return true;
   } catch {
     return false;
+  }
+}
+
+/* ------------------------------------------------------------------ ratings */
+
+export interface Rating {
+  id: string;
+  authorName: string;
+  rating: number;
+  message: string | null;
+  createdAt: Date;
+}
+
+export interface RatingStats {
+  average: number;
+  count: number;
+}
+
+/**
+ * Saves a visitor rating. The fingerprint is unique, so a second submission
+ * from the same client revises the first rather than stacking a duplicate —
+ * the row keeps its original id and timestamp. Returns the stored rating, or
+ * null when the database is unavailable.
+ */
+export async function saveRating(input: {
+  authorName: string;
+  rating: number;
+  message: string | null;
+  fingerprint: string;
+}): Promise<Rating | null> {
+  if (!db) return null;
+
+  try {
+    await ensureSchema();
+
+    const id = nanoid();
+    const rows = await db
+      .insert(ratings)
+      .values({
+        id,
+        authorName: input.authorName,
+        rating: input.rating,
+        message: input.message,
+        fingerprint: input.fingerprint,
+      })
+      .onConflictDoUpdate({
+        target: ratings.fingerprint,
+        set: {
+          authorName: input.authorName,
+          rating: input.rating,
+          message: input.message,
+        },
+      })
+      .returning({
+        id: ratings.id,
+        authorName: ratings.authorName,
+        rating: ratings.rating,
+        message: ratings.message,
+        createdAt: ratings.createdAt,
+      });
+
+    return rows[0] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The most recent approved ratings, newest first — for the `/rate` page's wall
+ * and the landing page's social-proof strip. An empty list is the caller's cue
+ * to hide the section rather than render a sad empty grid.
+ */
+export async function listApprovedRatings(limit = 12): Promise<Rating[]> {
+  if (!db) return [];
+
+  try {
+    await ensureSchema();
+
+    const rows = await db
+      .select({
+        id: ratings.id,
+        authorName: ratings.authorName,
+        rating: ratings.rating,
+        message: ratings.message,
+        createdAt: ratings.createdAt,
+      })
+      .from(ratings)
+      .where(eq(ratings.approved, true))
+      .orderBy(desc(ratings.createdAt))
+      .limit(limit);
+
+    return rows;
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Average score and count over approved ratings, for the star summary on the
+ * `/rate` page and a stat line on the landing page. Renders nothing meaningful
+ * at zero, so callers gate on `count > 0`.
+ */
+export async function getRatingStats(): Promise<RatingStats> {
+  if (!db) return { average: 0, count: 0 };
+
+  try {
+    await ensureSchema();
+
+    const rows = await db
+      .select({
+        average: sql<number>`coalesce(avg(${ratings.rating}), 0)::numeric(3,2)`,
+        count: sql<number>`count(*)::int`,
+      })
+      .from(ratings)
+      .where(eq(ratings.approved, true));
+
+    return {
+      average: Number(rows[0]?.average ?? 0),
+      count: rows[0]?.count ?? 0,
+    };
+  } catch {
+    return { average: 0, count: 0 };
   }
 }
