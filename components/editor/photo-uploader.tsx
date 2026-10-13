@@ -21,6 +21,7 @@ type Status = "idle" | "uploading" | "error";
 export function PhotoUploader() {
   const { form } = useEditor();
   const avatarUrl = useWatch({ control: form.control, name: "avatarUrl" });
+  const name = useWatch({ control: form.control, name: "name" });
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -85,7 +86,7 @@ export function PhotoUploader() {
         <div className="flex items-center gap-3">
           {hasPhoto ? (
             <span className="h-16 w-16 shrink-0 overflow-hidden rounded-full border border-line-2">
-              <ProfileAvatar name="Preview" src={avatarUrl} size={64} radius={9999} plain />
+              <ProfileAvatar name={name || "You"} src={avatarUrl} size={64} radius={9999} plain />
             </span>
           ) : (
             <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border border-dashed border-line-2 bg-surface-2 text-ink-3">
