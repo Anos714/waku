@@ -32,7 +32,7 @@ No account needed to build. Nothing leaves your browser until you publish.
 - [Documentation](#documentation)
 - [Deployment](#deployment)
 - [Design system](#design-system)
-- [Known gaps](#known-gaps)
+- [Contact](#contact)
 
 ---
 
@@ -272,13 +272,15 @@ Profile rendering is fully tokenised:
 All presets live in `lib/themes/index.ts` and `components/*/…`; tokens are
 declared in `app/globals.css`.
 
-## Known gaps
+## Contact
 
-- **No test suite.** `typecheck` + `lint` + `build` are the current gates.
-- **No migrations tooling.** Schema is created by an idempotent `ensureSchema()`
-  at request time; there is no `drizzle-kit migrate` story yet.
-- **`metadataBase` is a placeholder** (`https://waku.local` in
-  `app/layout.tsx`) — set it to your production origin for correct OG URLs.
-- **`images.remotePatterns` allows all http/https hosts** so arbitrary avatar
-  URLs render; tighten this once avatar sources are constrained.
-- **No license file yet.**
+Built by **Anos714**.
+
+- **GitHub:** [github.com/Anos714](https://github.com/Anos714) — issues and
+  pull requests are welcome there.
+- **Email:** [sainrahul374@gmail.com](mailto:sainrahul374@gmail.com)
+- **X:** [x.com/RahulSain714](https://x.com/RahulSain714)
+- **LinkedIn:** [linkedin.com/in/rahulxcode](https://www.linkedin.com/in/rahulxcode)
+
+Found a bug or have a feature in mind? Open an issue on
+[GitHub](https://github.com/Anos714/waku/issues).
