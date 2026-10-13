@@ -27,6 +27,7 @@ import {
 import { useQrCode, generateQrDataUrl } from "@/lib/profile/qr";
 import { useCopy, downloadDataUrl, shareUrl } from "@/lib/profile/share";
 import { useProfileUrl } from "@/lib/profile/use-profile-url";
+import { resolveTheme } from "@/lib/themes";
 import { sanitizeText } from "@/lib/validation/profile";
 import { qrFilename } from "@/lib/cards/export";
 import { authClient } from "@/lib/auth-client";
@@ -92,7 +93,14 @@ export function SharePanel() {
   // Only rendered after a successful publish; before that it tracks the preview
   // link harmlessly.
   const liveUrl = useProfileUrl(liveSlug ?? slug);
-  const qrDataUrl = useQrCode(profileUrl, 640);
+  // The QR inherits the profile's own ink/background tokens, so a dark theme
+  // gets a light-on-dark code instead of a black-on-white square that would
+  // fight the page.
+  const qrColors = (() => {
+    const tokens = resolveTheme(profile.theme).tokens;
+    return { dark: tokens["--pt-ink"], light: tokens["--pt-bg"] };
+  })();
+  const qrDataUrl = useQrCode(profileUrl, 640, qrColors);
   const { copied, copy } = useCopy();
 
   const { data: session } = authClient.useSession();
@@ -175,7 +183,7 @@ export function SharePanel() {
   }
 
   async function downloadQr() {
-    const large = await generateQrDataUrl(profileUrl, 1024);
+    const large = await generateQrDataUrl(profileUrl, 1024, qrColors);
     if (large) downloadDataUrl(large, qrFilename(slug));
   }
 
