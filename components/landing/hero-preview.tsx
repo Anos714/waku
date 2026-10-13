@@ -46,12 +46,27 @@ export function HeroPreview({ theme }: { theme: ThemeSettings }) {
       const dx = (event.clientX - rect.left) / rect.width - 0.5;
       const dy = (event.clientY - rect.top) / rect.height - 0.5;
 
-      setTilt({ x: -dy * TILT_STRENGTH, y: dx * TILT_STRENGTH });
-      setSpot({
+      const nextTilt = { x: -dy * TILT_STRENGTH, y: dx * TILT_STRENGTH };
+      const nextSpot = {
         x: event.clientX - rect.left,
         y: event.clientY - rect.top,
         visible: true,
-      });
+      };
+
+      // Pointermove fires far more often than the tilt actually changes
+      // (sub-pixel motion, a resting cursor). Returning the same reference
+      // lets React skip re-rendering the whole profile + card subtree, which
+      // would otherwise happen on every event.
+      setTilt((current) =>
+        current.x === nextTilt.x && current.y === nextTilt.y ? current : nextTilt,
+      );
+      setSpot((current) =>
+        current.x === nextSpot.x &&
+        current.y === nextSpot.y &&
+        current.visible === nextSpot.visible
+          ? current
+          : nextSpot,
+      );
     },
     [reduced],
   );
