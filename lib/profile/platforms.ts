@@ -10,6 +10,8 @@ export const SOCIAL_PLATFORMS = [
   "x",
   "instagram",
   "youtube",
+  "bluesky",
+  "mastodon",
   "portfolio",
   "email",
 ] as const satisfies readonly SocialPlatform[];
@@ -42,6 +44,16 @@ export const PLATFORM_META: Record<
     label: "YouTube",
     placeholder: "https://youtube.com/@channel",
     baseUrl: "https://www.youtube.com/@",
+  },
+  bluesky: {
+    label: "Bluesky",
+    placeholder: "https://bsky.app/profile/handle.bsky.social",
+    baseUrl: "https://bsky.app/profile/",
+  },
+  mastodon: {
+    label: "Mastodon",
+    placeholder: "https://mastodon.social/@handle",
+    baseUrl: "https://mastodon.social/@",
   },
   portfolio: {
     label: "Portfolio",
