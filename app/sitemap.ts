@@ -13,8 +13,9 @@ import { DEMO_SLUG } from "@/types";
  */
 
 // Only routes crawlers may index belong here; `/create` is disallowed in
-// robots.ts, so listing it would contradict that.
-const STATIC_ROUTES = [""];
+// robots.ts, so listing it would contradict that. The legal pages, contact and
+// rate pages are public and worth indexing.
+const STATIC_ROUTES = ["", "/contact", "/rate", "/legal/privacy-policy", "/legal/cookie-policy", "/legal/terms"];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteUrl();

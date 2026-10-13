@@ -66,6 +66,13 @@ No account needed to build. Nothing leaves your browser until you publish.
 - **Graceful degradation** — no database, no OAuth secrets, no Gemini key? The
   app runs, drafts work, and the UI reports exactly what is missing instead of
   failing mid-flow.
+- **Visitor ratings** — an anonymous `/rate` page: stars and an optional note,
+  one per person (deduped by a hashed IP + user-agent fingerprint, revisable),
+  with an average that surfaces as a social-proof section on the landing page
+  once the first rating lands.
+- **Legal, contact and the rest** — privacy policy, cookie policy, terms,
+  contact and rate pages all match the app's theme, share one layout, and are
+  linked from the footer alongside a credit to the products that inspired it.
 
 ## Screenshots
 
@@ -179,30 +186,38 @@ app/
   page.tsx                    Landing (server component, revalidate 300)
   create/page.tsx             Editor route
   p/[slug]/page.tsx           Public profile (SSR + client fallback)
+  contact/page.tsx            Contact page (channels + mailto form)
+  rate/page.tsx               Ratings page (stars form + wall + average)
+  legal/                      Privacy policy, cookie policy, terms
   opengraph-image.tsx         Generated 1200×630 OG/Twitter card
   api/
     auth/[...all]/route.ts    Better Auth handler (ensures schema first)
     profiles/route.ts         POST — publish (session required)
     profiles/claim-draft/     POST — claim an anonymous draft on first sign-in
+    ratings/route.ts          GET/POST — read and leave a rating (anonymous)
     ai/bio/route.ts           POST — Gemini bio/tagline generation
     upload/route.ts           POST — signed Cloudinary upload
     config/route.ts           GET  — auth/provider availability (non-sensitive)
 components/
-  landing/                    Nav, hero, promo video, steps, features, showcase, CTA
+  landing/                    Nav, hero, promo video, steps, features, showcase, ratings, CTA
+  legal/                      Shared legal layout + section/point typographic blocks
+  contact/                    Contact form (composes a mailto draft)
+  rating/                     Star rating form + ratings wall
   editor/                     Editor shell, form sections, AI writer, theming, share panel
   profile/                    ProfileView (shared renderer), designs, avatars, sections
   cards/                      Identity card, 8 layouts, export menus
   ui/                         Radix-based primitives
   icons/                      Brand + platform glyphs
 lib/
-  db.ts                       Drizzle client, ensureSchema(), publish/read queries
-  db/schema.ts                profiles + Better Auth tables (source of truth for migrations)
+  db.ts                       Drizzle client, ensureSchema(), publish/read/rating queries
+  db/schema.ts                profiles, ratings + Better Auth tables (source of truth)
   ai/gemini.ts                Server-only Gemini client (facts-only prompt)
   validation/profile.ts       Zod schemas, URL safety
+  validation/rating.ts        Zod schema for a visitor rating
   themes/index.ts             Theme/font/accent presets + resolveTheme()
   profile/                    storage, slug, qr, format, demo, platforms, data access
   cards/export.ts             html-to-image export (dynamic import)
-  site.ts                     Site origin (metadata base) + repo URL
+  site.ts                     Site origin (metadata base), repo URL, contact email, mailto()
 types/index.ts                Domain models (Profile, ThemeSettings, …)
 proxy.ts                      Optimistic cookie gate on POST /api/profiles*
 drizzle/                      Generated SQL migrations (owned by db:generate/db:migrate)
@@ -218,9 +233,15 @@ docs/                         Architecture, API and deployment notes
 | `/`                         | Landing page with hero demo, feature tour and recent published profiles |
 | `/create`                   | Profile editor: form + live preview + card studio + share panel         |
 | `/p/[slug]`                 | Public profile page (demo: `/p/ada`)                                    |
+| `/contact`                  | Contact page: email + GitHub, and a form that drafts a message          |
+| `/rate`                     | Rate Waku in stars, read what other visitors said                       |
+| `/legal/privacy-policy`     | What is collected, what is not, how to have it removed                  |
+| `/legal/cookie-policy`      | The one cookie Waku sets, and how to clear it                           |
+| `/legal/terms`              | The rules of using Waku                                                 |
 | `/api/auth/[...all]`        | Better Auth — sign-in, callback, session, sign-out                      |
 | `/api/profiles`             | `POST` — publish a profile (session required)                           |
 | `/api/profiles/claim-draft` | `POST` — import the local draft as your first page                      |
+| `/api/ratings`              | `GET` — approved ratings · `POST` — leave or revise your rating          |
 | `/api/ai/bio`               | `POST` — AI bio/tagline generation                                      |
 | `/api/upload`               | `POST` — signed profile photo upload                                    |
 | `/api/config`               | `GET` — `{ authEnabled, providers }` for the UI                         |

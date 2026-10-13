@@ -190,6 +190,53 @@ database required.
 
 ---
 
+## `GET|POST /api/ratings`
+
+Visitor ratings for the `/rate` page and the landing page's social-proof strip.
+Posting is anonymous — no session — but deduped: the request's IP and user
+agent are hashed into a unique fingerprint, so one person only ever has one
+rating, and posting again revises it in place.
+
+`GET` accepts an optional `?limit=` (1–48, default 12).
+
+### Request (`POST`)
+
+```json
+{ "authorName": "Ada Lovelace", "rating": 5, "message": "Genuinely lovely." }
+```
+
+- `authorName` — required, 1–60 characters after trimming.
+- `rating` — required, an integer 1–5.
+- `message` — optional, at most 500 characters; a blank one is stored as `null`.
+
+### Responses
+
+```json
+{
+  "ok": true,
+  "rating": {
+    "id": "V1StGXR8_Z5jdHi6B-myT",
+    "authorName": "Ada Lovelace",
+    "rating": 5,
+    "message": "Genuinely lovely.",
+    "createdAt": "2026-10-13T19:11:00.000Z"
+  }
+}
+```
+
+| Status | Code               | When                                                    |
+| ------ | ------------------ | ------------------------------------------------------- |
+| 200    | —                  | Saved (or revised). The landing page is revalidated.    |
+| 400    | `BAD_BODY`         | The body is not readable JSON.                          |
+| 422    | `INVALID_RATING`   | Fails Zod validation; the first issue's message is used. |
+| 502    | `SAVE_FAILED`      | The write did not land in the database.                 |
+| 503    | `MISSING_DATABASE` | `DATABASE_URL` is unset.                                |
+
+`GET` always answers `200` — with empty ratings and a zero average when the
+database is off, so the page still renders.
+
+---
+
 ## `GET|POST /api/auth/[...all]`
 
 The Better Auth handler (sign-in, OAuth callback, session, sign-out) mounted at
