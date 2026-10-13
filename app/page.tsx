@@ -1,4 +1,5 @@
 import { Nav } from "@/components/landing/nav";
+import { PromoBar } from "@/components/landing/promo-bar";
 import { Hero } from "@/components/landing/hero";
 import { PromoVideo } from "@/components/landing/promo-video";
 import { Steps } from "@/components/landing/steps";
@@ -35,6 +36,7 @@ export default async function Home() {
 
   return (
     <>
+      <PromoBar />
       <Nav />
       <main className="flex-1">
         <Hero publishedCount={publishedCount} />
