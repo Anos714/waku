@@ -108,6 +108,7 @@ export function AiBioGenerator() {
   }
 
   const needsConfig = error?.code === "MISSING_API_KEY";
+  const allBusy = error?.code === "ALL_MODELS_UNAVAILABLE";
 
   return (
     <FieldGroup
@@ -226,9 +227,13 @@ export function AiBioGenerator() {
       ) : null}
 
       {status === "error" && error ? (
-        <Alert variant={needsConfig ? "warning" : "error"}>
+        <Alert variant={needsConfig || allBusy ? "warning" : "error"}>
           <AlertTitle>
-            {needsConfig ? "AI generation is not configured" : "Generation failed"}
+            {needsConfig
+              ? "AI generation is not configured"
+              : allBusy
+                ? "All AI models are busy"
+                : "Generation failed"}
           </AlertTitle>
           <AlertDescription>
             {error.message}

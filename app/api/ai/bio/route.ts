@@ -50,6 +50,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, ...result });
   } catch (err) {
     const code = err instanceof Error ? err.message : "UNKNOWN";
+
+    if (code === "ALL_MODELS_UNAVAILABLE") {
+      return error(
+        503,
+        "ALL_MODELS_UNAVAILABLE",
+        "Every AI model is busy right now.",
+        "We tried each available model and they are all under heavy load. This is usually temporary — wait a minute or two and try again.",
+      );
+    }
+
     const known = [
       "EMPTY_RESPONSE",
       "UNPARSEABLE_RESPONSE",

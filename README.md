@@ -128,7 +128,8 @@ All values live in `.env.local` (gitignored). Full annotated copy in
 | `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | GitHub sign-in | [Create an OAuth app](https://github.com/settings/developers). Left blank → the button is hidden. |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google sign-in | [OAuth client credentials](https://console.cloud.google.com/apis/credentials). Left blank → the button is hidden. |
 | `GEMINI_API_KEY` | AI bio/tagline writer | Server-side only. Get one at [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey). |
-| `GEMINI_MODEL` | Optional | Defaults to `gemini-3.8-flash`. |
+| `GEMINI_MODEL` | Optional | The primary model. Defaults to `gemini-3.8-flash`. |
+| `GEMINI_MODELS` | Optional | Comma-separated cascade tried when the primary is overloaded (HTTP 429/503). Defaults to `gemini-3.8-flash,gemini-3.5-flash,gemini-3.7-flash`; generation only reports "all models busy" once every model is tried. Run `pnpm ai:models` to see what a key can reach. |
 | `CLOUDINARY_CLOUD_NAME` / `CLOUDINARY_API_KEY` / `CLOUDINARY_API_SECRET` | Photo uploads | Server-side signing in `app/api/upload/route.ts`. The secret never reaches the browser. |
 | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | Photo delivery | Browser-exposed cloud name used to build AVIF/WebP URLs from a stored public ID. |
 
@@ -140,6 +141,7 @@ pnpm build      # production build
 pnpm start      # serve the production build
 pnpm lint       # eslint (flat config, next/core-web-vitals + next/typescript)
 pnpm typecheck  # tsc --noEmit (strict)
+pnpm ai:models    # list the models the configured Gemini key can reach
 ```
 
 There is no test suite yet — the definition of done is `typecheck` + `lint` +
