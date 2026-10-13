@@ -105,6 +105,16 @@ export function canShare(): boolean {
   return typeof navigator !== "undefined" && typeof navigator.share === "function";
 }
 
+async function copyToClipboard(value: string): Promise<boolean> {
+  if (!navigator.clipboard?.writeText) return false;
+  try {
+    await navigator.clipboard.writeText(value);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function shareUrl(
   url: string,
   title: string,
@@ -113,20 +123,16 @@ export async function shareUrl(
     try {
       await navigator.share({ title, url });
       return "shared";
-    } catch {
-      // The user dismissed the sheet — not a hard failure, but nothing copied.
+    } catch (error) {
+      // AbortError is the user dismissing the sheet: nothing happened, and
+      // silently copying would surprise them. Any other rejection is a real
+      // failure, so the link still goes to the clipboard.
+      const cancelled = error instanceof DOMException && error.name === "AbortError";
+      if (!cancelled && (await copyToClipboard(url))) return "copied";
       return "failed";
     }
   }
-  if (navigator.clipboard?.writeText) {
-    try {
-      await navigator.clipboard.writeText(url);
-      return "copied";
-    } catch {
-      return "failed";
-    }
-  }
-  return "failed";
+  return (await copyToClipboard(url)) ? "copied" : "failed";
 }
 
 /** Triggers a browser download from a data URL. */
