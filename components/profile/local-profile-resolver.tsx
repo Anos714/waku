@@ -91,9 +91,8 @@ export function LocalProfileResolver({ slug }: { slug: string }) {
           draft for this slug was found in this browser.
         </p>
         <p className="mt-3 text-sm leading-relaxed text-ink-3">
-          The MVP keeps drafts in localStorage and ships one bundled demo
-          profile. Publishing for everyone needs a deployed instance with a
-          data source.
+          Drafts live in this browser until they are published — only published
+          pages are reachable at a public link.
         </p>
         <div className="mt-7 flex flex-col gap-2.5 sm:flex-row">
           <Button asChild>
