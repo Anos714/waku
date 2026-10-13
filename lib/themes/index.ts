@@ -288,56 +288,44 @@ export function themeStyle(resolved: ResolvedTheme): React.CSSProperties {
   return { ...resolved.tokens } as React.CSSProperties;
 }
 
+const AVATAR_SHAPE_CLASSES: Record<AvatarShape, string> = {
+  square: "rounded-none",
+  rounded: "rounded-xl",
+  circle: "rounded-full",
+};
+
 export function avatarShapeClass(shape: AvatarShape): string {
-  switch (shape) {
-    case "square":
-      return "rounded-none";
-    case "rounded":
-      return "rounded-xl";
-    default:
-      return "rounded-full";
-  }
+  return AVATAR_SHAPE_CLASSES[shape] ?? "rounded-full";
 }
+
+const BACKGROUND_CLASSES: Record<Exclude<BackgroundStyle, "subtle">, string> = {
+  plain: "",
+  grid: "pt-grid",
+  glow: "pt-glow",
+  dots: "pt-dots",
+  stripes: "pt-stripes",
+  mesh: "pt-mesh",
+  rings: "pt-rings",
+};
 
 export function backgroundClass(
   background: BackgroundStyle,
   isDark: boolean,
 ): string {
-  switch (background) {
-    case "grid":
-      return "pt-grid";
-    case "glow":
-      return "pt-glow";
-    case "dots":
-      return "pt-dots";
-    case "stripes":
-      return "pt-stripes";
-    case "mesh":
-      return "pt-mesh";
-    case "rings":
-      return "pt-rings";
-    case "subtle":
-      return isDark ? "pt-subtle-dark" : "pt-subtle-light";
-    default:
-      return "";
-  }
+  if (background === "subtle") return isDark ? "pt-subtle-dark" : "pt-subtle-light";
+  return BACKGROUND_CLASSES[background] ?? "";
 }
 
+const SOCIAL_BUTTON_CLASSES: Record<Exclude<SocialButtonStyle, "outline">, string> = {
+  solid: "pt-social-solid",
+  minimal: "pt-social-minimal",
+  soft: "pt-social-soft",
+  elevated: "pt-social-elevated",
+  underline: "pt-social-underline",
+};
+
 export function socialButtonClasses(style: SocialButtonStyle): string {
-  switch (style) {
-    case "solid":
-      return "pt-social-solid";
-    case "minimal":
-      return "pt-social-minimal";
-    case "soft":
-      return "pt-social-soft";
-    case "elevated":
-      return "pt-social-elevated";
-    case "underline":
-      return "pt-social-underline";
-    default:
-      return "pt-social-outline";
-  }
+  return SOCIAL_BUTTON_CLASSES[style] ?? "pt-social-outline";
 }
 
 export const ACCENT_PRESETS: { label: string; value: string }[] = [
