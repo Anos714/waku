@@ -40,6 +40,8 @@ export function kebabCase(value: string): string {
  * slug (publishing) retry on collision at the data layer.
  */
 export function generateProfileSlug(name: string): string {
-  const prefix = kebabCase(name).slice(0, MAX_PREFIX) || "profile";
+  // Trailing hyphens are trimmed before the suffix is appended, otherwise a
+  // prefix that lands exactly on a word boundary yields "…-name--a1b2c3".
+  const prefix = kebabCase(name).slice(0, MAX_PREFIX).replace(/-+$/, "") || "profile";
   return `${prefix}-${generateSuffix()}`;
 }

@@ -15,6 +15,9 @@ import { getPublishedProfile } from "@/lib/db";
 
 export async function getProfileBySlug(slug: string): Promise<Profile | null> {
   const normalized = slug.toLowerCase().trim();
+  // An empty slug never matches a row; skip the round-trip rather than
+  // depending on the database to return nothing for a nonsense query.
+  if (!normalized) return null;
   return await getPublishedProfile(normalized);
 }
 

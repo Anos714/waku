@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
 
 /**
@@ -62,6 +62,15 @@ export function useCopy(): {
   copy: (value: string) => Promise<boolean>;
 } {
   const [copied, setCopied] = useState(false);
+  // Tracked so a pending "clear the copied state" timer can be cancelled —
+  // both when copy is called again and when the owner unmounts.
+  const timer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timer.current !== null) window.clearTimeout(timer.current);
+    };
+  }, []);
 
   const copy = useCallback(async (value: string) => {
     if (!value) return false;
@@ -81,7 +90,8 @@ export function useCopy(): {
         return false;
       }
       setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
+      if (timer.current !== null) window.clearTimeout(timer.current);
+      timer.current = window.setTimeout(() => setCopied(false), 2000);
       return true;
     } catch {
       return false;
@@ -95,6 +105,16 @@ export function canShare(): boolean {
   return typeof navigator !== "undefined" && typeof navigator.share === "function";
 }
 
+async function copyToClipboard(value: string): Promise<boolean> {
+  if (!navigator.clipboard?.writeText) return false;
+  try {
+    await navigator.clipboard.writeText(value);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function shareUrl(
   url: string,
   title: string,
@@ -103,20 +123,16 @@ export async function shareUrl(
     try {
       await navigator.share({ title, url });
       return "shared";
-    } catch {
-      // The user dismissed the sheet — not a hard failure, but nothing copied.
+    } catch (error) {
+      // AbortError is the user dismissing the sheet: nothing happened, and
+      // silently copying would surprise them. Any other rejection is a real
+      // failure, so the link still goes to the clipboard.
+      const cancelled = error instanceof DOMException && error.name === "AbortError";
+      if (!cancelled && (await copyToClipboard(url))) return "copied";
       return "failed";
     }
   }
-  if (navigator.clipboard?.writeText) {
-    try {
-      await navigator.clipboard.writeText(url);
-      return "copied";
-    } catch {
-      return "failed";
-    }
-  }
-  return "failed";
+  return (await copyToClipboard(url)) ? "copied" : "failed";
 }
 
 /** Triggers a browser download from a data URL. */
