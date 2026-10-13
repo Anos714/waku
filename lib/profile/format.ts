@@ -50,14 +50,24 @@ export function usableSocials(profile: Profile): SocialLink[] {
 
 export function displayHandle(link: SocialLink): string {
   if (link.label.trim()) return link.label.trim();
-  const url = safeExternalUrl(link.url);
-  if (!url) return link.url;
+  return prettyUrl(link.url);
+}
+
+/**
+ * Renders a URL the way a person reads it: the scheme and a leading `www.`
+ * dropped, the path kept (minus any trailing slash) and `mailto:` reduced to
+ * the bare address. The input is returned untouched when it is not a usable
+ * URL, so a half-typed value never turns into garbage on screen.
+ */
+export function prettyUrl(value: string): string {
+  const safe = safeExternalUrl(value);
+  if (!safe) return value;
   try {
-    const parsed = new URL(url);
+    const parsed = new URL(safe);
     if (parsed.protocol === "mailto:") return parsed.pathname;
-    return parsed.hostname.replace(/^www\./, "") + parsed.pathname;
+    return parsed.hostname.replace(/^www\./, "") + parsed.pathname.replace(/\/$/, "");
   } catch {
-    return url;
+    return value;
   }
 }
 
