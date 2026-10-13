@@ -96,8 +96,11 @@ export function SharePanel() {
   const badgeTimers = useRef<number[]>([]);
 
   useEffect(() => {
+    // Capture the array at mount: timers are pushed into the same stable
+    // reference, so the cleanup clears everything armed before unmount.
+    const handles = badgeTimers.current;
     return () => {
-      for (const handle of badgeTimers.current) window.clearTimeout(handle);
+      for (const handle of handles) window.clearTimeout(handle);
     };
   }, []);
   // Only rendered after a successful publish; before that it tracks the preview
