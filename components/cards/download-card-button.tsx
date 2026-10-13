@@ -26,7 +26,7 @@ import {
   supportsExportFormat,
   type CardExportFormatDef,
 } from "@/lib/cards/export";
-import { downloadDataUrl } from "@/lib/profile/qr";
+import { downloadDataUrl } from "@/lib/profile/share";
 import type { Profile } from "@/types";
 
 const noopSubscribe = () => () => {};
