@@ -265,8 +265,8 @@ Profile rendering is fully tokenised:
 - **6 social button styles** — minimal, outline, solid, soft, elevated,
   underline
 - **4 page designs**, **8 card layouts**
-- 7 social platforms with canonical metadata (GitHub, LinkedIn, X, Instagram,
-  YouTube, portfolio, email)
+- 9 social platforms with canonical metadata (GitHub, LinkedIn, X, Instagram,
+  YouTube, Bluesky, Mastodon, portfolio, email)
 
 All presets live in `lib/themes/index.ts` and `components/*/…`; tokens are
 declared in `app/globals.css`.
