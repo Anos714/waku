@@ -38,6 +38,12 @@ export type Database = NonNullable<typeof db>;
  *
  * Statements run one at a time: Neon's serverless driver prepares each query,
  * and Postgres rejects several commands in a single prepared statement.
+ *
+ * Ownership: migrations (`pnpm db:migrate`) own the production schema, so this
+ * fallback only runs outside production. The statements are purely additive,
+ * but a migration that renames or retypes a column would otherwise race this
+ * path and re-create the old shape. A dev or preview database still self-heals
+ * on first request without a manual migration step.
  */
 const SCHEMA_STATEMENTS = [
   `CREATE TABLE IF NOT EXISTS profiles (
@@ -103,6 +109,8 @@ let schemaPromise: Promise<void> | null = null;
 
 export async function ensureSchema(): Promise<void> {
   if (!db) return;
+  // Production databases are shaped exclusively by `pnpm db:migrate`.
+  if (process.env.NODE_ENV === "production") return;
   if (!schemaPromise) {
     schemaPromise = (async () => {
       for (const statement of SCHEMA_STATEMENTS) {

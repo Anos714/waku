@@ -108,9 +108,11 @@ accepts it.
   `db === null` and **nothing throws at import time**. `hasDatabase()` is the
   single feature flag callers check.
 - `ensureSchema()` runs memoised, idempotent raw SQL creating `profiles` plus
-  Better Auth's `user` / `session` / `account` / `verification` tables. It runs
-  before the auth handler and at auth module init, so a fresh database never
-  races a request. There is no migration tooling.
+  Better Auth's `user` / `session` / `account` / `verification` tables, so a
+  dev or preview database never races a request. It is a no-op in production,
+  where Drizzle migrations (`pnpm db:migrate`) are the only authority on the
+  schema — the additive `ensureSchema()` statements would otherwise race a
+  migration that renames or retypes a column.
 - Queries are thin, purpose-built functions: `getPublishedProfile`,
   `listRecentPublished`, `countPublishedProfiles`, `publishProfile`,
   `claimDraftForUser`, `getOwnedSlugs`, `unpublishProfile`.
