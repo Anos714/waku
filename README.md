@@ -56,8 +56,9 @@ No account needed to build. Nothing leaves your browser until you publish.
   prompt is constrained to facts already in your profile; it may not invent
   employers, metrics or credentials. Returns three variations you approve
   individually.
-- **QR codes & sharing** — profile QR, clipboard copy, Web Share, and a plain
-  text export of the whole profile.
+- **QR codes & sharing** — profile QR colored from the profile's own theme
+  palette, clipboard copy, Web Share, and a plain text export of the whole
+  profile.
 - **Photo uploads** — Cloudinary with server-side signing; AVIF/WebP delivery
   with face-focused cropping.
 - **Graceful degradation** — no database, no OAuth secrets, no Gemini key? The
@@ -265,8 +266,8 @@ Profile rendering is fully tokenised:
 - **6 social button styles** — minimal, outline, solid, soft, elevated,
   underline
 - **4 page designs**, **8 card layouts**
-- 7 social platforms with canonical metadata (GitHub, LinkedIn, X, Instagram,
-  YouTube, portfolio, email)
+- 9 social platforms with canonical metadata (GitHub, LinkedIn, X, Instagram,
+  YouTube, Bluesky, Mastodon, portfolio, email)
 
 All presets live in `lib/themes/index.ts` and `components/*/…`; tokens are
 declared in `app/globals.css`.
