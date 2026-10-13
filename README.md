@@ -89,7 +89,7 @@ No account needed to build. Nothing leaves your browser until you publish.
 | Primitives | Radix UI + shadcn-style wrappers in `components/ui/` |
 | Forms | react-hook-form + Zod v4 (`zodResolver`) |
 | Database | Neon Postgres (`@neondatabase/serverless`, HTTP driver) |
-| ORM | Drizzle ORM — schema created by idempotent `ensureSchema()` |
+| ORM | Drizzle ORM — migrations own the schema; `ensureSchema()` self-heals dev |
 | Auth | Better Auth (social-only: GitHub, Google) |
 | AI | Google Gemini via `@google/genai` (server-only) |
 | Uploads | Cloudinary (signed server-side), `next-cloudinary` delivery |
@@ -140,10 +140,30 @@ pnpm build      # production build
 pnpm start      # serve the production build
 pnpm lint       # eslint (flat config, next/core-web-vitals + next/typescript)
 pnpm typecheck  # tsc --noEmit (strict)
+pnpm db:generate  # diff lib/db/schema.ts into a new SQL migration under drizzle/
+pnpm db:migrate   # apply pending migrations to the DATABASE_URL database
 ```
 
-There is no test suite yet — the definition of done is `typecheck` + `lint` +
-`build`, all clean.
+### Database migrations
+
+Drizzle migrations (`drizzle/*.sql`) are the source of truth for the database
+shape. After changing `lib/db/schema.ts`, generate and review a migration, then
+apply it:
+
+```bash
+pnpm db:generate   # review the generated SQL before it touches anything
+pnpm db:migrate    # applies pending migrations to DATABASE_URL
+```
+
+`ensureSchema()` still self-heals a dev or preview database on first request, so
+`pnpm dev` needs no migration step — but it is deliberately a no-op in
+production, where only `db:migrate` may change the schema. Review the generated
+SQL before migrating a live database: the generator can emit destructive
+statements (drops, retypes) that the additive `ensureSchema()` path never would.
+
+For a database that predates the migration tooling (created by `ensureSchema()`
+alone), mark the `init` migration as already applied instead of replaying it
+against tables that already exist.
 
 ## Project structure
 
@@ -169,7 +189,7 @@ components/
   icons/                      Brand + platform glyphs
 lib/
   db.ts                       Drizzle client, ensureSchema(), publish/read queries
-  db/schema.ts                profiles + Better Auth tables
+  db/schema.ts                profiles + Better Auth tables (source of truth for migrations)
   ai/gemini.ts                Server-only Gemini client (facts-only prompt)
   validation/profile.ts       Zod schemas, URL safety
   themes/index.ts             Theme/font/accent presets + resolveTheme()
@@ -177,6 +197,8 @@ lib/
   cards/export.ts             html-to-image export (dynamic import)
 types/index.ts                Domain models (Profile, ThemeSettings, …)
 proxy.ts                      Optimistic cookie gate on POST /api/profiles*
+drizzle/                      Generated SQL migrations (owned by db:generate/db:migrate)
+scripts/migrate.mts           Applies pending migrations to Neon
 docs/                         Architecture, API and deployment notes
 ```
 
@@ -239,11 +261,16 @@ beyond Neon for the database. Minimum for a useful production instance:
 
 1. `DATABASE_URL` (Neon) — publishing, accounts, showcase.
 2. `BETTER_AUTH_SECRET` + `BETTER_AUTH_URL` — sessions.
-3. One OAuth provider, with its callback URL pointed at
+3. `NEXT_PUBLIC_SITE_URL` — correct social-share previews.
+4. One OAuth provider, with its callback URL pointed at
    `https://<your-domain>/api/auth/callback/<provider>` (Better Auth's default
    path under its `/api/auth` base path).
-4. `GEMINI_API_KEY` if you want the AI writer; `CLOUDINARY_*` if you want photo
+5. `GEMINI_API_KEY` if you want the AI writer; `CLOUDINARY_*` if you want photo
    uploads.
+
+Create the database shape with `pnpm db:migrate` before the first publish — in
+production only migrations change the schema (`ensureSchema()` is a dev-only
+self-heal).
 
 Without the database the app still runs: the editor, all themes, card export
 and QR work entirely client-side. Full setup guide and checklist:

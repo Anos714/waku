@@ -29,16 +29,20 @@ dashboard. Full variable reference: [../README.md](../README.md#environment-vari
 DATABASE_URL=postgresql://user:password@host/database?sslmode=require
 BETTER_AUTH_SECRET=<openssl rand -base64 32>
 BETTER_AUTH_URL=https://your-domain.com
+NEXT_PUBLIC_SITE_URL=https://your-domain.com
 ```
 
-- **Neon:** create a project, copy the pooled connection string. The schema is
-  created automatically — `ensureSchema()` runs idempotent SQL before the auth
-  handler and on first DB access, creating `profiles` and Better Auth's
-  `user` / `session` / `account` / `verification` tables. There is no migrate
-  step to run.
+- **Neon:** create a project, copy the pooled connection string, then run
+  `pnpm db:migrate` once to create `profiles` and Better Auth's `user` /
+  `session` / `account` / `verification` tables. Migrations are the only path
+  that changes a production database's shape; `ensureSchema()` still self-heals
+  a dev or preview database on first request, so local setup needs no migrate
+  step.
 - **`BETTER_AUTH_URL` must be the public origin** (no trailing path). Better
   Auth compares it against the sign-in request's origin; a mismatch blocks
   sign-in silently.
+- **`NEXT_PUBLIC_SITE_URL`** feeds `metadataBase`, so relative OG/Twitter/manifest
+  URLs resolve correctly for crawlers.
 
 ### OAuth
 
@@ -85,15 +89,22 @@ Keep the `NEXT_PUBLIC_` value identical to `CLOUDINARY_CLOUD_NAME`.
 
 ```bash
 pnpm install
+pnpm db:migrate    # creates the schema on the production database
 pnpm lint && pnpm typecheck && pnpm build
 pnpm start          # serves .next on PORT (default 3000)
 ```
 
 Notes:
 
-- **Set `metadataBase` to your production origin** in `app/layout.tsx` — it is
-  currently the placeholder `https://waku.local`, and OG/Twitter image URLs
-  derive from it.
+- **Run `pnpm db:migrate` before the first publish.** Migrations own the
+  production schema; `ensureSchema()` is a dev-only self-heal and is a no-op in
+  production. If the database predates the migration tooling (it was created by
+  `ensureSchema()` alone), mark the `init` migration as already applied rather
+  than replaying it against tables that already exist.
+- **Set `NEXT_PUBLIC_SITE_URL` to your production origin** so OG/Twitter image
+  URLs and the manifest resolve to absolute URLs. `metadataBase` derives from
+  it (`lib/site.ts`); an invalid value falls back to `http://localhost:3000`
+  rather than breaking the app.
 - `next.config.ts` sets long-lived cache headers on `/media/*` (the promo
   video ships unhashed). Use content hashing if you replace it often.
 - `images.remotePatterns` currently allows **all** http/https hosts so
@@ -120,11 +131,12 @@ Run through this once on a fresh production URL:
 ## 5. Production checklist
 
 - [ ] `DATABASE_URL` points at the production database, not staging
+- [ ] `pnpm db:migrate` run against the production database
 - [ ] `BETTER_AUTH_SECRET` is a strong random value, not the dev one
 - [ ] `BETTER_AUTH_URL` matches the public origin exactly
+- [ ] `NEXT_PUBLIC_SITE_URL` set to the public origin
 - [ ] OAuth callback URLs updated for the real domain
-- [ ] `metadataBase` updated to the public origin
-- [ ] `pnpm lint`, `pnpm typecheck`, `pnpm build` all pass in CI
+- [ ] `pnpm lint`, `pnpm typecheck`, `pnpm test:run`, `pnpm build` all pass in CI
 - [ ] HTTPS enforced by the host; secure cookie variant confirmed in devtools
 - [ ] Error/uptime monitoring attached to the Node process
 - [ ] Database backups/PITR enabled on Neon

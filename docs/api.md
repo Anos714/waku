@@ -194,7 +194,8 @@ database required.
 
 The Better Auth handler (sign-in, OAuth callback, session, sign-out) mounted at
 its default `/api/auth` base path. It runs `ensureSchema()` first so a fresh
-database never races the first request.
+dev database never races the first request; in production the schema comes from
+`pnpm db:migrate` instead.
 
 Sign-in is social-only; callback URLs are
 `/api/auth/callback/github` and `/api/auth/callback/google` on your origin.
