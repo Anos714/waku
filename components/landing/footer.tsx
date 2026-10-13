@@ -5,7 +5,10 @@ import { ArrowUp } from "@/components/icons/ui-icons";
 import { WakuLogo } from "@/components/icons/waku-logo";
 import { GITHUB_REPO_URL } from "@/lib/site";
 
-const COLUMNS: { title: string; links: { label: string; href: string; external?: boolean }[] }[] = [
+type FooterLink = { label: string; href: string; external?: boolean };
+type FooterColumn = { title: string; links: FooterLink[] };
+
+const COLUMNS: FooterColumn[] = [
   {
     title: "Product",
     links: [
@@ -16,9 +19,30 @@ const COLUMNS: { title: string; links: { label: string; href: string; external?:
     ],
   },
   {
+    title: "Community",
+    links: [
+      { label: "Contact", href: "/contact" },
+      { label: "Rate Waku", href: "/rate" },
+    ],
+  },
+  {
+    title: "Legal",
+    links: [
+      { label: "Privacy Policy", href: "/legal/privacy-policy" },
+      { label: "Cookie Policy", href: "/legal/cookie-policy" },
+      { label: "Terms & Conditions", href: "/legal/terms" },
+    ],
+  },
+  {
     title: "Showcase",
     links: [{ label: "Demo profile", href: "/p/ada" }],
   },
+];
+
+/** The two products whose ideas shaped Waku — credited where visitors look. */
+const INSPIRATION: FooterLink[] = [
+  { label: "Linktree", href: "https://linktr.ee/" },
+  { label: "Kado", href: "https://kado.armandev.space/" },
 ];
 
 const WORDMARK_GRADIENT =
@@ -45,7 +69,7 @@ export function Footer() {
             </p>
           </div>
 
-          <nav className="grid grid-cols-2 gap-x-12 gap-y-6">
+          <nav className="grid grid-cols-2 gap-x-10 gap-y-8 lg:grid-cols-4">
             {COLUMNS.map((column) => (
               <div key={column.title}>
                 <p className="text-[0.6875rem] font-semibold uppercase tracking-wider text-white/35">
@@ -73,9 +97,24 @@ export function Footer() {
       </div>
 
       <div className="border-t border-white/10">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-5 py-4 text-xs md:px-8">
-          <p className="text-white/50">
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-5 py-4 text-xs sm:flex-row sm:items-center sm:justify-between md:px-8">
+          <p className="flex flex-wrap items-center gap-x-1.5 text-white/50">
             Made by <span className="text-white/80">Rahul Sain</span>
+            <span className="text-white/25">·</span>
+            Inspired by{" "}
+            {INSPIRATION.map((link, index) => (
+              <span key={link.href} className="inline-flex items-center gap-1.5">
+                {index > 0 ? <span className="text-white/25">&amp;</span> : null}
+                <a
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/50 underline decoration-white/20 underline-offset-2 transition-colors hover:text-white"
+                >
+                  {link.label}
+                </a>
+              </span>
+            ))}
           </p>
           <button
             type="button"
