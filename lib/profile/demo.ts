@@ -44,6 +44,13 @@ export const DEMO_PROFILE: Profile = {
       visible: true,
     },
     {
+      id: "demo-6",
+      platform: "bluesky",
+      label: "@ada.bsky.social",
+      url: "https://bsky.app/profile/ada.bsky.social",
+      visible: true,
+    },
+    {
       id: "demo-4",
       platform: "youtube",
       label: "Ada's notebooks",
