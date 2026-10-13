@@ -1,4 +1,5 @@
 import { profileSchema } from "@/lib/validation/profile";
+import { SOCIAL_PLATFORMS } from "@/lib/profile/platforms";
 import { createDemoProfile } from "./demo";
 import type {
   CardLayoutId,
@@ -157,16 +158,7 @@ function asSocials(value: unknown): SocialLink[] {
 }
 
 function validPlatform(value: unknown): SocialLink["platform"] {
-  const allowed = [
-    "github",
-    "linkedin",
-    "x",
-    "instagram",
-    "youtube",
-    "portfolio",
-    "email",
-  ] as const;
-  return (allowed as readonly string[]).includes(value as string)
+  return (SOCIAL_PLATFORMS as readonly string[]).includes(value as string)
     ? (value as SocialLink["platform"])
     : "portfolio";
 }

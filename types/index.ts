@@ -11,6 +11,8 @@ export type SocialPlatform =
   | "x"
   | "instagram"
   | "youtube"
+  | "bluesky"
+  | "mastodon"
   | "portfolio"
   | "email";
 

@@ -59,7 +59,11 @@ export function ProfileAvatar({
     // The raw URL serves the stored asset (already 512px face-cropped at
     // upload) in its original format — deterministic for both the browser
     // and the rasterizer, unlike the derived WebP/AVIF delivery URLs.
-    const resolved = isValidAvatarUrl(src) ? src : avatarRawUrl(src);
+    // Deliberately a literal scheme check, not isValidAvatarUrl(): that helper
+    // accepts bare Cloudinary public IDs (it treats scheme-less values as
+    // domains), which would emit a relative <img src> that 404s and trips the
+    // monogram fallback.
+    const resolved = /^https?:\/\//i.test(src.trim()) ? src : avatarRawUrl(src);
     return (
       <img
         src={resolved}
