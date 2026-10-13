@@ -1,5 +1,6 @@
 import { profileSchema } from "@/lib/validation/profile";
 import { SOCIAL_PLATFORMS } from "@/lib/profile/platforms";
+import { createId } from "@/lib/utils";
 import { createDemoProfile } from "./demo";
 import type {
   CardLayoutId,
@@ -143,7 +144,7 @@ function asSocials(value: unknown): SocialLink[] {
   return value
     .filter((item): item is Record<string, unknown> => typeof item === "object" && item !== null)
     .map((item) => ({
-      id: asString(item.id, 64) || cryptoId(),
+      id: asString(item.id, 64) || createId("social"),
       platform: validPlatform(item.platform),
       label: asString(item.label, 48),
       url: asString(item.url, 2048),
@@ -155,14 +156,7 @@ function asSocials(value: unknown): SocialLink[] {
 function validPlatform(value: unknown): SocialLink["platform"] {
   return (SOCIAL_PLATFORMS as readonly string[]).includes(value as string)
     ? (value as SocialLink["platform"])
-    : "portfolio";
-}
-
-function cryptoId(): string {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
-    return crypto.randomUUID();
-  }
-  return `id-${Math.random().toString(36).slice(2, 10)}`;
+     : "portfolio";
 }
 
 export function salvageProfile(value: unknown): Profile {
@@ -204,7 +198,7 @@ export function salvageProfile(value: unknown): Profile {
               typeof item === "object" && item !== null,
           )
           .map((item) => ({
-            id: asString(item.id, 64) || cryptoId(),
+            id: asString(item.id, 64) || createId("project"),
             title: asString(item.title, 80),
             description: asString(item.description, 220),
             url: asString(item.url, 2048),
