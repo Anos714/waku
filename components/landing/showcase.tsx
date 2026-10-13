@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "@/components/icons/ui-icons";
 import { ProfileAvatar } from "@/components/profile/profile-avatar";
 import { profilePath } from "@/lib/profile/format";
+import { publicHost } from "@/lib/site";
 import { resolveTheme } from "@/lib/themes";
 import type { Profile } from "@/types";
 
@@ -118,7 +119,7 @@ function ShowcaseCard({ profile }: { profile: Profile }) {
 
       <div className="relative mt-auto flex items-center justify-between gap-2 pt-6">
         <span className="truncate rounded-md bg-surface-2 px-2 py-1 font-mono text-[0.6875rem] text-ink-3 transition-colors group-hover:text-ink-2">
-          waku.app/p/{profile.slug}
+          {publicHost()}/p/{profile.slug}
         </span>
         <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-line text-ink-3 transition-colors duration-200 group-hover:border-ink/30 group-hover:bg-accent group-hover:text-accent-ink">
           <ArrowUpRight className="h-3 w-3" />

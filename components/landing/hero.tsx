@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight, Check, Download, Globe, Wand2 } from "@/components/icons/ui-icons";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { publicHost } from "@/lib/site";
 import { HeroPreview } from "./hero-preview";
 import { ThemeSwitcher, useHeroTheme } from "./theme-switcher";
 
@@ -16,6 +17,9 @@ const EYEBROW_CHIPS = [
 ] as const;
 
 const MARQUEE_COLORS = ["var(--color-accent)", "#f2622e", "#7dd3c0", "#8fdc6f"];
+
+/** The host used in every illustrated link so it matches the live deploy. */
+const HOST = publicHost();
 
 const MARQUEE_SLUGS = [
   "ada",
@@ -94,7 +98,7 @@ export function Hero({ publishedCount = 0 }: { publishedCount?: number }) {
           <p className="mt-7 max-w-md text-lg leading-relaxed text-ink-2">
             Build a profile page and a matching identity card in your browser,
             then sign in to publish it at a link you own —{" "}
-            <span className="font-medium text-ink">waku.app/p/you</span> — that
+            <span className="font-medium text-ink">{HOST}/p/you</span> — that
             anyone can open. Nothing leaves your browser until you publish.
           </p>
 
@@ -190,7 +194,7 @@ function SlugChip({ slug, index }: { slug: string; index: number }) {
     return (
       <span className="inline-flex items-center gap-2 rounded-full bg-bg-deep px-3.5 py-1.5 font-mono text-xs text-white/70">
         <span className="h-1.5 w-1.5 rounded-full" style={{ background: color }} />
-        waku.app/p/<span className="font-medium text-white">{slug}</span>
+        {HOST}/p/<span className="font-medium text-white">{slug}</span>
       </span>
     );
   }
@@ -204,14 +208,14 @@ function SlugChip({ slug, index }: { slug: string; index: number }) {
         >
           {monogram}
         </span>
-        waku.app/p/<span className="font-medium text-ink">{slug}</span>
+        {HOST}/p/<span className="font-medium text-ink">{slug}</span>
       </span>
     );
   }
 
   return (
     <span className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-1.5 font-mono text-xs text-ink-3">
-      waku.app/p/<span className="font-medium text-ink-2">{slug}</span>
+      {HOST}/p/<span className="font-medium text-ink-2">{slug}</span>
       <span className="h-1.5 w-1.5 rounded-full" style={{ background: color }} />
     </span>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useInView } from "@/lib/use-in-view";
+import { publicHost } from "@/lib/site";
 
 const STEPS = [
   {
@@ -16,7 +17,7 @@ const STEPS = [
   {
     number: "03",
     title: "Publish and share",
-    body: "Sign in with GitHub or Google, hit publish, and your page is live at a link you own — waku.app/p/you. Then grab the QR code and the PNG card. Nothing leaves your browser until you publish.",
+    body: `Sign in with GitHub or Google, hit publish, and your page is live at a link you own — ${publicHost()}/p/you. Then grab the QR code and the PNG card. Nothing leaves your browser until you publish.`,
   },
 ];
 

@@ -20,6 +20,7 @@ import {
   dispatchHeroTheme,
 } from "@/lib/landing/hero-themes";
 import { cn } from "@/lib/utils";
+import { publicHost } from "@/lib/site";
 
 const TONES = ["Professional", "Casual", "Minimal", "Creative"];
 
@@ -208,7 +209,7 @@ export function Features() {
                     aria-hidden="true"
                   />
                   <span className="truncate font-mono text-xs text-ink-3">
-                    waku.app/p/
+                    {publicHost()}/p/
                     <span className="font-medium text-ink">your-name</span>
                   </span>
                 </div>
@@ -339,7 +340,7 @@ export function Features() {
                 </span>
                 <ArrowRight className="h-3.5 w-3.5 shrink-0 text-ink-3" />
                 <span className="rounded-lg bg-accent px-3 py-1.5 font-mono text-xs font-medium text-accent-ink">
-                  waku.app/p/you
+                  {publicHost()}/p/you
                 </span>
               </div>
             </div>

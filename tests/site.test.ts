@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { mailto, siteUrl } from "@/lib/site";
+import { mailto, publicHost, siteUrl } from "@/lib/site";
 
 describe("siteUrl", () => {
   const original = process.env.NEXT_PUBLIC_SITE_URL;
@@ -65,5 +65,55 @@ describe("mailto", () => {
     expect(mailto("hi@example.com", "A & B?", "C=D")).toBe(
       "mailto:hi@example.com?subject=A%20%26%20B%3F&body=C%3DD",
     );
+  });
+});
+
+describe("publicHost", () => {
+  const originalSiteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  const originalVercelUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
+
+  afterEach(() => {
+    if (originalSiteUrl === undefined) delete process.env.NEXT_PUBLIC_SITE_URL;
+    else process.env.NEXT_PUBLIC_SITE_URL = originalSiteUrl;
+    if (originalVercelUrl === undefined) delete process.env.NEXT_PUBLIC_VERCEL_URL;
+    else process.env.NEXT_PUBLIC_VERCEL_URL = originalVercelUrl;
+  });
+
+  it("falls back to the live deploy when nothing is configured", () => {
+    delete process.env.NEXT_PUBLIC_SITE_URL;
+    delete process.env.NEXT_PUBLIC_VERCEL_URL;
+    expect(publicHost()).toBe("wakucards.vercel.app");
+  });
+
+  it("reads the host out of a full NEXT_PUBLIC_SITE_URL", () => {
+    process.env.NEXT_PUBLIC_SITE_URL = "https://wakucards.vercel.app";
+    delete process.env.NEXT_PUBLIC_VERCEL_URL;
+    expect(publicHost()).toBe("wakucards.vercel.app");
+  });
+
+  it("parses Vercel's protocol-less VERCEL_URL", () => {
+    // Vercel sets this without a scheme, so a bare host must still parse
+    // instead of throwing and falling back.
+    delete process.env.NEXT_PUBLIC_SITE_URL;
+    process.env.NEXT_PUBLIC_VERCEL_URL = "waku-git-main.vercel.app";
+    expect(publicHost()).toBe("waku-git-main.vercel.app");
+  });
+
+  it("prefers the explicit site URL over Vercel's", () => {
+    process.env.NEXT_PUBLIC_SITE_URL = "https://custom.example.com";
+    process.env.NEXT_PUBLIC_VERCEL_URL = "wakucards.vercel.app";
+    expect(publicHost()).toBe("custom.example.com");
+  });
+
+  it("keeps a dev port so localhost previews stay honest", () => {
+    process.env.NEXT_PUBLIC_SITE_URL = "http://localhost:3000";
+    delete process.env.NEXT_PUBLIC_VERCEL_URL;
+    expect(publicHost()).toBe("localhost:3000");
+  });
+
+  it("falls back for an unparsable value", () => {
+    process.env.NEXT_PUBLIC_SITE_URL = "not a url at all";
+    delete process.env.NEXT_PUBLIC_VERCEL_URL;
+    expect(publicHost()).toBe("wakucards.vercel.app");
   });
 });

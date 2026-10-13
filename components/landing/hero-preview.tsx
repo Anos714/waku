@@ -6,6 +6,7 @@ import { IdentityCard } from "@/components/cards/identity-card";
 import { useQrCode } from "@/lib/profile/qr";
 import { DEMO_PROFILE } from "@/lib/profile/demo";
 import { useProfileUrl } from "@/lib/profile/use-profile-url";
+import { publicHost } from "@/lib/site";
 import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 import type { ThemeSettings } from "@/types";
 
@@ -95,7 +96,7 @@ export function HeroPreview({ theme }: { theme: ThemeSettings }) {
           <span className="h-2.5 w-2.5 rounded-full bg-line-2" />
           <span className="h-2.5 w-2.5 rounded-full bg-line-2" />
           <span className="ml-3 truncate font-mono text-[0.6875rem] text-ink-3">
-            waku.app/p/{DEMO_PROFILE.slug}
+            {publicHost()}/p/{DEMO_PROFILE.slug}
           </span>
         </div>
         <div className="relative max-h-[31rem] overflow-hidden">

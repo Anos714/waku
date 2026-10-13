@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { ArrowRight, Check } from "@/components/icons/ui-icons";
-import { CONTACT_EMAIL } from "@/lib/site";
+import { CONTACT_EMAIL, publicHost } from "@/lib/site";
 
 /**
  * The contact form composes a signed `mailto:` link from the visitor's fields
@@ -33,7 +33,7 @@ export function ContactForm() {
       "",
       message.trim(),
       "",
-      "-- sent from waku.app/contact",
+      "-- sent from " + publicHost() + "/contact",
     ].join("\n");
 
     const link = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
