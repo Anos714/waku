@@ -259,6 +259,27 @@ export const DEFAULT_THEME_SETTINGS: ThemeSettings = {
 };
 
 export function resolveTheme(settings: ThemeSettings): ResolvedTheme {
+  // Resolution is pure, but it rebuilds the token object on every call — and
+  // the editor preview asks for it on every keystroke, while the landing
+  // showcase asks once per card. Caching by the six settings keeps the common
+  // themes (and the accent presets) free after the first hit. The cache is
+  // bounded because the accent is a free-form hex string.
+  const key = `${settings.theme}|${settings.accent}|${settings.fontPairing}|${settings.avatarShape}|${settings.background}|${settings.socialStyle}`;
+  const cached = themeCache.get(key);
+  if (cached) return cached;
+
+  const resolved = computeTheme(settings);
+  if (themeCache.size >= THEME_CACHE_MAX) {
+    themeCache.delete(themeCache.keys().next().value as string);
+  }
+  themeCache.set(key, resolved);
+  return resolved;
+}
+
+const THEME_CACHE_MAX = 64;
+const themeCache = new Map<string, ResolvedTheme>();
+
+function computeTheme(settings: ThemeSettings): ResolvedTheme {
   const preset = PRESETS[settings.theme] ?? PRESETS.editorial;
   const fonts = FONT_VARS[settings.fontPairing] ?? FONT_VARS.geist;
 
