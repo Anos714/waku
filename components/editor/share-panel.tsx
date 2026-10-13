@@ -24,7 +24,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useCopy, useQrCode, generateQrDataUrl, downloadDataUrl, shareUrl } from "@/lib/profile/qr";
+import { useQrCode, generateQrDataUrl } from "@/lib/profile/qr";
+import { useCopy, downloadDataUrl, shareUrl } from "@/lib/profile/share";
 import { useProfileUrl } from "@/lib/profile/use-profile-url";
 import { sanitizeText } from "@/lib/validation/profile";
 import { qrFilename } from "@/lib/cards/export";

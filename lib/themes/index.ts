@@ -295,7 +295,7 @@ const AVATAR_SHAPE_CLASSES: Record<AvatarShape, string> = {
 };
 
 export function avatarShapeClass(shape: AvatarShape): string {
-  return AVATAR_SHAPE_CLASSES[shape] ?? "rounded-full";
+  return AVATAR_SHAPE_CLASSES[shape];
 }
 
 const BACKGROUND_CLASSES: Record<Exclude<BackgroundStyle, "subtle">, string> = {
@@ -316,16 +316,17 @@ export function backgroundClass(
   return BACKGROUND_CLASSES[background] ?? "";
 }
 
-const SOCIAL_BUTTON_CLASSES: Record<Exclude<SocialButtonStyle, "outline">, string> = {
-  solid: "pt-social-solid",
+const SOCIAL_BUTTON_CLASSES: Record<SocialButtonStyle, string> = {
   minimal: "pt-social-minimal",
+  outline: "pt-social-outline",
+  solid: "pt-social-solid",
   soft: "pt-social-soft",
   elevated: "pt-social-elevated",
   underline: "pt-social-underline",
 };
 
 export function socialButtonClasses(style: SocialButtonStyle): string {
-  return SOCIAL_BUTTON_CLASSES[style] ?? "pt-social-outline";
+  return SOCIAL_BUTTON_CLASSES[style];
 }
 
 export const ACCENT_PRESETS: { label: string; value: string }[] = [
