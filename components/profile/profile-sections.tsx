@@ -1,6 +1,6 @@
 import { ArrowUpRight } from "@/components/icons/ui-icons";
 import { SocialLinks } from "./social-links";
-import { clampText, displayHandle } from "@/lib/profile/format";
+import { clampText, displayHandle, prettyUrl } from "@/lib/profile/format";
 import { safeExternalUrl } from "@/lib/validation/profile";
 import type { Profile, ResolvedTheme } from "@/types";
 
@@ -70,16 +70,6 @@ function SectionShell({
       <div className="mt-4">{children}</div>
     </section>
   );
-}
-
-function websiteDisplay(url: string): string {
-  try {
-    const parsed = new URL(url);
-    const path = parsed.pathname.replace(/\/$/, "");
-    return `${parsed.hostname.replace(/^www\./, "")}${path}`;
-  } catch {
-    return url;
-  }
 }
 
 export function AboutSection({
@@ -247,7 +237,7 @@ export function ContactSection({
 
   const rows: { label: string; value: string; href?: string }[] = [];
   if (website) {
-    rows.push({ label: "Website", value: websiteDisplay(website), href: website });
+    rows.push({ label: "Website", value: prettyUrl(website), href: website });
   }
   if (emailSocial) {
     const mail = safeExternalUrl(emailSocial.url);
