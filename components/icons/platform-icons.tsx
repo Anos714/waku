@@ -1,4 +1,4 @@
-import type { SVGProps } from "react";
+import { memo, type SVGProps } from "react";
 import type { SocialPlatform } from "@/types";
 import { PLATFORM_META } from "@/lib/profile/platforms";
 
@@ -123,7 +123,10 @@ const ICON_MAP: Record<SocialPlatform, (props: IconProps) => React.JSX.Element> 
   email: MailIcon,
 };
 
-export function PlatformIcon({
+// Memoized: the icon's props are stable in practice (a literal class name and,
+// usually, no inline style), so the SVG skips re-rendering when a parent such
+// as the editor form re-renders on every keystroke.
+export const PlatformIcon = memo(function PlatformIcon({
   platform,
   className,
   style,
@@ -131,7 +134,7 @@ export function PlatformIcon({
   platform: SocialPlatform;
   className?: string;
   style?: React.CSSProperties;
-}) {
+}): React.JSX.Element {
   const Icon = ICON_MAP[platform] ?? GlobeIcon;
   return <Icon className={className} style={style} />;
-}
+});
