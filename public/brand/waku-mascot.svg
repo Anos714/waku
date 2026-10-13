@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Waku mascot">
+  <defs>
+    <linearGradient id="wakuBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a2a22"/>
+      <stop offset="1" stop-color="#131310"/>
+    </linearGradient>
+    <linearGradient id="wakuHead" x1="0.2" y1="0" x2="0.8" y2="1">
+      <stop offset="0" stop-color="#d9ff70"/>
+      <stop offset="1" stop-color="#b4e231"/>
+    </linearGradient>
+  </defs>
+
+  <g stroke="#f5f3ee" stroke-opacity="0.16" stroke-width="6">
+    <rect x="174" y="428" width="66" height="58" rx="29" fill="#131310"/>
+    <rect x="272" y="428" width="66" height="58" rx="29" fill="#131310"/>
+    <rect x="74" y="276" width="58" height="104" rx="29" fill="#131310" transform="rotate(-16 103 328)"/>
+    <rect x="380" y="276" width="58" height="104" rx="29" fill="#131310" transform="rotate(16 409 328)"/>
+  </g>
+
+  <rect x="112" y="214" width="288" height="236" rx="52" fill="url(#wakuBody)" stroke="#f5f3ee" stroke-opacity="0.16" stroke-width="6"/>
+  <rect x="158" y="302" width="196" height="30" rx="15" fill="#f5f3ee"/>
+  <rect x="158" y="350" width="130" height="22" rx="11" fill="#f5f3ee" fill-opacity="0.55"/>
+  <rect x="158" y="388" width="164" height="22" rx="11" fill="#f5f3ee" fill-opacity="0.3"/>
+
+  <circle cx="366" cy="250" r="32" fill="#c6f24e" stroke="#131310" stroke-opacity="0.25" stroke-width="4"/>
+  <path d="M352 251l10 10 19-22" fill="none" stroke="#1a1a16" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <path d="M256 82 V52" stroke="#131310" stroke-width="17" stroke-linecap="round"/>
+  <circle cx="256" cy="34" r="19" fill="#c6f24e" stroke="#131310" stroke-width="9"/>
+
+  <circle cx="256" cy="176" r="98" fill="url(#wakuHead)"/>
+  <ellipse cx="194" cy="198" rx="17" ry="10" fill="#a3d021" fill-opacity="0.9"/>
+  <ellipse cx="318" cy="198" rx="17" ry="10" fill="#a3d021" fill-opacity="0.9"/>
+  <ellipse cx="221" cy="163" rx="15.5" ry="20" fill="#1a1a16"/>
+  <ellipse cx="291" cy="163" rx="15.5" ry="20" fill="#1a1a16"/>
+  <circle cx="226.5" cy="155" r="5.5" fill="#fffdf9"/>
+  <circle cx="296.5" cy="155" r="5.5" fill="#fffdf9"/>
+  <path d="M225 205 Q256 232 287 205" fill="none" stroke="#1a1a16" stroke-width="13" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,452 @@
+@import "tailwindcss";
+
+/* ----------------------------------------------------------------------------
+   Waku — design tokens
+   Warm off-white canvas, near-black ink, charcoal surfaces,
+   one restrained electric-lime accent.
+---------------------------------------------------------------------------- */
+
+:root {
+  --bg: #f5f3ee;
+  --bg-subtle: #ece8e0;
+  --bg-deep: #171714;
+  --surface: #fffdf9;
+  --surface-2: #f0ede6;
+  --ink: #1a1a16;
+  --ink-2: #4c4a43;
+  --ink-3: #7d7a70;
+  --line: #e0dbd1;
+  --line-2: #cfc9bc;
+  --accent: #c6f24e;
+  --accent-2: #a9d524;
+  --accent-ink: #1a1a16;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow-sm: 0 1px 2px rgba(26, 26, 22, 0.05);
+  --shadow-md: 0 2px 6px rgba(26, 26, 22, 0.05), 0 12px 28px -12px rgba(26, 26, 22, 0.14);
+  --shadow-lg: 0 2px 8px rgba(26, 26, 22, 0.06), 0 28px 64px -24px rgba(26, 26, 22, 0.22);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-subtle: var(--bg-subtle);
+  --color-bg-deep: var(--bg-deep);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-ink: var(--accent-ink);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-instrument-serif);
+
+  --radius-card: var(--radius);
+  --radius-card-sm: var(--radius-sm);
+
+  --shadow-card-sm: var(--shadow-sm);
+  --shadow-card: var(--shadow-md);
+  --shadow-card-lg: var(--shadow-lg);
+}
+
+* {
+  border-color: var(--line);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "kern", "liga", "cv11";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* Focus states — visible, restrained */
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+/* Thin, unobtrusive scrollbars on scrollable panes */
+.scroll-slim {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-2) transparent;
+}
+.scroll-slim::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scroll-slim::-webkit-scrollbar-thumb {
+  background: var(--line-2);
+  border-radius: 999px;
+}
+.scroll-slim::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Typographic helpers */
+.eyebrow {
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.balance {
+  text-wrap: balance;
+}
+
+/* Decorative backgrounds used by the app shell and themed profiles */
+.bg-grid {
+  background-image: linear-gradient(to right, var(--line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+.bg-dots {
+  background-image: radial-gradient(var(--line-2) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+/* Surface noise-free soft glow used on dark sections */
+.accent-glow {
+  background: radial-gradient(
+    600px 280px at 50% -20%,
+    color-mix(in oklab, var(--accent) 26%, transparent),
+    transparent 70%
+  );
+}
+
+/* Theme runtime variables — set per profile container by lib/themes resolver */
+.pt-vars {
+  --pt-bg: #f5f3ee;
+  --pt-bg-2: #ece8e0;
+  --pt-surface: #fffdf9;
+  --pt-ink: #1a1a16;
+  --pt-ink-2: #4c4a43;
+  --pt-ink-3: #7d7a70;
+  --pt-line: #e0dbd1;
+  --pt-accent: #c6f24e;
+  --pt-accent-ink: #1a1a16;
+  --pt-radius: 12px;
+  --pt-font-heading: var(--font-geist-sans);
+  --pt-font-body: var(--font-geist-sans);
+  --pt-font-mono: var(--font-geist-mono);
+}
+
+/* ---------------------------------------------------------------------------
+   Themed profile surface helpers (resolved by lib/themes)
+--------------------------------------------------------------------------- */
+.pt-subtle-light {
+  background-image: radial-gradient(
+    900px 420px at 50% -10%,
+    color-mix(in oklab, var(--pt-accent) 10%, transparent),
+    transparent 70%
+  );
+}
+.pt-subtle-dark {
+  background-image: radial-gradient(
+    900px 420px at 50% -10%,
+    color-mix(in oklab, var(--pt-accent) 16%, transparent),
+    transparent 70%
+  );
+}
+.pt-grid {
+  background-image: linear-gradient(
+      to right,
+      color-mix(in oklab, var(--pt-ink) 9%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--pt-ink) 9%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 44px 44px;
+}
+.pt-glow {
+  background-image: radial-gradient(
+      520px 260px at 12% 8%,
+      color-mix(in oklab, var(--pt-accent) 22%, transparent),
+      transparent 65%
+    ),
+    radial-gradient(
+      620px 320px at 92% 96%,
+      color-mix(in oklab, var(--pt-accent) 16%, transparent),
+      transparent 65%
+    );
+}
+.pt-dots {
+  background-image: radial-gradient(
+    color-mix(in oklab, var(--pt-ink) 14%, transparent) 1.4px,
+    transparent 1.4px
+  );
+  background-size: 22px 22px;
+}
+.pt-stripes {
+  background-image: repeating-linear-gradient(
+    45deg,
+    color-mix(in oklab, var(--pt-ink) 7%, transparent) 0,
+    color-mix(in oklab, var(--pt-ink) 7%, transparent) 1px,
+    transparent 1px,
+    transparent 12px
+  );
+}
+.pt-mesh {
+  background-image: radial-gradient(
+      520px 300px at 8% 6%,
+      color-mix(in oklab, var(--pt-accent) 26%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      560px 320px at 96% 12%,
+      color-mix(in oklab, var(--pt-ink) 16%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      640px 360px at 60% 104%,
+      color-mix(in oklab, var(--pt-accent) 18%, transparent),
+      transparent 62%
+    );
+}
+.pt-rings {
+  background-image: repeating-radial-gradient(
+    circle at 82% 14%,
+    color-mix(in oklab, var(--pt-ink) 10%, transparent) 0,
+    color-mix(in oklab, var(--pt-ink) 10%, transparent) 1.2px,
+    transparent 1.2px,
+    transparent 26px
+  );
+}
+
+/* Social link button treatments (driven by ThemeSettings.socialStyle) */
+.pt-social-outline {
+  border: 1px solid var(--pt-line);
+  background: transparent;
+  color: var(--pt-ink);
+}
+.pt-social-outline:hover {
+  border-color: var(--pt-accent);
+  color: var(--pt-accent);
+}
+.pt-social-solid {
+  border: 1px solid transparent;
+  background: var(--pt-ink);
+  color: var(--pt-bg);
+}
+.pt-social-solid:hover {
+  background: var(--pt-accent);
+  border-color: var(--pt-accent);
+  color: var(--pt-accent-ink);
+}
+.pt-social-minimal {
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--pt-ink-2);
+}
+.pt-social-minimal:hover {
+  color: var(--pt-accent);
+  background: color-mix(in oklab, var(--pt-accent) 10%, transparent);
+}
+.pt-social-soft {
+  border: 1px solid transparent;
+  background: color-mix(in oklab, var(--pt-accent) 14%, transparent);
+  color: var(--pt-ink);
+}
+.pt-social-soft:hover {
+  background: color-mix(in oklab, var(--pt-accent) 24%, transparent);
+  color: var(--pt-accent);
+}
+.pt-social-elevated {
+  border: 1px solid var(--pt-line);
+  background: var(--pt-surface);
+  color: var(--pt-ink);
+  box-shadow: 0 1px 2px color-mix(in oklab, var(--pt-ink) 10%, transparent),
+    0 4px 12px -6px color-mix(in oklab, var(--pt-ink) 22%, transparent);
+}
+.pt-social-elevated:hover {
+  border-color: var(--pt-accent);
+  color: var(--pt-accent);
+  transform: translateY(-1px);
+}
+.pt-social-underline {
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--pt-ink);
+}
+.pt-social-underline:hover {
+  color: var(--pt-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+}
+
+/* Tiny entrance/exit animations for floating UI (Radix portals) */
+@keyframes lp-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes lp-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+.animate-in {
+  animation: lp-fade-in 0.14s ease-out;
+}
+.animate-out {
+  animation: lp-fade-out 0.1s ease-in forwards;
+}
+
+/* Micro-interactions: success pop, gentle wiggle, and entrance fades */
+@keyframes lp-pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lp-wiggle {
+  0%, 100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+@keyframes lp-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-pop {
+  animation: lp-pop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.animate-wiggle {
+  animation: lp-wiggle 0.4s ease-in-out;
+}
+.animate-fade-up {
+  animation: lp-fade-up 0.3s ease-out both;
+}
+
+/* ---------------------------------------------------------------------------
+   Landing-page motion
+   Kept here so the reduced-motion override above collapses all of it at once.
+   No new tokens — these reuse the existing palette.
+--------------------------------------------------------------------------- */
+
+/* Slow marquee of slug chips under the hero. The track is duplicated so the
+   loop is seamless; pause on hover/focus lets visitors read a slug. */
+@keyframes lp-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  animation: lp-marquee 38s linear infinite;
+}
+.marquee-pause:hover .animate-marquee,
+.marquee-pause:focus-within .animate-marquee {
+  animation-play-state: paused;
+}
+
+/* One-shot accent shine across the primary CTA. */
+@keyframes lp-shine {
+  from {
+    transform: translateX(-120%) skewX(-12deg);
+  }
+  60%,
+  to {
+    transform: translateX(220%) skewX(-12deg);
+  }
+}
+.animate-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 20%,
+    color-mix(in oklab, var(--color-bg) 55%, transparent) 50%,
+    transparent 80%
+  );
+  transform: translateX(-120%) skewX(-12deg);
+}
+.animate-shine:hover::after {
+  animation: lp-shine 0.7s ease-out;
+}
+
+/* Theme-swap crossfade for the hero preview. */
+@keyframes lp-swap {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-swap {
+  animation: lp-swap 0.32s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

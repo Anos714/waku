@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Waku — brand assets</title>
+    <style>
+      @font-face {
+        font-family: "Geist";
+        src: url("/fonts/Geist-Regular.woff") format("woff");
+        font-weight: 400;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "Geist";
+        src: url("/fonts/Geist-SemiBold.woff") format("woff");
+        font-weight: 600;
+        font-display: swap;
+      }
+      :root {
+        --bg: #f5f3ee;
+        --surface: #fffdf9;
+        --ink: #1a1a16;
+        --ink-2: #4c4a43;
+        --ink-3: #7d7a70;
+        --line: #e0dbd1;
+        --deep: #171714;
+        --accent: #c6f24e;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 56px 28px 96px;
+      }
+      h1 {
+        font-size: 34px;
+        font-weight: 600;
+        letter-spacing: -0.03em;
+        margin: 0 0 6px;
+      }
+      .sub {
+        color: var(--ink-3);
+        font-size: 15px;
+        margin: 0 0 40px;
+      }
+      h2 {
+        font-size: 12px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        font-weight: 600;
+        margin: 44px 0 16px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--line);
+      }
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        align-items: flex-end;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+      }
+      .card.dark {
+        background: var(--deep);
+        border-color: #2a2a22;
+        color: #f5f3ee;
+      }
+      .cap {
+        font-size: 12px;
+        color: var(--ink-3);
+      }
+      .dark .cap {
+        color: rgba(245, 243, 238, 0.5);
+      }
+      .lockup {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+      .sizes {
+        display: flex;
+        align-items: flex-end;
+        gap: 22px;
+      }
+      .sizes figure {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+      .swatches {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+      .sw {
+        width: 148px;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        background: var(--surface);
+      }
+      .sw i {
+        display: block;
+        height: 74px;
+      }
+      .sw span {
+        display: block;
+        padding: 10px 12px;
+        font-size: 12px;
+        color: var(--ink-2);
+      }
+      .sw b {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ink);
+      }
+      .og {
+        width: 100%;
+        border-radius: 14px;
+        border: 1px solid var(--line);
+        display: block;
+      }
+      .note {
+        font-size: 13px;
+        color: var(--ink-3);
+        line-height: 1.6;
+        max-width: 62ch;
+      }
+      code {
+        font-family: ui-monospace, "Geist Mono", monospace;
+        font-size: 12px;
+        background: #ece8e0;
+        padding: 2px 6px;
+        border-radius: 5px;
+      }
+      ul.files {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        columns: 2;
+        font-size: 13px;
+        color: var(--ink-2);
+      }
+      ul.files li {
+        padding: 5px 0;
+        break-inside: avoid;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Waku — brand assets</h1>
+      <p class="sub">Mascot logo, app icon, favicon set, OG image and colour tokens.</p>
+
+      <h2>Logo</h2>
+      <div class="row">
+        <div class="card" style="min-width: 260px">
+          <div class="lockup"><img src="/brand/waku-mascot.svg" alt="" width="44" height="44" /> Waku</div>
+          <span class="cap">Primary lockup — mascot + wordmark</span>
+        </div>
+        <div class="card dark" style="min-width: 260px">
+          <div class="lockup"><img src="/brand/waku-mascot.svg" alt="" width="44" height="44" /> Waku</div>
+          <span class="cap">On dark</span>
+        </div>
+        <div class="card" style="min-width: 240px">
+          <div class="lockup"><img src="/brand/waku-mark.svg" alt="" width="34" height="34" /> Waku</div>
+          <span class="cap">Compact mark (headers, small UI)</span>
+        </div>
+        <div class="card dark" style="min-width: 240px">
+          <div class="lockup"><img src="/brand/waku-mark-light.svg" alt="" width="34" height="34" /> Waku</div>
+          <span class="cap">Compact mark — light tile</span>
+        </div>
+      </div>
+
+      <h2>Mascot</h2>
+      <div class="row">
+        <div class="card" style="min-width: 300px">
+          <img src="/brand/waku-mascot.svg" alt="Waku mascot" width="260" height="260" />
+          <span class="cap">Full character · transparent background</span>
+        </div>
+        <div class="card dark" style="min-width: 300px">
+          <img src="/brand/waku-mascot.svg" alt="" width="260" height="260" />
+          <span class="cap">Same asset on #171714</span>
+        </div>
+      </div>
+
+      <h2>Icon sizes</h2>
+      <div class="card" style="align-items: flex-start">
+        <div class="sizes">
+          <figure><img src="/brand/waku-mark.svg" width="16" height="16" alt="" /><span class="cap">16</span></figure>
+          <figure><img src="/brand/waku-mark.svg" width="24" height="24" alt="" /><span class="cap">24</span></figure>
+          <figure><img src="/brand/waku-mark.svg" width="32" height="32" alt="" /><span class="cap">32</span></figure>
+          <figure><img src="/brand/waku-mark.svg" width="48" height="48" alt="" /><span class="cap">48</span></figure>
+          <figure><img src="/brand/waku-mark.svg" width="64" height="64" alt="" /><span class="cap">64</span></figure>
+          <figure><img src="/brand/waku-mark.svg" width="128" height="128" alt="" /><span class="cap">128</span></figure>
+        </div>
+        <span class="cap">Favicon set — served from <code>/favicon.ico</code>, <code>/icon.svg</code>, <code>/apple-icon.png</code></span>
+      </div>
+
+      <h2>App / PWA icons</h2>
+      <div class="row">
+        <div class="card"><img src="/apple-icon.png" width="90" height="90" alt="" /><span class="cap">apple-icon · 180</span></div>
+        <div class="card"><img src="/brand/waku-mark-192.png" width="90" height="90" alt="" /><span class="cap">192 · any</span></div>
+        <div class="card"><img src="/brand/waku-mark-512.png" width="90" height="90" alt="" /><span class="cap">512 · any</span></div>
+        <div class="card"><img src="/brand/waku-mark-maskable-512.png" width="90" height="90" alt="" /><span class="cap">512 · maskable</span></div>
+      </div>
+
+      <h2>Open Graph</h2>
+      <img class="og" src="/opengraph-image" alt="Waku Open Graph image, 1200 by 630" />
+      <p class="note" style="margin-top: 14px">
+        Generated by <code>app/opengraph-image.tsx</code> (1200×630) and reused as
+        <code>twitter-image</code>. Swap <code>waku.local</code> in that file and
+        <code>metadataBase</code> in <code>app/layout.tsx</code> for your production domain.
+      </p>
+
+      <h2>Palette</h2>
+      <div class="swatches">
+        <div class="sw"><i style="background: #f5f3ee; border-bottom: 1px solid var(--line)"></i><span><b>bg</b>#f5f3ee</span></div>
+        <div class="sw"><i style="background: #1a1a16"></i><span><b>ink</b>#1a1a16</span></div>
+        <div class="sw"><i style="background: #171714"></i><span><b>deep</b>#171714</span></div>
+        <div class="sw"><i style="background: #c6f24e"></i><span><b>accent</b>#c6f24e</span></div>
+        <div class="sw"><i style="background: #a9d524"></i><span><b>accent-2</b>#a9d524</span></div>
+        <div class="sw"><i style="background: #e0dbd1"></i><span><b>line</b>#e0dbd1</span></div>
+      </div>
+
+      <h2>Files</h2>
+      <div class="card" style="align-items: flex-start">
+        <ul class="files">
+          <li><code>components/icons/waku-logo.tsx</code> — React component</li>
+          <li><code>public/brand/waku-mascot.svg</code> / <code>.png</code> / <code>@2x.png</code></li>
+          <li><code>public/brand/waku-mark.svg</code> / <code>-light.svg</code> / <code>-maskable.svg</code></li>
+          <li><code>public/brand/waku-mark-192.png</code> · <code>-512.png</code> · <code>-maskable-512.png</code></li>
+          <li><code>app/icon.svg</code> · <code>app/favicon.ico</code> · <code>app/apple-icon.png</code></li>
+          <li><code>app/opengraph-image.tsx</code> · <code>app/twitter-image.tsx</code></li>
+          <li><code>public/site.webmanifest</code></li>
+          <li><code>public/fonts/Geist-{Regular,SemiBold}.woff</code></li>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>
