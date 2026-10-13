@@ -526,6 +526,34 @@ export function MapPin(props: IconProps) {
   );
 }
 
+export function Mail(props: IconProps) {
+  return (
+    <Base {...props}>
+      <Tint d="M3.6 6.6h16.8v10.8H3.6Z" w={2.2} />
+      <Line d="M4.6 7.8 12 13.2l7.4-5.4" w={2.4} />
+    </Base>
+  );
+}
+
+export function Star(props: IconProps) {
+  return (
+    <Base {...props}>
+      <Solid
+        d="M12 2.8 14.1 8.7 20.4 8.9 15.4 12.7 17.2 18.7 12 15.2 6.8 18.7 8.6 12.7 3.6 8.9 9.9 8.7Z"
+        w={1.4}
+      />
+    </Base>
+  );
+}
+
+export function MessageSquare(props: IconProps) {
+  return (
+    <Base {...props}>
+      <Tint d="M3.6 5.4h16.8v11.6H8.6l-5 4.6v-4.6H3.6Z" w={2.2} />
+    </Base>
+  );
+}
+
 export function Share2(props: IconProps) {
   return (
     <Base {...props}>

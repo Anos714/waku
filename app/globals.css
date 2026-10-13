@@ -123,6 +123,34 @@ select:focus-visible,
   text-wrap: balance;
 }
 
+/* Long-form legal pages: section headings, lead lines and point lists are
+   components (components/legal/legal-layout.tsx), so what remains here is the
+   inline styling only — links, emphasis and code keep the token palette. */
+.legal-prose a {
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--line-2);
+  transition: text-decoration-color 0.15s ease;
+}
+.legal-prose a:hover {
+  text-decoration-color: var(--accent-2);
+}
+.legal-prose strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+.legal-prose code {
+  border-radius: 0.375rem;
+  background: var(--surface-2);
+  padding: 0.1rem 0.35rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.8125em;
+  color: var(--ink-2);
+}
+
 /* Decorative backgrounds used by the app shell and themed profiles */
 .bg-grid {
   background-image: linear-gradient(to right, var(--line) 1px, transparent 1px),
