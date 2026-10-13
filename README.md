@@ -32,6 +32,8 @@ No account needed to build. Nothing leaves your browser until you publish.
 - [Documentation](#documentation)
 - [Deployment](#deployment)
 - [Design system](#design-system)
+- [Future improvements](#future-improvements)
+- [License](#license)
 - [Contact](#contact)
 
 ---
@@ -41,7 +43,7 @@ No account needed to build. Nothing leaves your browser until you publish.
 - **Local-first editor** — every keystroke is saved to `localStorage`
   (debounced, 350 ms) and restored on refresh. Anonymous drafts are claimed as
   your first published page when you sign in for the first time.
-- **Live preview** — the editor preview and the public page are the *same*
+- **Live preview** — the editor preview and the public page are the _same_
   React component (`ProfileView`), so what you edit is exactly what ships.
 - **Publishing with ownership** — sign in with GitHub or Google, hit publish,
   and the profile goes live at `/p/<slug>`. The slug is assigned by the server,
@@ -67,34 +69,34 @@ No account needed to build. Nothing leaves your browser until you publish.
 
 ## Screenshots
 
-| Editor with live preview | AI bio writer |
-| --- | --- |
+| Editor with live preview                                                                                                 | AI bio writer                                                                                             |
+| ------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
 | ![Editor: split view with form on the left and a live profile preview on the right](docs/images/editor-live-preview.jpg) | ![AI writer panel generating three bio variations beside the live preview](docs/images/ai-bio-writer.jpg) |
 
-| Themes & card layouts | Identity card with QR |
-| --- | --- |
+| Themes & card layouts                                                                                                                | Identity card with QR                                                                                                   |
+| ------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
 | ![Theme picker with profile design, theme, accent and font controls next to a dark themed preview](docs/images/themes-and-cards.jpg) | ![Identity card studio showing a card layout picker, the rendered card and a QR code](docs/images/identity-card-qr.jpg) |
 
-| Published profile page |
-| --- |
+| Published profile page                                                                                                             |
+| ---------------------------------------------------------------------------------------------------------------------------------- |
 | ![Published public profile page at /p/slug with about, skills, featured work and contact sections](docs/images/public-profile.jpg) |
 
 ## Tech stack
 
-| Layer | Choice |
-| --- | --- |
-| Framework | Next.js 16 (App Router, Turbopack, React Compiler) |
-| UI | React 19, TypeScript (strict) |
-| Styling | Tailwind CSS v4 (CSS-first config in `app/globals.css`) |
-| Primitives | Radix UI + shadcn-style wrappers in `components/ui/` |
-| Forms | react-hook-form + Zod v4 (`zodResolver`) |
-| Database | Neon Postgres (`@neondatabase/serverless`, HTTP driver) |
-| ORM | Drizzle ORM — migrations own the schema; `ensureSchema()` self-heals dev |
-| Auth | Better Auth (social-only: GitHub, Google) |
-| AI | Google Gemini via `@google/genai` (server-only) |
-| Uploads | Cloudinary (signed server-side), `next-cloudinary` delivery |
-| Export / QR | `html-to-image`, `qrcode` |
-| Package manager | pnpm |
+| Layer           | Choice                                                                   |
+| --------------- | ------------------------------------------------------------------------ |
+| Framework       | Next.js 16 (App Router, Turbopack, React Compiler)                       |
+| UI              | React 19, TypeScript (strict)                                            |
+| Styling         | Tailwind CSS v4 (CSS-first config in `app/globals.css`)                  |
+| Primitives      | Radix UI + shadcn-style wrappers in `components/ui/`                     |
+| Forms           | react-hook-form + Zod v4 (`zodResolver`)                                 |
+| Database        | Neon Postgres (`@neondatabase/serverless`, HTTP driver)                  |
+| ORM             | Drizzle ORM — migrations own the schema; `ensureSchema()` self-heals dev |
+| Auth            | Better Auth (social-only: GitHub, Google)                                |
+| AI              | Google Gemini via `@google/genai` (server-only)                          |
+| Uploads         | Cloudinary (signed server-side), `next-cloudinary` delivery              |
+| Export / QR     | `html-to-image`, `qrcode`                                                |
+| Package manager | pnpm                                                                     |
 
 ## Quick start
 
@@ -120,19 +122,19 @@ To exercise the full loop (publish → public URL), add `DATABASE_URL`,
 All values live in `.env.local` (gitignored). Full annotated copy in
 [`.env.example`](.env.example).
 
-| Variable | Required for | Notes |
-| --- | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | Social previews | Public origin, e.g. `https://waku.example.com`. Used as the metadata base so `/opengraph-image`, `/twitter-image` and `/site.webmanifest` resolve to absolute URLs. Defaults to `http://localhost:3000`; invalid values fall back to that rather than breaking the app. |
-| `DATABASE_URL` | Publishing, accounts, showcase | Neon Postgres connection string. Without it the editor runs on local drafts and publishing returns `503 MISSING_DATABASE`. |
-| `BETTER_AUTH_SECRET` | Sign-in | Session signing secret. `openssl rand -base64 32`. |
-| `BETTER_AUTH_URL` | Sign-in | Public origin of the instance, e.g. `http://localhost:3000`. Checked against the sign-in request's origin. |
-| `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | GitHub sign-in | [Create an OAuth app](https://github.com/settings/developers). Left blank → the button is hidden. |
-| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google sign-in | [OAuth client credentials](https://console.cloud.google.com/apis/credentials). Left blank → the button is hidden. |
-| `GEMINI_API_KEY` | AI bio/tagline writer | Server-side only. Get one at [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey). |
-| `GEMINI_MODEL` | Optional | The primary model. Defaults to `gemini-3.8-flash`. |
-| `GEMINI_MODELS` | Optional | Comma-separated cascade tried when the primary is overloaded (HTTP 429/503). Defaults to `gemini-3.8-flash,gemini-3.5-flash,gemini-3.7-flash`; generation only reports "all models busy" once every model is tried. Run `pnpm ai:models` to see what a key can reach. |
-| `CLOUDINARY_CLOUD_NAME` / `CLOUDINARY_API_KEY` / `CLOUDINARY_API_SECRET` | Photo uploads | Server-side signing in `app/api/upload/route.ts`. The secret never reaches the browser. |
-| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | Photo delivery | Browser-exposed cloud name used to build AVIF/WebP URLs from a stored public ID. |
+| Variable                                                                 | Required for                   | Notes                                                                                                                                                                                                                                                                   |
+| ------------------------------------------------------------------------ | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SITE_URL`                                                   | Social previews                | Public origin, e.g. `https://waku.example.com`. Used as the metadata base so `/opengraph-image`, `/twitter-image` and `/site.webmanifest` resolve to absolute URLs. Defaults to `http://localhost:3000`; invalid values fall back to that rather than breaking the app. |
+| `DATABASE_URL`                                                           | Publishing, accounts, showcase | Neon Postgres connection string. Without it the editor runs on local drafts and publishing returns `503 MISSING_DATABASE`.                                                                                                                                              |
+| `BETTER_AUTH_SECRET`                                                     | Sign-in                        | Session signing secret. `openssl rand -base64 32`.                                                                                                                                                                                                                      |
+| `BETTER_AUTH_URL`                                                        | Sign-in                        | Public origin of the instance, e.g. `http://localhost:3000`. Checked against the sign-in request's origin.                                                                                                                                                              |
+| `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET`                              | GitHub sign-in                 | [Create an OAuth app](https://github.com/settings/developers). Left blank → the button is hidden.                                                                                                                                                                       |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`                              | Google sign-in                 | [OAuth client credentials](https://console.cloud.google.com/apis/credentials). Left blank → the button is hidden.                                                                                                                                                       |
+| `GEMINI_API_KEY`                                                         | AI bio/tagline writer          | Server-side only. Get one at [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey).                                                                                                                                                                  |
+| `GEMINI_MODEL`                                                           | Optional                       | The primary model. Defaults to `gemini-3.8-flash`.                                                                                                                                                                                                                      |
+| `GEMINI_MODELS`                                                          | Optional                       | Comma-separated cascade tried when the primary is overloaded (HTTP 429/503). Defaults to `gemini-3.8-flash,gemini-3.5-flash,gemini-3.7-flash`; generation only reports "all models busy" once every model is tried. Run `pnpm ai:models` to see what a key can reach.   |
+| `CLOUDINARY_CLOUD_NAME` / `CLOUDINARY_API_KEY` / `CLOUDINARY_API_SECRET` | Photo uploads                  | Server-side signing in `app/api/upload/route.ts`. The secret never reaches the browser.                                                                                                                                                                                 |
+| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`                                      | Photo delivery                 | Browser-exposed cloud name used to build AVIF/WebP URLs from a stored public ID.                                                                                                                                                                                        |
 
 ## Commands
 
@@ -142,6 +144,8 @@ pnpm build      # production build
 pnpm start      # serve the production build
 pnpm lint       # eslint (flat config, next/core-web-vitals + next/typescript)
 pnpm typecheck  # tsc --noEmit (strict)
+pnpm test       # vitest (watch)
+pnpm test:run   # vitest (single run, for CI)
 pnpm db:generate  # diff lib/db/schema.ts into a new SQL migration under drizzle/
 pnpm db:migrate   # apply pending migrations to the DATABASE_URL database
 pnpm ai:models    # list the models the configured Gemini key can reach
@@ -198,26 +202,28 @@ lib/
   themes/index.ts             Theme/font/accent presets + resolveTheme()
   profile/                    storage, slug, qr, format, demo, platforms, data access
   cards/export.ts             html-to-image export (dynamic import)
+  site.ts                     Site origin (metadata base) + repo URL
 types/index.ts                Domain models (Profile, ThemeSettings, …)
 proxy.ts                      Optimistic cookie gate on POST /api/profiles*
 drizzle/                      Generated SQL migrations (owned by db:generate/db:migrate)
 scripts/migrate.mts           Applies pending migrations to Neon
+tests/                        Vitest suite, mirroring the source layout
 docs/                         Architecture, API and deployment notes
 ```
 
 ## Routes
 
-| Route | Purpose |
-| --- | --- |
-| `/` | Landing page with hero demo, feature tour and recent published profiles |
-| `/create` | Profile editor: form + live preview + card studio + share panel |
-| `/p/[slug]` | Public profile page (demo: `/p/ada`) |
-| `/api/auth/[...all]` | Better Auth — sign-in, callback, session, sign-out |
-| `/api/profiles` | `POST` — publish a profile (session required) |
-| `/api/profiles/claim-draft` | `POST` — import the local draft as your first page |
-| `/api/ai/bio` | `POST` — AI bio/tagline generation |
-| `/api/upload` | `POST` — signed profile photo upload |
-| `/api/config` | `GET` — `{ authEnabled, providers }` for the UI |
+| Route                       | Purpose                                                                 |
+| --------------------------- | ----------------------------------------------------------------------- |
+| `/`                         | Landing page with hero demo, feature tour and recent published profiles |
+| `/create`                   | Profile editor: form + live preview + card studio + share panel         |
+| `/p/[slug]`                 | Public profile page (demo: `/p/ada`)                                    |
+| `/api/auth/[...all]`        | Better Auth — sign-in, callback, session, sign-out                      |
+| `/api/profiles`             | `POST` — publish a profile (session required)                           |
+| `/api/profiles/claim-draft` | `POST` — import the local draft as your first page                      |
+| `/api/ai/bio`               | `POST` — AI bio/tagline generation                                      |
+| `/api/upload`               | `POST` — signed profile photo upload                                    |
+| `/api/config`               | `GET` — `{ authEnabled, providers }` for the UI                         |
 
 Full request/response contracts, error codes and status ladders:
 **[docs/api.md](docs/api.md)**.
@@ -250,12 +256,12 @@ Deep dive: **[docs/architecture.md](docs/architecture.md)**.
 
 ## Documentation
 
-| Document | What's in it |
-| --- | --- |
+| Document                                     | What's in it                                                                              |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | [docs/architecture.md](docs/architecture.md) | Rendering pipeline, theme token system, state management, data flow, auth, security model |
-| [docs/api.md](docs/api.md) | Every endpoint: request/response shapes, status codes, error codes |
-| [docs/deployment.md](docs/deployment.md) | Production environment setup, OAuth configuration, degradation matrix, release checklist |
-| [LANDING_PROMPT.md](LANDING_PROMPT.md) | Historical product/design brief for the landing page (context, not docs) |
+| [docs/api.md](docs/api.md)                   | Every endpoint: request/response shapes, status codes, error codes                        |
+| [docs/deployment.md](docs/deployment.md)     | Production environment setup, OAuth configuration, degradation matrix, release checklist  |
+| [LANDING_PROMPT.md](LANDING_PROMPT.md)       | Historical product/design brief for the landing page (context, not docs)                  |
 
 ## Deployment
 
@@ -300,7 +306,27 @@ Profile rendering is fully tokenised:
   YouTube, Bluesky, Mastodon, portfolio, email)
 
 All presets live in `lib/themes/index.ts` and `components/*/…`; tokens are
-declared in `app/globals.css`.
+
+## Future improvements
+
+- **Tighter image allowlist.** `images.remotePatterns` still accepts any
+  http/https host so arbitrary pasted avatar URLs render. Constraining it to
+  Cloudinary (plus the demo's Unsplash source) removes the SSRF/bandwidth
+  surface, at the cost of breaking avatars hosted elsewhere — so it needs a
+  migration path for existing profiles first.
+- **E2E tests on top of the unit suite.** The Vitest suite covers the pure
+  logic and the shared `ProfileView` renderer; the publish → public-URL loop
+  and the OAuth sign-in flow are still only exercised by hand. Playwright would
+  close that gap.
+- **Scheduled schema drift checks.** `ensureSchema()` is now dev-only and
+  migrations own production, so a generated migration that diverges from the
+  additive fallbacks would only surface in production. A CI check that
+  `pnpm db:generate` is clean (no pending diff) would catch that before deploy.
+
+## License
+
+Waku is released under the **MIT License** — see [LICENSE](LICENSE). Copy,
+modify and ship it, including commercially; attribution is the only ask.
 
 ## Contact
 
