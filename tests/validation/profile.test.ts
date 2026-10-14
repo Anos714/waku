@@ -99,6 +99,15 @@ describe("featuredProjectSchema imageUrl", () => {
     ).toThrow();
   });
 
+  it("accepts a Cloudinary public ID from the uploader", () => {
+    // Bare public IDs look scheme-less, so they pass the same safe-URL rule
+    // the avatar flow relies on — the renderer derives the delivery URL.
+    expect(
+      featuredProjectSchema.parse({ ...base, imageUrl: "cetnnfubnsswedavp3rf" })
+        .imageUrl,
+    ).toBe("cetnnfubnsswedavp3rf");
+  });
+
   it("backfills imageUrl when a full legacy profile is validated", () => {
     const legacy = createDemoProfile();
     for (const project of legacy.projects) {
