@@ -94,7 +94,7 @@ export function ProjectImageUploader({ index }: { index: number }) {
     >
       <div className="flex items-center gap-3">
         {preview ? (
-          <span className="h-16 w-16 shrink-0 overflow-hidden rounded-md border border-line-2 bg-surface-2">
+          <span className="aspect-[16/10] w-32 shrink-0 overflow-hidden rounded-md border border-line-2 bg-surface-2">
             {/* Plain img on purpose: instant local preview with no
                 optimizer round-trip; the public page uses next/image. */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -110,7 +110,7 @@ export function ProjectImageUploader({ index }: { index: number }) {
             />
           </span>
         ) : (
-          <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-md border border-dashed border-line-2 bg-surface-2 text-ink-3">
+          <span className="flex aspect-[16/10] w-32 shrink-0 items-center justify-center rounded-md border border-dashed border-line-2 bg-surface-2 text-ink-3">
             <ImagePlus className="h-5 w-5" />
           </span>
         )}

@@ -172,12 +172,10 @@ export function ProjectsSection({
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-start gap-3 p-3.5 transition-colors hover:border-[var(--pt-accent)]"
+                    className="group flex items-start gap-4 p-4 transition-colors hover:border-[var(--pt-accent)]"
                     style={shellStyle}
                   >
-                    <span className="shrink-0">
-                      <ProjectScreenshot src={screenshot} title={title} />
-                    </span>
+                    <ProjectScreenshot src={screenshot} title={title} />
                     <ProjectBody project={{ ...project, title }} />
                     <ArrowUpRight
                       className="mt-0.5 h-4 w-4 shrink-0 opacity-40 transition-opacity group-hover:opacity-100"
@@ -185,10 +183,8 @@ export function ProjectsSection({
                     />
                   </a>
                 ) : (
-                  <div className="flex items-start gap-3 p-3.5" style={shellStyle}>
-                    <span className="shrink-0">
-                      <ProjectScreenshot src={screenshot} title={title} />
-                    </span>
+                  <div className="flex items-start gap-4 p-4" style={shellStyle}>
+                    <ProjectScreenshot src={screenshot} title={title} />
                     <ProjectBody project={{ ...project, title }} />
                   </div>
                 )}
