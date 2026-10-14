@@ -129,7 +129,15 @@ describe("salvageProfile", () => {
     expect(project.title).toHaveLength(80);
     expect(project.description).toBe("");
     expect(project.url).toBe("");
+    expect(project.imageUrl).toBe("");
     expect(project.id.startsWith("project-")).toBe(true);
+  });
+
+  it("preserves a project screenshot through salvage", () => {
+    const salvaged = salvageProfile({
+      projects: [{ title: "Shot", imageUrl: "https://example.com/shot.png" }],
+    });
+    expect(salvaged.projects[0].imageUrl).toBe("https://example.com/shot.png");
   });
 
   it("coerces section flags, defaulting to shown", () => {

@@ -30,6 +30,11 @@ export interface FeaturedProject {
   description: string;
   url: string;
   tag: string;
+  /**
+   * Screenshot shown on top of the project card. Empty means no image —
+   * the card renders exactly as before (text only).
+   */
+  imageUrl: string;
 }
 
 export interface ProfileSections {

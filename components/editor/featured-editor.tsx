@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { createId } from "@/lib/utils";
+import { safeExternalUrl } from "@/lib/validation/profile";
 import type { Profile } from "@/types";
 
 const SECTION_LABELS: { key: keyof Profile["sections"]; title: string; hint: string }[] = [
@@ -26,6 +27,7 @@ export function FeaturedEditor() {
   });
 
   const sections = useWatch({ control: form.control, name: "sections" });
+  const projects = useWatch({ control: form.control, name: "projects" });
 
   return (
     <FieldGroup
@@ -74,6 +76,7 @@ export function FeaturedEditor() {
               description: "",
               url: "",
               tag: "",
+              imageUrl: "",
             })
           }
         >
@@ -181,6 +184,44 @@ export function FeaturedEditor() {
                       {...form.register(`projects.${index}.url` as const)}
                     />
                   </Field>
+
+                  <Field
+                    id={`projects.${index}.imageUrl`}
+                    label="Screenshot URL"
+                    hint="Optional — shows a preview image on the project card."
+                    error={error?.imageUrl?.message}
+                  >
+                    <Input
+                      id={`projects.${index}.imageUrl`}
+                      inputMode="url"
+                      placeholder="https://…/screenshot.png"
+                      aria-invalid={Boolean(error?.imageUrl)}
+                      {...form.register(`projects.${index}.imageUrl` as const)}
+                    />
+                  </Field>
+                  {(() => {
+                    const preview = safeExternalUrl(
+                      projects?.[index]?.imageUrl ?? "",
+                    );
+                    if (!preview) return null;
+                    return (
+                      <div className="overflow-hidden rounded-md border border-line">
+                        {/* Plain img on purpose: instant local preview with no
+                            optimizer round-trip; the public page uses next/image. */}
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={preview}
+                          alt=""
+                          aria-hidden="true"
+                          loading="lazy"
+                          className="aspect-video w-full object-cover"
+                          onError={(event) => {
+                            event.currentTarget.closest("div")?.remove();
+                          }}
+                        />
+                      </div>
+                    );
+                  })()}
                 </div>
               </li>
             );

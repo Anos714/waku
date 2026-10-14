@@ -75,7 +75,7 @@ describe("ProfileView", () => {
         { id: "y", platform: "github", label: "Ok", url: "https://github.com/ok", visible: true },
       ],
       projects: [
-        { id: "p", title: "Bad project", description: "", url: "javascript:alert(2)", tag: "" },
+        { id: "p", title: "Bad project", description: "", url: "javascript:alert(2)", tag: "", imageUrl: "" },
       ],
       websiteUrl: "javascript:alert(3)",
     };

@@ -82,6 +82,7 @@ export const DEMO_PROFILE: Profile = {
         "Ingests real-time web trends via Tavily API and synthesizes high-engagement tweet threads with Gemini AI. BullMQ + Redis queue executed 495 tweets via Buffer API with exponential backoff.",
       url: "https://github.com/Anos714/Xcel",
       tag: "AI SaaS",
+      imageUrl: "https://picsum.photos/seed/waku-xcel/800/450",
     },
     {
       id: "demo-p2",
@@ -90,6 +91,7 @@ export const DEMO_PROFILE: Profile = {
         "Ultra-fast distraction-free blogging with Hono backend achieving sub-30ms latency. Google OAuth 2.0 + RBAC, split-pane Markdown editor, TanStack Query + Upstash Redis caching.",
       url: "https://github.com/Anos714/Inkwell",
       tag: "Full Stack",
+      imageUrl: "https://picsum.photos/seed/waku-inkwell/800/450",
     },
     {
       id: "demo-p3",
@@ -98,6 +100,7 @@ export const DEMO_PROFILE: Profile = {
         "Realtime social networking with instant messaging, group channels, presence indicators and HD video calling using Stream SDKs. JWT auth, Express.js + MongoDB with compound indexing.",
       url: "https://github.com/Anos714/Konnect",
       tag: "Realtime",
+      imageUrl: "",
     },
     {
       id: "demo-p4",
@@ -106,6 +109,7 @@ export const DEMO_PROFILE: Profile = {
         "Turns a name, role and links into a designed profile page + matching identity card with QR + PNG export. Built with Next.js 16, TypeScript, Tailwind v4, Better Auth + Drizzle/Neon.",
       url: "https://github.com/Anos714/waku",
       tag: "Identity",
+      imageUrl: "",
     },
   ],
   sections: {

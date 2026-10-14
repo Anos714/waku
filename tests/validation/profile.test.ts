@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { isSafeUrl, safeExternalUrl, sanitizeText } from "@/lib/validation/profile";
+import {
+  featuredProjectSchema,
+  isSafeUrl,
+  profileSchema,
+  safeExternalUrl,
+  sanitizeText,
+} from "@/lib/validation/profile";
+import { createDemoProfile } from "@/lib/profile/demo";
 
 describe("isSafeUrl", () => {
   it.each([
@@ -66,5 +73,41 @@ describe("safeExternalUrl", () => {
 describe("sanitizeText", () => {
   it("collapses whitespace runs and trims", () => {
     expect(sanitizeText("  hello   world  ")).toBe("hello world");
+  });
+});
+
+describe("featuredProjectSchema imageUrl", () => {
+  const base = { id: "p1", title: "T", description: "", url: "", tag: "" };
+
+  it("defaults a missing imageUrl to empty (legacy drafts keep working)", () => {
+    expect(featuredProjectSchema.parse(base).imageUrl).toBe("");
+  });
+
+  it("accepts an empty or a safe https image URL", () => {
+    expect(
+      featuredProjectSchema.parse({ ...base, imageUrl: "" }).imageUrl,
+    ).toBe("");
+    expect(
+      featuredProjectSchema.parse({ ...base, imageUrl: "https://example.com/shot.png" })
+        .imageUrl,
+    ).toBe("https://example.com/shot.png");
+  });
+
+  it("rejects unsafe schemes like javascript:", () => {
+    expect(() =>
+      featuredProjectSchema.parse({ ...base, imageUrl: "javascript:alert(1)" }),
+    ).toThrow();
+  });
+
+  it("backfills imageUrl when a full legacy profile is validated", () => {
+    const legacy = createDemoProfile();
+    for (const project of legacy.projects) {
+      delete (project as unknown as Record<string, unknown>).imageUrl;
+    }
+    const parsed = profileSchema.parse(legacy);
+    expect(parsed.projects.length).toBeGreaterThan(0);
+    for (const project of parsed.projects) {
+      expect(project.imageUrl).toBe("");
+    }
   });
 });

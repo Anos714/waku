@@ -203,6 +203,7 @@ export function salvageProfile(value: unknown): Profile {
             description: asString(item.description, 220),
             url: asString(item.url, 2048),
             tag: asString(item.tag, 24),
+            imageUrl: asString(item.imageUrl, 2048),
           }))
           .slice(0, 6)
       : [],
