@@ -88,6 +88,11 @@ export const featuredProjectSchema = z.object({
     .max(2048, "URL is too long")
     .refine((v) => v === "" || isSafeUrl(v), "Enter a valid URL"),
   tag: z.string().max(24, "Tag is too long").default(""),
+  imageUrl: z
+    .string()
+    .max(2048, "URL is too long")
+    .refine((v) => v === "" || isSafeUrl(v), "Enter a valid image URL")
+    .default(""),
 });
 
 export const themeSettingsSchema = z.object({

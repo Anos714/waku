@@ -1,5 +1,6 @@
 import { ArrowUpRight } from "@/components/icons/ui-icons";
 import { SocialLinks } from "./social-links";
+import { ProjectScreenshot } from "./project-screenshot";
 import { clampText, displayHandle, prettyUrl } from "@/lib/profile/format";
 import { safeExternalUrl } from "@/lib/validation/profile";
 import type { Profile, ResolvedTheme } from "@/types";
@@ -152,11 +153,57 @@ export function ProjectsSection({
         {projects.map((project) => {
           const url = safeExternalUrl(project.url);
           const title = clampText(project.title.trim(), 80);
+          // Old profiles (and empty inputs) carry no image — they render the
+          // original text-only card below, pixel-identical to before.
+          const screenshot = safeExternalUrl(project.imageUrl ?? "");
           const shellStyle: React.CSSProperties = {
             borderRadius: "var(--pt-radius)",
             background: "var(--pt-surface)",
             border: "1px solid var(--pt-line)",
           };
+          if (screenshot) {
+            const body = (
+              <>
+                <div
+                  className="mb-3 overflow-hidden"
+                  style={{
+                    borderRadius: "calc(var(--pt-radius) * 0.6)",
+                    border: "1px solid var(--pt-line)",
+                  }}
+                >
+                  <ProjectScreenshot src={screenshot} title={title} />
+                </div>
+                <div className="flex items-start gap-3">
+                  <ProjectBody project={{ ...project, title }} />
+                  {url ? (
+                    <ArrowUpRight
+                      className="mt-0.5 h-4 w-4 shrink-0 opacity-40 transition-opacity group-hover:opacity-100"
+                      style={{ color: "var(--pt-accent)" }}
+                    />
+                  ) : null}
+                </div>
+              </>
+            );
+            return (
+              <li key={project.id}>
+                {url ? (
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group block p-3.5 transition-colors hover:border-[var(--pt-accent)]"
+                    style={shellStyle}
+                  >
+                    {body}
+                  </a>
+                ) : (
+                  <div className="block p-3.5" style={shellStyle}>
+                    {body}
+                  </div>
+                )}
+              </li>
+            );
+          }
           return (
             <li key={project.id}>
               {url ? (
