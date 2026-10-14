@@ -86,7 +86,11 @@ export function SocialLinksEditor() {
         <ul className="flex flex-col gap-3">
           {fields.map((field, index) => {
             const error = form.formState.errors.socials?.[index];
-            const link = socials[index];
+            // useFieldArray's `fields` can run one render ahead of `useWatch`
+            // after an append — the watched array is briefly shorter than the
+            // rendered rows — so fall back to the field object, which already
+            // carries every SocialLink value, instead of crashing.
+            const link = socials[index] ?? field;
 
             return (
               <li
