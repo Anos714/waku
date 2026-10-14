@@ -15,6 +15,7 @@ const COLUMNS: FooterColumn[] = [
       { label: "Editor", href: "/create" },
       { label: "Features", href: "/#features" },
       { label: "How it works", href: "/#how-it-works" },
+      { label: "FAQ", href: "/#faq" },
       { label: "GitHub", href: GITHUB_REPO_URL, external: true },
     ],
   },

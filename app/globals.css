@@ -466,6 +466,35 @@ select:focus-visible,
   animation: lp-swap 0.32s ease-out both;
 }
 
+/* Accordion expand/collapse — height animates from 0 to the content's own
+   height (`--radix-accordion-content-height` is set by the primitive). */
+@keyframes lp-accordion-down {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+}
+@keyframes lp-accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
+}
+.animate-accordion-down {
+  animation: lp-accordion-down 0.24s ease-out both;
+}
+.animate-accordion-up {
+  animation: lp-accordion-up 0.2s ease-in both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

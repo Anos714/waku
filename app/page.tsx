@@ -6,6 +6,7 @@ import { Steps } from "@/components/landing/steps";
 import { Features } from "@/components/landing/features";
 import { Showcase } from "@/components/landing/showcase";
 import { Ratings } from "@/components/landing/ratings";
+import { Faq } from "@/components/landing/faq";
 import { FinalCta } from "@/components/landing/final-cta";
 import { Footer } from "@/components/landing/footer";
 import { countPublishedProfiles, getRatingStats, listApprovedRatings, listRecentPublished } from "@/lib/db";
@@ -45,6 +46,7 @@ export default async function Home() {
         <Features />
         <Showcase profiles={recentProfiles} />
         <Ratings ratings={recentRatings} average={ratingStats.average} count={ratingStats.count} />
+        <Faq />
         <FinalCta publishedCount={publishedCount} />
       </main>
       <Footer />
