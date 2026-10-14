@@ -46,6 +46,27 @@ const INSPIRATION: FooterLink[] = [
   { label: "Kado", href: "https://kado.armandev.space/" },
 ];
 
+/**
+ * The directories Waku is listed in — a build-in-public signal more than a
+ * growth channel. The UsefulShelf lime theme is a near-match for the accent.
+ */
+const LISTINGS = [
+  {
+    href: "https://zerorevenue.club/?utm_source=zerorevenue.club&utm_medium=referral&utm_content=badge",
+    src: "https://zerorevenue.club/badges/zero-revenue-club.svg",
+    alt: "Listed on Zero Revenue Club",
+    width: 190,
+    height: 44,
+  },
+  {
+    href: "https://usefulshelf.co/?utm_source=wakucards.vercel.app&utm_medium=referral&utm_campaign=badge&utm_content=lime",
+    src: "https://usefulshelf.co/badge/usefulshelf.svg?theme=lime",
+    alt: "Featured on UsefulShelf",
+    width: 248,
+    height: 66,
+  },
+] as const;
+
 const WORDMARK_GRADIENT =
   "linear-gradient(180deg, var(--accent) 6%, color-mix(in oklab, var(--accent) 55%, var(--bg-deep)) 55%, color-mix(in oklab, var(--accent) 15%, var(--bg-deep)) 100%)";
 
@@ -117,6 +138,29 @@ export function Footer() {
               </span>
             ))}
           </p>
+          <div className="flex flex-wrap items-center gap-3">
+            {LISTINGS.map((listing) => (
+              <a
+                key={listing.href}
+                href={listing.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-11 shrink-0 items-center transition-opacity duration-200 hover:opacity-80"
+                title={listing.alt}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element -- a third-party badge SVG, shipped as-is */}
+                <img
+                  src={listing.src}
+                  alt={listing.alt}
+                  width={listing.width}
+                  height={listing.height}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-11 w-auto"
+                />
+              </a>
+            ))}
+          </div>
           <button
             type="button"
             onClick={backToTop}
