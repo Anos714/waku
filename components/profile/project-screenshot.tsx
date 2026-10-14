@@ -4,7 +4,9 @@ import { useState } from "react";
 import Image from "next/image";
 
 /**
- * A project's screenshot as a small 64px thumbnail beside the text.
+ * A project's screenshot as a medium landscape thumbnail beside the text —
+ * big enough to read at a glance (112px, 144px on larger screens), small
+ * enough to keep the card text-first.
  *
  * Client-side only so a failed download can unmount itself: the card falls
  * back to the text-only layout instead of showing a broken image. The parent
@@ -17,21 +19,24 @@ export function ProjectScreenshot({ src, title }: { src: string; title: string }
   if (failed) return null;
 
   return (
-    <Image
-      src={src}
-      alt={title ? `${title} — project screenshot` : "Project screenshot"}
-      width={128}
-      height={128}
-      loading="lazy"
-      onError={() => setFailed(true)}
+    <span
+      className="project-thumb relative block aspect-[16/10] w-28 shrink-0 overflow-hidden sm:w-36"
       style={{
-        width: 64,
-        height: 64,
-        borderRadius: "calc(var(--pt-radius) * 0.6)",
+        borderRadius: "calc(var(--pt-radius) * 0.7)",
         border: "1px solid var(--pt-line)",
-        objectFit: "cover",
-        display: "block",
+        background: "var(--pt-bg-2)",
       }}
-    />
+    >
+      <Image
+        src={src}
+        alt={title ? `${title} — project screenshot` : "Project screenshot"}
+        fill
+        sizes="(max-width: 640px) 112px, 144px"
+        loading="lazy"
+        onError={() => setFailed(true)}
+        className="transition-transform duration-300 group-hover:scale-[1.04]"
+        style={{ objectFit: "cover", display: "block" }}
+      />
+    </span>
   );
 }

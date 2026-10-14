@@ -32,7 +32,7 @@ afterEach(() => {
 });
 
 describe("ProjectsSection screenshots", () => {
-  it("renders a small thumbnail when imageUrl is a safe URL", () => {
+  it("renders a readable landscape thumbnail when imageUrl is a safe URL", () => {
     const { container } = render(
       <ProjectsSection
         profile={profileWithProjects([
@@ -43,8 +43,10 @@ describe("ProjectsSection screenshots", () => {
     const img = screen.getByAltText("Demo project — project screenshot");
     expect(img).toBeInTheDocument();
     expect(img).toHaveAttribute("loading", "lazy");
-    // Small thumb: 128px source displayed at 64px, never a full-width banner.
-    expect(img).toHaveAttribute("width", "128");
+    // Landscape thumb frame: big enough to read, never a full-width banner.
+    const frame = container.querySelector(".project-thumb");
+    expect(frame).not.toBeNull();
+    expect(frame?.className).toContain("aspect-[16/10]");
     expect(container.querySelector(".aspect-video")).toBeNull();
     // Text content still renders alongside the image.
     expect(screen.getByText("Demo project")).toBeInTheDocument();
