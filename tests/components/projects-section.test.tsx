@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { ProjectsSection } from "@/components/profile/profile-sections";
 import { createDemoProfile } from "@/lib/profile/demo";
@@ -19,8 +19,20 @@ const BASE_PROJECT = {
   tag: "Web",
 };
 
+const CLOUD_ENV = "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME";
+let savedCloud: string | undefined;
+
+beforeEach(() => {
+  savedCloud = process.env[CLOUD_ENV];
+});
+
+afterEach(() => {
+  if (savedCloud === undefined) delete process.env[CLOUD_ENV];
+  else process.env[CLOUD_ENV] = savedCloud;
+});
+
 describe("ProjectsSection screenshots", () => {
-  it("renders a lazy 16:9 screenshot when imageUrl is a safe URL", () => {
+  it("renders a small thumbnail when imageUrl is a safe URL", () => {
     const { container } = render(
       <ProjectsSection
         profile={profileWithProjects([
@@ -31,8 +43,9 @@ describe("ProjectsSection screenshots", () => {
     const img = screen.getByAltText("Demo project — project screenshot");
     expect(img).toBeInTheDocument();
     expect(img).toHaveAttribute("loading", "lazy");
-    // The aspect-video wrapper reserves space so the card never jumps.
-    expect(container.querySelector(".aspect-video")).not.toBeNull();
+    // Small thumb: 128px source displayed at 64px, never a full-width banner.
+    expect(img).toHaveAttribute("width", "128");
+    expect(container.querySelector(".aspect-video")).toBeNull();
     // Text content still renders alongside the image.
     expect(screen.getByText("Demo project")).toBeInTheDocument();
   });
@@ -69,6 +82,33 @@ describe("ProjectsSection screenshots", () => {
     delete legacy.imageUrl;
     const { container } = render(
       <ProjectsSection profile={profileWithProjects([legacy])} />,
+    );
+    expect(container.querySelector("img")).toBeNull();
+    expect(screen.getByText("Demo project")).toBeInTheDocument();
+  });
+
+  it("resolves a Cloudinary public ID from the uploader to a delivery URL", () => {
+    process.env[CLOUD_ENV] = "demo-cloud";
+    render(
+      <ProjectsSection
+        profile={profileWithProjects([
+          { ...BASE_PROJECT, imageUrl: "waku/demo-shot" },
+        ])}
+      />,
+    );
+    const img = screen.getByAltText("Demo project — project screenshot");
+    expect(img.getAttribute("src")).toContain("res.cloudinary.com");
+    expect(img.getAttribute("src")).toContain("demo-cloud");
+  });
+
+  it("renders no image for a public ID when Cloudinary is unconfigured", () => {
+    delete process.env[CLOUD_ENV];
+    const { container } = render(
+      <ProjectsSection
+        profile={profileWithProjects([
+          { ...BASE_PROJECT, imageUrl: "waku/demo-shot" },
+        ])}
+      />,
     );
     expect(container.querySelector("img")).toBeNull();
     expect(screen.getByText("Demo project")).toBeInTheDocument();

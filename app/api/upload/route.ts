@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
 
 /**
- * Uploads a profile photo to Cloudinary and returns its public ID.
+ * Uploads an image to Cloudinary and returns its public ID.
  *
  * Storing the public ID (rather than a baked-in URL) lets the client request
  * AVIF delivery with a WebP fallback via next-cloudinary, so every browser
  * gets the smallest format it understands.
+ *
+ * Send `kind=project` for project screenshots (downscaled, never cropped);
+ * anything else uses the avatar transform (512px face-cropped square).
  *
  * Requires CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET.
  * When any is missing the route reports a clear configuration error instead of
@@ -23,7 +26,10 @@ const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif", "i
 
 // Avatars are only ever shown small, so a 512px square is plenty and keeps
 // delivery fast. Format is chosen at delivery time, not here.
-const TRANSFORMATION = "w_512,c_thumb,g_face,q_auto";
+const AVATAR_TRANSFORMATION = "w_512,c_thumb,g_face,q_auto";
+// Project screenshots are shown as small thumbnails but carry UI detail, so
+// they are downscaled without cropping — never face-cropped like avatars.
+const PROJECT_TRANSFORMATION = "w_800,c_limit,q_auto";
 
 function error(status: number, code: string, message: string, hint?: string) {
   return NextResponse.json({ ok: false, code, message, hint }, { status });
@@ -91,15 +97,21 @@ export async function POST(request: Request) {
   }
 
   const timestamp = Math.round(Date.now() / 1000).toString();
+  // The client may request the project transform via `kind=project`. Anything
+  // else falls back to the avatar transform, so callers can never inject an
+  // arbitrary Cloudinary transformation.
+  const kind = formData.get("kind") === "project" ? "project" : "avatar";
+  const transformation =
+    kind === "project" ? PROJECT_TRANSFORMATION : AVATAR_TRANSFORMATION;
 
   try {
     const payload = new FormData();
     payload.append("file", file);
     payload.append("api_key", API_KEY as string);
     payload.append("timestamp", timestamp);
-    payload.append("transformation", TRANSFORMATION);
+    payload.append("transformation", transformation);
 
-    const signature = await signRequest({ timestamp, transformation: TRANSFORMATION });
+    const signature = await signRequest({ timestamp, transformation });
     payload.append("signature", signature);
 
     const response = await fetch(
