@@ -49,8 +49,16 @@ const INSPIRATION: FooterLink[] = [
 /**
  * The directories Waku is listed in — a build-in-public signal more than a
  * growth channel. The UsefulShelf lime theme is a near-match for the accent.
+ * `attrs` carries any directory-specific verification attributes onto the link.
  */
-const LISTINGS = [
+const LISTINGS: {
+  href: string;
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  attrs?: Record<string, string>;
+}[] = [
   {
     href: "https://zerorevenue.club/?utm_source=zerorevenue.club&utm_medium=referral&utm_content=badge",
     src: "https://zerorevenue.club/badges/zero-revenue-club.svg",
@@ -65,7 +73,15 @@ const LISTINGS = [
     width: 248,
     height: 66,
   },
-] as const;
+  {
+    href: "https://launchaf.com/",
+    src: "https://launchaf.com/api/badge/light?v=launchaf-blue-2026-2",
+    alt: "Featured on LaunchAF",
+    width: 200,
+    height: 56,
+    attrs: { "data-launchaf-badge": "true" },
+  },
+];
 
 const WORDMARK_GRADIENT =
   "linear-gradient(180deg, var(--accent) 6%, color-mix(in oklab, var(--accent) 55%, var(--bg-deep)) 55%, color-mix(in oklab, var(--accent) 15%, var(--bg-deep)) 100%)";
@@ -147,6 +163,7 @@ export function Footer() {
                 rel="noopener noreferrer"
                 className="inline-flex h-11 shrink-0 items-center transition-opacity duration-200 hover:opacity-80"
                 title={listing.alt}
+                {...listing.attrs}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element -- a third-party badge SVG, shipped as-is */}
                 <img
