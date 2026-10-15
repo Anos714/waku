@@ -6,6 +6,25 @@ import {
   shapeVariations,
 } from "./copy";
 
+/** Upper bound per upstream call so a stalled provider fails into the cascade. */
+export const UPSTREAM_TIMEOUT_MS = 30_000;
+
+/**
+ * Races SDK work against a timeout. A stall rejects with a 503-shaped error
+ * so callers treat it like a busy model and move on instead of hanging.
+ */
+async function withUpstreamTimeout<T>(work: Promise<T>): Promise<T> {
+  return (await Promise.race([
+    work,
+    new Promise<never>((_, reject) =>
+      setTimeout(
+        () => reject(Object.assign(new Error("GEMINI_TIMEOUT"), { status: 503 })),
+        UPSTREAM_TIMEOUT_MS,
+      ),
+    ),
+  ])) as T;
+}
+
 /**
  * Server-only Gemini integration. The API key never leaves this module — the
  * client talks to the Route Handler, which calls this code.
@@ -80,16 +99,18 @@ async function callModel(
   model: string,
   input: AiGenerationInput,
 ): Promise<AiVariation[]> {
-  const response = await ai.models.generateContent({
-    model,
-    contents: buildCopyPrompt(input),
-    config: {
-      systemInstruction: copySystemInstruction(),
-      responseMimeType: "application/json",
-      responseSchema: VARIATION_SCHEMA,
-      temperature: 0.9,
-    },
-  });
+  const response = await withUpstreamTimeout(
+    ai.models.generateContent({
+      model,
+      contents: buildCopyPrompt(input),
+      config: {
+        systemInstruction: copySystemInstruction(),
+        responseMimeType: "application/json",
+        responseSchema: VARIATION_SCHEMA,
+        temperature: 0.9,
+      },
+    }),
+  );
 
   const raw = response.text;
   if (!raw) throw new Error("EMPTY_RESPONSE");
@@ -100,6 +121,8 @@ async function callModel(
  * Free-form JSON completion on one model, for structured tasks (like resume
  * extraction) that don't fit the bio writer's fixed schema. Returns the parsed
  * payload; throws EMPTY_RESPONSE / UNPARSEABLE_RESPONSE on unusable output.
+ * A stalled upstream fails with a 503-shaped error so callers treat it like a
+ * busy model and move on instead of hanging the request.
  */
 export async function geminiJsonCompletion(
   model: string,
@@ -110,15 +133,17 @@ export async function geminiJsonCompletion(
     throw new Error("MISSING_API_KEY");
   }
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY as string });
-  const response = await ai.models.generateContent({
-    model,
-    contents: user,
-    config: {
-      systemInstruction: system,
-      responseMimeType: "application/json",
-      temperature: 0.3,
-    },
-  });
+  const response = (await withUpstreamTimeout(
+    ai.models.generateContent({
+      model,
+      contents: user,
+      config: {
+        systemInstruction: system,
+        responseMimeType: "application/json",
+        temperature: 0.3,
+      },
+    }),
+  )) as { text?: string };
   const raw = response.text;
   if (!raw) throw new Error("EMPTY_RESPONSE");
   try {

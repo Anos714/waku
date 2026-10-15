@@ -13,6 +13,9 @@ import {
 
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
+/** Upper bound per upstream call so a stalled provider fails into the cascade. */
+export const UPSTREAM_TIMEOUT_MS = 30_000;
+
 /**
  * Models tried in order. gpt-oss-120b leads: reasoning-capable, 128K context
  * and reliable JSON output — the right shape for copy writing and resume
@@ -96,6 +99,9 @@ export async function groqJsonCompletion(
         ...(request.maxTokens ? { max_tokens: request.maxTokens } : {}),
         response_format: { type: "json_object" },
       }),
+      // A stalled upstream must never hang the route: a timeout reads as no
+      // status, which the cascade treats like a busy model and moves on from.
+      signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
     });
   } catch {
     // No HTTP status to read — treat a dead network like a busy model so the

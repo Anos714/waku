@@ -135,6 +135,29 @@ describe("generateGroqCopy", () => {
     expect(result.variations).toHaveLength(3);
   });
 
+  it("treats a stalled upstream like a busy model", async () => {
+    // What AbortSignal.timeout produces on a stall — no status to read, so
+    // the cascade moves on instead of hanging the request.
+    const timeout = new DOMException("The operation timed out", "TimeoutError");
+    mockFetch()
+      .mockRejectedValueOnce(timeout)
+      .mockResolvedValueOnce(okResponse(VARIATIONS));
+
+    const result = await generateGroqCopy(INPUT);
+
+    expect(usedModels()).toEqual(["openai/gpt-oss-120b", "openai/gpt-oss-20b"]);
+    expect(result.variations).toHaveLength(3);
+  });
+
+  it("arms every request with an abort signal", async () => {
+    mockFetch().mockResolvedValueOnce(okResponse(VARIATIONS));
+
+    await generateGroqCopy(INPUT);
+
+    const [, init] = mockFetch().mock.calls[0] as [string, RequestInit];
+    expect(init.signal).toBeInstanceOf(AbortSignal);
+  });
+
   it("tries every model, then reports ALL_MODELS_UNAVAILABLE", async () => {
     mockFetch().mockResolvedValue(httpError(503));
 
