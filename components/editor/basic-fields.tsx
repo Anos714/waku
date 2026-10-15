@@ -16,8 +16,6 @@ export function BasicFields() {
 
   // Reactive reads use useWatch so they update under the React Compiler.
   const bio = useWatch({ control: form.control, name: "bio" });
-  const skills = useWatch({ control: form.control, name: "skills" });
-  const interests = useWatch({ control: form.control, name: "interests" });
 
   return (
     <FieldGroup
@@ -118,42 +116,70 @@ export function BasicFields() {
       </Alert>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Field
+        <CommaListField
           id="skills"
           label="Skills"
           hint="Comma separated"
+          name="skills"
+          placeholder="TypeScript, Design systems"
           error={errors.skills?.message}
-        >
-          <Input
-            id="skills"
-            placeholder="TypeScript, Design systems"
-            defaultValue={skills?.join(", ")}
-            onBlur={(event) =>
-              form.setValue("skills", parseListInput(event.target.value), {
-                shouldDirty: true,
-              })
-            }
-          />
-        </Field>
+        />
 
-        <Field
+        <CommaListField
           id="interests"
           label="Interests"
           hint="Comma separated"
+          name="interests"
+          placeholder="Typography, Cycling"
           error={errors.interests?.message}
-        >
-          <Input
-            id="interests"
-            placeholder="Typography, Cycling"
-            defaultValue={interests?.join(", ")}
-            onBlur={(event) =>
-              form.setValue("interests", parseListInput(event.target.value), {
-                shouldDirty: true,
-              })
-            }
-          />
-        </Field>
+        />
       </div>
     </FieldGroup>
+  );
+}
+
+/**
+ * A comma-separated text box for a string-array field.
+ *
+ * The form holds an array but the user types text, committed on blur. A plain
+ * `defaultValue` input would ignore `form.reset()` (and resume-apply) and keep
+ * showing stale text until a full page reload — keying the input on the
+ * committed content re-seeds it exactly when the form value changes, while
+ * in-progress typing (which never touches the form until blur) is untouched.
+ */
+function CommaListField({
+  id,
+  label,
+  hint,
+  name,
+  placeholder,
+  error,
+}: {
+  id: string;
+  label: string;
+  hint?: string;
+  name: "skills" | "interests";
+  placeholder?: string;
+  error?: string;
+}) {
+  const { form } = useEditor();
+  const values = useWatch({ control: form.control, name }) ?? [];
+  return (
+    <Field id={id} label={label} hint={hint} error={error}>
+      <Input
+        // Remounts only when the committed array content changes, so the box
+        // re-seeds from the form on reset/apply while in-progress typing
+        // (which never touches the form until blur) is never disturbed.
+        key={values.join("\n")}
+        id={id}
+        placeholder={placeholder}
+        defaultValue={values.join(", ")}
+        onBlur={(event) =>
+          form.setValue(name, parseListInput(event.target.value), {
+            shouldDirty: true,
+          })
+        }
+      />
+    </Field>
   );
 }
