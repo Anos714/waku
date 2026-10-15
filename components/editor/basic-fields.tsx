@@ -172,11 +172,11 @@ export function BasicFields() {
 /**
  * A comma-separated text box for a string-array field.
  *
- * The form holds an array but the user types text, committed on blur. A plain
- * `defaultValue` input would ignore `form.reset()` (and resume-apply) and keep
- * showing stale text until a full page reload — keying the input on the
- * committed content re-seeds it exactly when the form value changes, while
- * in-progress typing (which never touches the form until blur) is untouched.
+ * The form holds an array but the user types text, committed on every
+ * keystroke so the live preview follows along. The box itself stays
+ * uncontrolled (typed commas and spaces are never normalized away mid-type)
+ * and re-seeds from the form only when `formRevision` bumps — reset to demo
+ * or resume-apply — so external rewrites can never leave stale text behind.
  */
 function CommaListField({
   id,
@@ -193,21 +193,19 @@ function CommaListField({
   placeholder?: string;
   error?: string;
 }) {
-  const { form } = useEditor();
+  const { form, formRevision } = useEditor();
   const values = useWatch({ control: form.control, name }) ?? [];
   return (
     <Field id={id} label={label} hint={hint} error={error}>
       <Input
-        // Remounts only when the committed array content changes, so the box
-        // re-seeds from the form on reset/apply while in-progress typing
-        // (which never touches the form until blur) is never disturbed.
-        key={values.join("\n")}
+        key={`${name}-${formRevision}`}
         id={id}
         placeholder={placeholder}
         defaultValue={values.join(", ")}
-        onBlur={(event) =>
+        onChange={(event) =>
           form.setValue(name, parseListInput(event.target.value), {
             shouldDirty: true,
+            shouldValidate: true,
           })
         }
       />

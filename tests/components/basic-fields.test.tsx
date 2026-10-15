@@ -13,11 +13,17 @@ function ResetProbe() {
   );
 }
 
+function SkillsProbe() {
+  const { profile } = useEditor();
+  return <span data-testid="probe-skills">{profile.skills.join(",")}</span>;
+}
+
 function Harness() {
   return (
     <EditorProvider>
       <BasicFields />
       <ResetProbe />
+      <SkillsProbe />
     </EditorProvider>
   );
 }
@@ -61,15 +67,15 @@ describe("BasicFields reset sync", () => {
     ).toBe(demoInterests);
   });
 
-  it("keeps in-progress typing while committing on blur", () => {
+  it("commits while typing so the live preview follows along", () => {
     render(<Harness />);
     const skillsBox = screen.getByLabelText("Skills") as HTMLInputElement;
 
+    // No blur needed: the form (and therefore the preview) updates per keystroke,
+    // while the box itself keeps the exact typed text.
     fireEvent.change(skillsBox, { target: { value: "Zed, Alph" } });
-    // Typing alone commits nothing and survives re-renders.
     expect(skillsBox.value).toBe("Zed, Alph");
-    fireEvent.blur(skillsBox);
-    expect(skillsBox.value).toBe("Zed, Alph");
+    expect(screen.getByTestId("probe-skills").textContent).toBe("Zed,Alph");
   });
 
   it("resets registered text fields instantly too", () => {

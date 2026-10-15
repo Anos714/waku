@@ -29,6 +29,13 @@ interface EditorContextValue {
   isDirty: boolean;
   savedAt: Date | null;
   resetToDemo: () => void;
+  /**
+   * Bumped whenever the form is replaced from outside the inputs themselves
+   * (reset to demo, resume-apply). Uncontrolled inputs key on it to re-seed.
+   */
+  formRevision: number;
+  /** Same bump for callers that write several fields at once (resume apply). */
+  notifyFormExternalChange: () => void;
   /** Slug of the user's first page, when a local draft was imported on sign-in. */
   importedSlug: string | null;
   setImportedSlug: (slug: string | null) => void;
@@ -86,6 +93,7 @@ export function EditorProvider({ children }: { children: React.ReactNode }) {
   const [savedAt, setSavedAt] = useState<Date | null>(null);
   const [isDirty, setIsDirty] = useState(false);
   const [importedSlug, setImportedSlug] = useState<string | null>(null);
+  const [formRevision, setFormRevision] = useState(0);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // useWatch subscribes to every field, so the preview re-renders on each
@@ -116,6 +124,10 @@ export function EditorProvider({ children }: { children: React.ReactNode }) {
     };
   }, [form]);
 
+  const notifyFormExternalChange = useCallback(() => {
+    setFormRevision((revision) => revision + 1);
+  }, []);
+
   const resetToDemo = useCallback(() => {
     clearDraft();
     const demo = createDemoProfile();
@@ -123,6 +135,7 @@ export function EditorProvider({ children }: { children: React.ReactNode }) {
     form.reset(demo, { keepDirty: false });
     setSavedAt(new Date());
     setIsDirty(false);
+    setFormRevision((revision) => revision + 1);
   }, [form]);
 
   const value = useMemo<EditorContextValue>(
@@ -132,10 +145,21 @@ export function EditorProvider({ children }: { children: React.ReactNode }) {
       isDirty,
       savedAt,
       resetToDemo,
+      formRevision,
+      notifyFormExternalChange,
       importedSlug,
       setImportedSlug,
     }),
-    [form, profile, isDirty, savedAt, resetToDemo, importedSlug],
+    [
+      form,
+      profile,
+      isDirty,
+      savedAt,
+      resetToDemo,
+      formRevision,
+      notifyFormExternalChange,
+      importedSlug,
+    ],
   );
 
   return <EditorContext.Provider value={value}>{children}</EditorContext.Provider>;

@@ -41,7 +41,7 @@ interface ErrorResponse {
  * that field — nothing is merged silently.
  */
 export function ResumeImporter() {
-  const { form } = useEditor();
+  const { form, notifyFormExternalChange } = useEditor();
   const fileRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>("idle");
@@ -140,6 +140,8 @@ export function ResumeImporter() {
         { shouldDirty: true },
       );
     }
+    // Uncontrolled boxes (skills, interests) re-seed from the new values.
+    notifyFormExternalChange();
     setStatus("applied");
   }
 
