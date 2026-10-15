@@ -71,4 +71,15 @@ describe("BasicFields reset sync", () => {
     fireEvent.blur(skillsBox);
     expect(skillsBox.value).toBe("Zed, Alph");
   });
+
+  it("resets registered text fields instantly too", () => {
+    render(<Harness />);
+    const nameBox = screen.getByLabelText(/Full name/) as HTMLInputElement;
+
+    fireEvent.change(nameBox, { target: { value: "Rahul Sainshhs" } });
+    expect(nameBox.value).toBe("Rahul Sainshhs");
+
+    fireEvent.click(screen.getByRole("button", { name: "do reset" }));
+    expect(nameBox.value).toBe("Rahul Sain");
+  });
 });
