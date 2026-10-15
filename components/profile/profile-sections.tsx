@@ -165,6 +165,19 @@ export function ProjectsSection({
             border: "1px solid var(--pt-line)",
           };
           if (screenshot) {
+            // Mobile stacks image-over-text (a side-by-side row would crush
+            // the text into ~200px); sm+ settles into thumb-beside-text.
+            const body = (
+              <div className="flex min-w-0 flex-1 items-start gap-3">
+                <ProjectBody project={{ ...project, title }} />
+                {url ? (
+                  <ArrowUpRight
+                    className="mt-0.5 h-4 w-4 shrink-0 opacity-40 transition-opacity group-hover:opacity-100"
+                    style={{ color: "var(--pt-accent)" }}
+                  />
+                ) : null}
+              </div>
+            );
             return (
               <li key={project.id}>
                 {url ? (
@@ -172,20 +185,19 @@ export function ProjectsSection({
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-start gap-4 p-4 transition-colors hover:border-[var(--pt-accent)]"
+                    className="group flex flex-col gap-3 p-4 transition-colors hover:border-[var(--pt-accent)] sm:flex-row sm:items-start sm:gap-4"
                     style={shellStyle}
                   >
                     <ProjectScreenshot src={screenshot} title={title} />
-                    <ProjectBody project={{ ...project, title }} />
-                    <ArrowUpRight
-                      className="mt-0.5 h-4 w-4 shrink-0 opacity-40 transition-opacity group-hover:opacity-100"
-                      style={{ color: "var(--pt-accent)" }}
-                    />
+                    {body}
                   </a>
                 ) : (
-                  <div className="flex items-start gap-4 p-4" style={shellStyle}>
+                  <div
+                    className="flex flex-col gap-3 p-4 sm:flex-row sm:items-start sm:gap-4"
+                    style={shellStyle}
+                  >
                     <ProjectScreenshot src={screenshot} title={title} />
-                    <ProjectBody project={{ ...project, title }} />
+                    {body}
                   </div>
                 )}
               </li>

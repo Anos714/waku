@@ -48,6 +48,10 @@ describe("ProjectsSection screenshots", () => {
     expect(frame).not.toBeNull();
     expect(frame?.className).toContain("aspect-[16/10]");
     expect(container.querySelector(".aspect-video")).toBeNull();
+    // Mobile stacks image-over-text so the text gets full width; sm+ rows it.
+    const card = screen.getByRole("link", { name: /Demo project/ });
+    expect(card.className).toContain("flex-col");
+    expect(card.className).toContain("sm:flex-row");
     // Text content still renders alongside the image.
     expect(screen.getByText("Demo project")).toBeInTheDocument();
   });
