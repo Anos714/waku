@@ -33,7 +33,7 @@ export default async function RatePage() {
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-2">
             No account needed. Star us, leave a note if you feel like it, and it
-            goes live right here — the best notes make it to the landing page.
+            goes live right here. The best notes make it to the landing page.
           </p>
 
           {stats.count > 0 ? (

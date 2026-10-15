@@ -10,14 +10,14 @@ import { CONTACT_EMAIL, GITHUB_REPO_URL, mailto } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Get in touch with the person behind Waku — email, GitHub, or a message composed straight from this page.",
+    "Get in touch with the person behind Waku: email, GitHub, or a message composed straight from this page.",
 };
 
 const CHANNELS = [
   {
     label: "Email",
     value: CONTACT_EMAIL,
-    description: "Anything at all — bugs, ideas, questions, or just to say hi.",
+    description: "Anything at all: bugs, ideas, questions, or just to say hi.",
     href: mailto(CONTACT_EMAIL),
     Icon: Mail,
   },
@@ -49,7 +49,7 @@ export default function ContactPage() {
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-2">
             Every message lands in front of a person, not a queue. Bug reports,
-            feature ideas, legal questions — all welcome.
+            feature ideas, legal questions: all welcome.
           </p>
 
           <div className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">            {/* Channels */}

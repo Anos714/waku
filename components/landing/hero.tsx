@@ -97,8 +97,8 @@ export function Hero({ publishedCount = 0 }: { publishedCount?: number }) {
 
           <p className="mt-7 max-w-md text-lg leading-relaxed text-ink-2">
             Build a profile page and a matching identity card in your browser,
-            then sign in to publish it at a link you own —{" "}
-            <span className="font-medium text-ink">{HOST}/p/you</span> — that
+            then sign in to publish it at a link you own:{" "}
+            <span className="font-medium text-ink">{HOST}/p/you</span>, which
             anyone can open. Nothing leaves your browser until you publish.
           </p>
 

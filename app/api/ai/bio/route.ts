@@ -57,7 +57,7 @@ export async function POST(request: Request) {
         503,
         "ALL_MODELS_UNAVAILABLE",
         "Every AI model is busy right now.",
-        "We tried each available model and they are all under heavy load. This is usually temporary — wait a minute or two and try again.",
+        "We tried each available model and they are all under heavy load. This is usually temporary, so wait a minute or two and try again.",
       );
     }
 
@@ -82,7 +82,7 @@ export async function POST(request: Request) {
         502,
         code,
         "The AI service returned a response we could not use.",
-        "Try again, or write the text by hand — the editor works either way.",
+        "Try again, or write the text by hand. The editor works either way.",
       );
     }
 

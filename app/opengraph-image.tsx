@@ -9,7 +9,7 @@ export const size = {
 
 export const contentType = "image/png";
 
-export const alt = "Waku — Your identity, beautifully put together.";
+export const alt = "Waku: Your identity, beautifully put together.";
 
 const pub = (file: string) => path.join(process.cwd(), "public", file);
 

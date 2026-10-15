@@ -191,7 +191,7 @@ export function ResumeImporter() {
   return (
     <FieldGroup
       title="Import from resume"
-      description="Upload a PDF resume. AI drafts the fields — you review everything before anything changes."
+      description="Upload a PDF resume. AI drafts the fields, and you review everything before anything changes."
     >
       {status === "applied" ? (
         <div className="flex items-start gap-3 rounded-lg border border-line bg-surface p-4">
@@ -201,7 +201,7 @@ export function ResumeImporter() {
           <div className="min-w-0 flex-1">
             <p className="text-sm font-medium text-ink">Applied to your draft</p>
             <p className="mt-0.5 text-xs text-ink-3">
-              The selected fields are in the form now — edit freely, nothing is
+              The selected fields are in the form now. Edit freely, nothing is
               published until you publish.
             </p>
             <Button
@@ -287,7 +287,7 @@ export function ResumeImporter() {
               <p className="text-sm font-semibold text-ink">Review the draft</p>
               <p className="mt-0.5 text-xs text-ink-3">
                 Extracted with {review.model}. Only checked groups will be
-                applied — applying replaces those fields.
+                applied, and applying replaces those fields.
               </p>
             </div>
             <button

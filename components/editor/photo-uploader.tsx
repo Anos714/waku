@@ -79,7 +79,7 @@ export function PhotoUploader() {
     <Field
       id="avatarUrl"
       label="Profile photo"
-      hint={hasPhoto ? "Uploaded — delivered as AVF/WebP from Cloudinary" : "Optional — a monogram is used when empty"}
+      hint={hasPhoto ? "Uploaded. Delivered as AVIF/WebP from Cloudinary" : "Optional. A monogram is used when empty"}
       error={form.formState.errors.avatarUrl?.message}
     >
       <div className="flex flex-col gap-3">

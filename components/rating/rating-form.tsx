@@ -143,7 +143,7 @@ export function RatingForm({ average, count }: { average: number; count: number 
                   onFocus={() => setHover(value)}
                   onBlur={() => setHover(0)}
                   aria-pressed={rating === value}
-                  aria-label={`${value} star${value > 1 ? "s" : ""} — ${STAR_LABELS[value]}`}
+                  aria-label={`${value} star${value > 1 ? "s" : ""}, ${STAR_LABELS[value]}`}
                   className="rounded-lg p-1 text-line-2 transition-transform duration-150 hover:scale-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
                 >
                   <Star
@@ -184,7 +184,7 @@ export function RatingForm({ average, count }: { average: number; count: number 
             name="message"
             value={message}
             onChange={(event) => setMessage(event.target.value)}
-            placeholder="What worked, what didn't — other visitors read this."
+            placeholder="What worked, what didn't? Other visitors read this."
             rows={3}
             maxLength={500}
           />
@@ -220,7 +220,7 @@ export function RatingForm({ average, count }: { average: number; count: number 
 
         <p className="text-xs leading-relaxed text-ink-3">
           {count > 0
-            ? `Join ${count} ${count === 1 ? "person who has" : "people who have"} rated Waku — currently ${average.toFixed(1)} out of 5.`
+            ? `Join ${count} ${count === 1 ? "person who has" : "people who have"} rated Waku, currently at ${average.toFixed(1)} out of 5.`
             : "Be the first to rate Waku."}
         </p>
       </div>

@@ -94,7 +94,7 @@ export function Footer() {
             </div>
             <p className="mt-3 text-xs leading-relaxed text-white/45">
               A personal identity builder. Build a profile page and a matching
-              identity card, then publish it at a link you own — reachable by
+              identity card, then publish it at a link you own, reachable by
               anyone, updated by you.
             </p>
           </div>

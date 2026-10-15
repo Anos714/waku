@@ -97,7 +97,7 @@ function FormatMenuItem({
           {!supported
             ? "Unsupported in this browser"
             : failed
-              ? "Export failed — try again"
+              ? "Export failed. Try again"
               : format.hint}
         </span>
       </span>

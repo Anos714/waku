@@ -16,7 +16,7 @@ import { DEFAULT_THEME_SETTINGS } from "@/lib/themes";
 export const DEMO_PROFILE: Profile = {
   name: "Rahul Sain",
   slug: DEMO_SLUG,
-  role: "Software Developer — Full Stack Developer",
+  role: "Software Developer, Full Stack Developer",
   tagline:
     "Building AI-powered SaaS and full-stack web apps with microservices and edge runtimes.",
   bio: "Computer Science undergraduate with hands-on experience building AI-powered SaaS and full-stack web applications. Skilled in Java, JavaScript, TypeScript, SQL, REST APIs, Docker, CI/CD, and scalable backend development using modern microservices, distributed queues, and edge runtimes.",

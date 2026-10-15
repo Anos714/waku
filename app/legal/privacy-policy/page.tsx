@@ -30,7 +30,7 @@ export default function PrivacyPolicyPage() {
           <Point>We do not run advertising trackers.</Point>
           <Point>We do not sell or rent your data.</Point>
           <Point>
-            We do not build a profile of you to sell to anyone — everything
+            We do not build a profile of you to sell to anyone. Everything
             below is the detail behind those three sentences.
           </Point>
         </Points>
@@ -40,7 +40,7 @@ export default function PrivacyPolicyPage() {
         <SubLabel>Account information</SubLabel>
         <Points>
           <Point>
-            Signing in happens through GitHub or Google — we receive the name,
+            Signing in happens through GitHub or Google. We receive the name,
             email address and profile picture your provider shares with us, plus
             a token that keeps you signed in.
           </Point>
@@ -51,8 +51,8 @@ export default function PrivacyPolicyPage() {
         <SubLabel>Profile content</SubLabel>
         <Points>
           <Point>
-            Anything you publish — name, role, bio, tagline, skills, social
-            links and your photo — is stored so your page can be served to
+            Anything you publish (name, role, bio, tagline, skills, social
+            links and your photo) is stored so your page can be served to
             anyone who opens your link.
           </Point>
         </Points>
@@ -79,7 +79,7 @@ export default function PrivacyPolicyPage() {
           <Point>
             <strong>Your unpublished drafts.</strong> They live in your
             browser&rsquo;s <code>localStorage</code>. Clear your browser
-            storage and they are gone — we never had them.
+            storage and they are gone. We never had them.
           </Point>
           <Point>
             <strong>Analytics or advertising profiles.</strong> There is no
@@ -104,7 +104,7 @@ export default function PrivacyPolicyPage() {
           </Point>
           <Point>To reply when you write to us.</Point>
           <Point>
-            To keep the service available and protect it from automated abuse —
+            To keep the service available and protect it from automated abuse,
             the only reason the rating fingerprint exists.
           </Point>
         </Points>
@@ -131,7 +131,7 @@ export default function PrivacyPolicyPage() {
           <Point>
             To keep one person from flooding the ratings, we hash your IP
             address and browser user agent into a single fingerprint and store
-            only that hash — not the raw values.
+            only that hash, not the raw values.
           </Point>
           <Point>
             The fingerprint is unique to you, so it also lets you revise your own
@@ -161,7 +161,7 @@ export default function PrivacyPolicyPage() {
       <Section number={8} title="Public content">
         <Points>
           <Point>
-            A published profile page is public — that is the point. It is
+            A published profile page is public. That is the point. It is
             reachable by anyone who has or guesses your link, and may be indexed
             by search engines.
           </Point>
@@ -176,8 +176,8 @@ export default function PrivacyPolicyPage() {
             time.
           </Point>
           <Point>
-            For anything else — a copy of what we hold about you, or complete
-            erasure of your account and pages — write to{" "}
+            For anything else (a copy of what we hold about you, or complete
+            erasure of your account and pages), write to{" "}
             <a href={mailto(CONTACT_EMAIL)}>{CONTACT_EMAIL}</a> and we will act
             on it without making you justify yourself.
           </Point>
@@ -225,7 +225,7 @@ export default function PrivacyPolicyPage() {
       <Section number={13} title="Contact">
         <Points>
           <Point>
-            Questions, requests, or a data-deletion ask —{" "}
+            Questions, requests, or a data-deletion ask:{" "}
             <a href={mailto(CONTACT_EMAIL)}>{CONTACT_EMAIL}</a>.
           </Point>
           <Point>

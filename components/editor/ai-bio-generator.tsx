@@ -52,7 +52,7 @@ export function AiBioGenerator() {
 
   async function run() {
     if (!role.trim()) {
-      setInlineError("Add your professional role first — the writer builds from it.");
+      setInlineError("Add your professional role first. The writer builds from it.");
       return;
     }
     setInlineError(null);
@@ -113,7 +113,7 @@ export function AiBioGenerator() {
   return (
     <FieldGroup
       title="AI writer"
-      description="Drafts a bio or tagline from your role, skills and interests. Nothing is invented — only what you supplied is used."
+      description="Drafts a bio or tagline from your role, skills and interests. Nothing is invented, only what you supplied is used."
       badge={
         <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-accent/30 px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wider text-ink-2 ring-1 ring-inset ring-accent/60">
           <Sparkles className="h-3 w-3" />
@@ -163,16 +163,16 @@ export function AiBioGenerator() {
         <dl className="mt-2 flex flex-col gap-1 text-xs">
           <div className="flex gap-2">
             <dt className="w-16 shrink-0 text-ink-3">Role</dt>
-            <dd className="text-ink-2">{role.trim() || "—"}</dd>
+            <dd className="text-ink-2">{role.trim() || "Not set"}</dd>
           </div>
           <div className="flex gap-2">
             <dt className="w-16 shrink-0 text-ink-3">Skills</dt>
-            <dd className="text-ink-2">{skills.filter((s) => s.trim()).join(", ") || "—"}</dd>
+            <dd className="text-ink-2">{skills.filter((s) => s.trim()).join(", ") || "Not set"}</dd>
           </div>
           <div className="flex gap-2">
             <dt className="w-16 shrink-0 text-ink-3">Interests</dt>
             <dd className="text-ink-2">
-              {interests.filter((s) => s.trim()).join(", ") || "—"}
+              {interests.filter((s) => s.trim()).join(", ") || "Not set"}
             </dd>
           </div>
         </dl>

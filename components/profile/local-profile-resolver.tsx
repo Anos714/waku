@@ -91,7 +91,7 @@ export function LocalProfileResolver({ slug }: { slug: string }) {
           draft for this slug was found in this browser.
         </p>
         <p className="mt-3 text-sm leading-relaxed text-ink-3">
-          Drafts live in this browser until they are published — only published
+          Drafts live in this browser until they are published. Only published
           pages are reachable at a public link.
         </p>
         <div className="mt-7 flex flex-col gap-2.5 sm:flex-row">

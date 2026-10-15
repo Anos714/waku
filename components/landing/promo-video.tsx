@@ -210,7 +210,7 @@ export function PromoVideo() {
 
         {failed ? (
           <p className="mt-4 text-sm text-ink-3">
-            Your browser can’t play this clip inline —{" "}
+            Your browser can’t play this clip inline.{" "}
             <a
               href={VIDEO_SRC}
               className="font-medium text-ink-2 underline underline-offset-4 transition-colors hover:text-ink"

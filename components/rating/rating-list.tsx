@@ -21,7 +21,7 @@ export function RatingList({ ratings }: { ratings: Rating[] }) {
           No ratings yet
         </h3>
         <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-ink-2">
-          Be the first to leave one — it takes two seconds and it helps the next
+          Be the first to leave one. It takes two seconds and it helps the next
           visitor decide.
         </p>
       </div>
@@ -65,7 +65,7 @@ function RatingCard({ rating }: { rating: Rating }) {
         <p className="mt-4 text-sm italic leading-relaxed text-ink-3">No note left.</p>
       )}
 
-      <p className="mt-auto pt-5 text-sm font-medium text-ink">— {rating.authorName}</p>
+      <p className="mt-auto pt-5 text-sm font-medium text-ink">by {rating.authorName}</p>
     </article>
   );
 }

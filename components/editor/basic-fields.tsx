@@ -141,7 +141,7 @@ export function BasicFields() {
         <AlertTitle>This is editable example data</AlertTitle>
         <AlertDescription>
           The editor starts from a demo profile so you can see every option in
-          context. Replace any field with your own — the draft is saved in this
+          context. Replace any field with your own. The draft is saved in this
           browser only.
         </AlertDescription>
       </Alert>

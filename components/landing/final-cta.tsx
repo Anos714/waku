@@ -52,7 +52,7 @@ export function FinalCta({ publishedCount = 0 }: { publishedCount?: number }) {
           </div>
 
           <p className="mx-auto mt-7 max-w-md text-sm leading-relaxed text-white/45">
-            Free, and no account needed to start — sign in with GitHub or Google
+            Free, and no account needed to start. Sign in with GitHub or Google
             only when you want to publish.
           </p>
 

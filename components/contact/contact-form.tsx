@@ -26,7 +26,7 @@ export function ContactForm() {
     event.preventDefault();
     if (!canSend) return;
 
-    const subject = `Waku — message from ${name.trim()}`;
+    const subject = `Waku: message from ${name.trim()}`;
     const body = [
       `From: ${name.trim()}`,
       `Reply to: ${email.trim()}`,
@@ -61,7 +61,7 @@ export function ContactForm() {
           send there and it lands in the inbox a human reads.
         </p>
         <p className="mt-4 text-xs leading-relaxed text-ink-3">
-          Nothing opened? Copy the address and write to us directly —{" "}
+          Nothing opened? Copy the address and write to us directly.{" "}
           <span className="font-mono">{CONTACT_EMAIL}</span>.
         </p>
         <button

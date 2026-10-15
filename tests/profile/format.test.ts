@@ -39,7 +39,7 @@ describe("initials", () => {
   });
 
   it("falls back to an em dash for blank input", () => {
-    expect(initials("   ")).toBe("—");
+    expect(initials("   ")).toBe("?");
   });
 });
 

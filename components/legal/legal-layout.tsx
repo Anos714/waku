@@ -131,7 +131,7 @@ function StillQuestions() {
         Still have questions?
       </h2>
       <p className="mt-2 text-sm leading-relaxed text-ink-2">
-        Write to us — a human reads every message and replies as soon as possible.
+        Write to us. A human reads every message and replies as soon as possible.
       </p>
       <a
         href={mailto(CONTACT_EMAIL)}

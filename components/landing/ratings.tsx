@@ -66,7 +66,7 @@ export function Ratings({
             href="/rate"
             className="group inline-flex items-center gap-1.5 text-sm font-medium text-ink transition-[gap] duration-200 hover:gap-2.5"
           >
-            Read every rating — or leave your own
+            Read every rating, or leave your own
             <ArrowUpRight className="h-4 w-4" />
           </Link>
         </div>
@@ -101,7 +101,7 @@ function QuoteCard({ rating }: { rating: Rating }) {
 
       <div className="relative mt-auto flex items-center justify-between gap-2 pt-6">
         <span className="truncate text-sm font-medium text-ink">
-          — {rating.authorName}
+          by {rating.authorName}
         </span>
         <time
           dateTime={rating.createdAt.toISOString()}

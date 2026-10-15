@@ -31,7 +31,7 @@ const BIO_VARIATIONS = [
   },
   {
     style: "Casual",
-    text: "I turn dense math into code that runs — and notes humans enjoy reading.",
+    text: "I turn dense math into code that runs, and notes humans enjoy reading.",
   },
   {
     style: "Minimal",
@@ -84,10 +84,10 @@ export function Features() {
                 </h3>
               </div>
               <p className="mt-4 text-sm leading-relaxed text-ink-2">
-                Three variations written from your role, skills and interests —
-                never inventing employers, metrics or credentials. Edit
+                Three variations written from your role, skills and interests.
+                They never invent employers, metrics or credentials. Edit
                 anything before it lands on your profile. Or skip the blank
-                page — import a PDF resume and review every field before it
+                page. Or import a PDF resume and review every field before it
                 fills the form.
               </p>
 
@@ -158,7 +158,7 @@ export function Features() {
                 </div>
                 <p className="mt-2 font-serif text-lg italic leading-snug text-ink">
                   “Translating mathematical ideas into instructions a machine
-                  can run — and notes a human can read.”
+                  can run, and notes a human can read.”
                 </p>
               </div>
 
@@ -198,7 +198,7 @@ export function Features() {
                 <p className="mt-4 text-sm leading-relaxed text-ink-2">
                   Sign in with GitHub or Google, hit publish, and{" "}
                   <span className="font-mono text-xs">/p/your-name</span> is
-                  reachable by anyone — the same URL, updated in place on every
+                  reachable by anyone. The same URL updates in place on every
                   republish.
                 </p>
                 <ul className="mt-4 flex flex-col gap-2">
@@ -254,7 +254,7 @@ export function Features() {
                 </h3>
               </div>
               <p className="mt-4 text-sm leading-relaxed text-ink-2">
-                Four themes, each with its own palette and type. Click one —
+                Four themes, each with its own palette and type. Click one:
                 the hero preview re-themes live, no reload.
               </p>
               <div className="mt-auto flex flex-wrap gap-2 pt-6">
@@ -292,7 +292,7 @@ export function Features() {
                 </h3>
               </div>
               <p className="mt-4 text-sm leading-relaxed text-white/70">
-                Four card layouts exported at 2× as PNG — photo, name, tagline,
+                Four card layouts exported at 2× as PNG: photo, name, tagline,
                 handles and an optional QR code that opens your page.
               </p>
               <div className="mt-auto flex items-end justify-between gap-4 pt-7">
