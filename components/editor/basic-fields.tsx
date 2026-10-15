@@ -15,7 +15,32 @@ export function BasicFields() {
   const errors = form.formState.errors;
 
   // Reactive reads use useWatch so they update under the React Compiler.
-  const bio = useWatch({ control: form.control, name: "bio" });
+  // Text boxes are controlled from these watched values (rather than relying
+  // on react-hook-form's imperative DOM writes on reset/apply) so the
+  // displayed text can never drift from the form state.
+  const watched = {
+    name: useWatch({ control: form.control, name: "name" }),
+    role: useWatch({ control: form.control, name: "role" }),
+    tagline: useWatch({ control: form.control, name: "tagline" }),
+    bio: useWatch({ control: form.control, name: "bio" }),
+    location: useWatch({ control: form.control, name: "location" }),
+    websiteUrl: useWatch({ control: form.control, name: "websiteUrl" }),
+  };
+
+  function bindText(
+    name: "name" | "role" | "tagline" | "bio" | "location" | "websiteUrl",
+  ) {
+    return {
+      value: watched[name] ?? "",
+      onChange: (
+        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+      ) =>
+        form.setValue(name, event.target.value, {
+          shouldDirty: true,
+          shouldValidate: true,
+        }),
+    };
+  }
 
   return (
     <FieldGroup
@@ -38,6 +63,7 @@ export function BasicFields() {
           autoComplete="name"
           aria-invalid={Boolean(errors.name)}
           {...register("name")}
+          {...bindText("name")}
         />
       </Field>
 
@@ -47,6 +73,7 @@ export function BasicFields() {
           placeholder="Product designer"
           aria-invalid={Boolean(errors.role)}
           {...register("role")}
+          {...bindText("role")}
         />
       </Field>
 
@@ -61,13 +88,14 @@ export function BasicFields() {
           placeholder="Designing calm interfaces for loud products."
           aria-invalid={Boolean(errors.tagline)}
           {...register("tagline")}
+          {...bindText("tagline")}
         />
       </Field>
 
       <Field
         id="bio"
         label="Short bio"
-        hint={`${bio?.length ?? 0} / 600`}
+        hint={`${watched.bio?.length ?? 0} / 600`}
         error={errors.bio?.message}
       >
         <Textarea
@@ -75,6 +103,7 @@ export function BasicFields() {
           rows={4}
           aria-invalid={Boolean(errors.bio)}
           {...register("bio")}
+          {...bindText("bio")}
         />
       </Field>
 
@@ -85,6 +114,7 @@ export function BasicFields() {
             placeholder="Berlin, Germany"
             aria-invalid={Boolean(errors.location)}
             {...register("location")}
+            {...bindText("location")}
           />
         </Field>
 
@@ -100,6 +130,7 @@ export function BasicFields() {
             placeholder="https://yourwebsite.com"
             aria-invalid={Boolean(errors.websiteUrl)}
             {...register("websiteUrl")}
+            {...bindText("websiteUrl")}
           />
         </Field>
       </div>
