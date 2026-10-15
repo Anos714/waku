@@ -15,7 +15,7 @@ Know what a missing variable costs before you ship:
 | *(nothing — bare checkout)* | Editor, all themes/designs, live preview, card export, QR, demo profile at `/p/ada` | Publishing, sign-in, showcase, AI, uploads |
 | `DATABASE_URL` | Everything above; drafts persist per browser | Publishing, accounts, landing showcase & published count (`/api/config` reports `authEnabled: false`) |
 | OAuth credentials (one provider) | Sign-in with the other provider | That provider's button is hidden — no broken redirects |
-| `GEMINI_API_KEY` | Everything else | AI writer shows a configuration notice |
+| `GROQ_API_KEY` + `GEMINI_API_KEY` | Everything else | AI writer and resume import show a configuration notice |
 | `CLOUDINARY_*` | Everything else | Photo upload reports `MISSING_CLOUDINARY_CONFIG`; monogram avatars still render |
 
 ## 2. Required environment
@@ -67,12 +67,16 @@ trusted origins if you front the app with a proxy that rewrites hosts.
 ### AI
 
 ```bash
-GEMINI_API_KEY=...            # https://aistudio.google.com/app/apikey
+GROQ_API_KEY=...              # https://console.groq.com/keys (primary provider)
+# GROQ_MODEL=openai/gpt-oss-120b   # override the default
+GEMINI_API_KEY=...            # https://aistudio.google.com/app/apikey (fallback)
 # GEMINI_MODEL=gemini-3.8-flash   # override the default
 ```
 
-Server-side only. Missing key → `/api/ai/bio` returns `503 MISSING_API_KEY`
-with a hint; the editor shows the same message inline.
+Server-side only. Either key enables the AI writer and resume import; Groq is
+tried first, Gemini is the fallback. With neither key, `/api/ai/bio` and
+`/api/ai/resume` return `503 MISSING_API_KEY` with a hint; the editor shows
+the same message inline.
 
 ### Uploads
 

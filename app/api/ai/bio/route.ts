@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { aiGenerationInputSchema } from "@/lib/validation/profile";
-import { generateProfileCopy, hasApiKey } from "@/lib/ai/gemini";
+import { generateProfileCopy, hasAnyAiKey } from "@/lib/ai/provider";
 
 /**
  * AI copy generation Route Handler.
  *
- * The Gemini key lives on the server; the browser only ever posts the inputs
- * here. All input is validated with Zod before anything reaches the model.
+ * The provider keys live on the server; the browser only ever posts the
+ * inputs here. All input is validated with Zod before anything reaches a
+ * model. Groq is tried first, Gemini is the fallback.
  */
 
 export const runtime = "nodejs";
@@ -36,12 +37,12 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!hasApiKey()) {
+  if (!hasAnyAiKey()) {
     return error(
       503,
       "MISSING_API_KEY",
-      "AI generation is not configured. The server has no GEMINI_API_KEY.",
-      "Add GEMINI_API_KEY to a local .env file (see .env.example) and restart the dev server. Everything else in Waku works without it.",
+      "AI generation is not configured. The server has neither GROQ_API_KEY nor GEMINI_API_KEY.",
+      "Add GROQ_API_KEY (or GEMINI_API_KEY) to a local .env file (see .env.example) and restart the dev server. Everything else in Waku works without it.",
     );
   }
 
@@ -66,6 +67,15 @@ export async function POST(request: Request) {
       "NO_USABLE_VARIATIONS",
       "MISSING_API_KEY",
     ];
+
+    if (code === "GROQ_AUTH_FAILED") {
+      return error(
+        500,
+        code,
+        "Groq rejected the API key.",
+        "Check that GROQ_API_KEY in .env.local is correct and restart the dev server.",
+      );
+    }
 
     if (known.includes(code)) {
       return error(

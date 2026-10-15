@@ -4,7 +4,7 @@ How Waku is put together, and why. Read this before touching more than one
 package's worth of code — most decisions here are load-bearing.
 
 **Stack:** Next.js 16 App Router · React 19 · TypeScript strict · Tailwind v4 ·
-Drizzle + Neon Postgres · Better Auth · Gemini · Cloudinary.
+Drizzle + Neon Postgres · Better Auth · Groq (+ Gemini fallback) · Cloudinary.
 
 ---
 
@@ -181,8 +181,8 @@ database is absent.
 | Arbitrary link schemes | `safeExternalUrl` / `isSafeUrl` allow only `http`, `https`, `mailto`, `tel`; scheme-less input is treated as `https` (`lib/validation/profile.ts`) |
 | Slug hijacking | Slugs are minted server-side (kebab(name) + 6-char nanoid, up to 5 collision retries); a client-supplied slug for someone else's profile is ignored and a new URL issued |
 | Session forgery | Cookie sessions signed by Better Auth; ownership enforced by `owner_id` comparisons in the DB layer |
-| Secret exposure | Gemini key, Cloudinary secret, OAuth secrets are read only inside route handlers / `lib/ai` / `auth.ts`; the browser sees `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` and nothing else |
-| AI hallucination | The Gemini system prompt is "facts only" — no invented employers, metrics, clients or credentials — with a JSON response schema; variations are shown for approval before anything is written to the profile |
+| Secret exposure | Groq/Gemini keys, Cloudinary secret, OAuth secrets are read only inside route handlers / `lib/ai` / `auth.ts`; the browser sees `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` and nothing else |
+| AI hallucination | The shared copy/extraction prompts are "facts only" — no invented employers, metrics, clients or credentials — with JSON responses validated before anything reaches the UI; variations and resume patches are shown for approval before anything is written to the profile |
 | Upload abuse | Type allow-list (jpeg/png/webp/avif/gif), 8 MB cap, server-computed SHA-1 signature, forced `w_512,c_thumb,g_face,q_auto` transformation |
 
 ## 9. Performance & shipping details

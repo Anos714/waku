@@ -117,7 +117,7 @@ export function AiBioGenerator() {
       badge={
         <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-accent/30 px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wider text-ink-2 ring-1 ring-inset ring-accent/60">
           <Sparkles className="h-3 w-3" />
-          Gemini
+          Groq
         </span>
       }
     >
