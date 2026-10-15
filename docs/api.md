@@ -140,27 +140,26 @@ applied only when the user explicitly accepts one.
 
 ## `POST /api/ai/resume`
 
-Maps an uploaded PDF resume to a profile patch with Groq first and Gemini as
-the fallback. Nothing is stored — the patch is returned for the user to
-review, and the uploaded bytes never leave the request.
+Maps resume *text* to a profile patch with Groq first and Gemini as the
+fallback. The browser extracts the text from the PDF with pdf.js, so the
+server never touches PDF bytes. Nothing is stored — the patch is returned
+for the user to review, and the text never leaves the request.
 
 ### Request
 
-`multipart/form-data` with a single field:
-
-| Field | Type | Constraints |
-| --- | --- | --- |
-| `file` | file | `application/pdf` · ≤ 5 MB |
+```jsonc
+{
+  "text": "Ada Lovelace …" // resume text, 1–20000 chars (over ~12000 truncated)
+}
+```
 
 ### Responses
 
 | Status | `code` | When |
 | --- | --- | --- |
 | `200` | — | `{ ok: true, patch: { name, role, bio, location, websiteUrl, skills[], interests[], projects[] }, warnings[], model }` — the reviewed draft, never applied automatically. |
-| `400` | `BAD_BODY` / `NO_FILE` | Not multipart, or no file attached. |
-| `415` | `UNSUPPORTED_TYPE` | Not a PDF. |
-| `413` | `FILE_TOO_LARGE` | Over 5 MB. |
-| `422` | `PDF_PARSE_FAILED` / `NO_TEXT` | Unreadable or textless PDF (e.g. scanned images). |
+| `400` | `BAD_BODY` | Body not readable as JSON. |
+| `422` | `INVALID_INPUT` / `NO_TEXT` | Validation rejection, or fewer than 50 readable characters. |
 | `503` | `MISSING_API_KEY` / `ALL_MODELS_UNAVAILABLE` | No key configured, or every model busy. |
 | `502` | `EMPTY_RESPONSE` / `UNPARSEABLE_RESPONSE` | Model output unusable. |
 | `500` | `GROQ_AUTH_FAILED` | Groq rejected the API key — check `GROQ_API_KEY`. |

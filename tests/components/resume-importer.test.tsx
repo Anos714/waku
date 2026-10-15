@@ -3,6 +3,12 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { EditorProvider, useEditor } from "@/components/editor/editor-provider";
 import { ResumeImporter } from "@/components/editor/resume-importer";
 
+vi.mock("@/lib/resume/extract-pdf-text", () => ({
+  extractPdfTextFromFile: vi.fn(),
+}));
+
+const RESUME_TEXT = "Ada Lovelace resume text here. ".repeat(20);
+
 function Probe() {
   const { profile } = useEditor();
   return (
@@ -39,12 +45,21 @@ const PATCH = {
 describe("ResumeImporter", () => {
   const realFetch = globalThis.fetch;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     window.localStorage.clear();
     globalThis.fetch = vi.fn(async () => ({
       ok: true,
       json: async () => ({ ok: true, patch: PATCH, warnings: [], model: "test" }),
     })) as unknown as typeof fetch;
+    const { extractPdfTextFromFile } = await import(
+      "@/lib/resume/extract-pdf-text"
+    );
+    (
+      extractPdfTextFromFile as unknown as ReturnType<typeof vi.fn>
+    ).mockReset();
+    (
+      extractPdfTextFromFile as unknown as ReturnType<typeof vi.fn>
+    ).mockResolvedValue(RESUME_TEXT);
   });
 
   afterEach(() => {
@@ -94,6 +109,27 @@ describe("ResumeImporter", () => {
     expect(
       screen.getByText("Kept the 6 most substantial projects of 9."),
     ).toBeInTheDocument();
+  });
+
+  it("reports an unreadable PDF without calling the server", async () => {
+    const { extractPdfTextFromFile } = await import(
+      "@/lib/resume/extract-pdf-text"
+    );
+    (
+      extractPdfTextFromFile as unknown as ReturnType<typeof vi.fn>
+    ).mockRejectedValueOnce(new Error("bad pdf"));
+    const fetchMock = globalThis.fetch as unknown as ReturnType<typeof vi.fn>;
+    render(<Harness />);
+    const input = screen.getByLabelText(/PDF resume/) as HTMLInputElement;
+    fireEvent.change(input, {
+      target: {
+        files: [new File(["garbage"], "resume.pdf", { type: "application/pdf" })],
+      },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Analyze" }));
+
+    await screen.findByText("That PDF could not be read in this browser.");
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it("surfaces a server error without touching the draft", async () => {

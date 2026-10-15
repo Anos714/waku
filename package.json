@@ -39,7 +39,7 @@
     "nanoid": "^6.0.2",
     "next": "16.4.0",
     "next-cloudinary": "^6.19.3",
-    "pdf-parse": "^2.4.5",
+    "pdfjs-dist": "5.4.296",
     "qrcode": "^1.5.4",
     "react": "19.3.0",
     "react-dom": "19.3.0",

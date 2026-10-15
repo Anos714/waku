@@ -213,4 +213,13 @@ export const aiGenerationInputSchema = z.object({
   name: z.string().trim().max(60).optional().default(""),
 });
 
+/**
+ * Resume text extracted in the browser and posted for AI mapping. The server
+ * never sees PDF bytes — only this plain text, bounded so one request cannot
+ * burn an unbounded number of tokens.
+ */
+export const resumeTextSchema = z.object({
+  text: z.string().min(1, "No resume text was provided").max(20000),
+});
+
 export type AiGenerationInputSchema = z.infer<typeof aiGenerationInputSchema>;

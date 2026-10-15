@@ -1,24 +1,19 @@
 import { NextResponse } from "next/server";
-import {
-  extractPdfText,
-  extractResumePatch,
-  hasAnyResumeKey,
-} from "@/lib/ai/resume";
+import { resumeTextSchema } from "@/lib/validation/profile";
+import { extractResumePatch, hasAnyResumeKey } from "@/lib/ai/resume";
 
 /**
  * Resume import Route Handler.
  *
- * Accepts a PDF resume, extracts its text, and maps it to a profile patch
- * with AI (Groq first, Gemini fallback). Nothing is stored — the patch is
- * returned for the user to review before anything touches their draft, and
- * the uploaded bytes never leave this request.
+ * Accepts resume *text* (the browser extracts it from the PDF with pdf.js)
+ * and maps it to a profile patch with AI (Groq first, Gemini fallback).
+ * Nothing is stored — the patch is returned for the user to review before
+ * anything touches their draft. The server never touches PDF bytes, so this
+ * route needs no native dependencies and behaves like every other JSON route.
  */
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-const MAX_BYTES = 5 * 1024 * 1024;
-const ALLOWED_TYPES = ["application/pdf"];
 
 function error(status: number, code: string, message: string, hint?: string) {
   return NextResponse.json({ ok: false, code, message, hint }, { status });
@@ -34,59 +29,35 @@ export async function POST(request: Request) {
     );
   }
 
-  let formData: FormData;
+  let body: unknown;
   try {
-    formData = await request.formData();
+    body = await request.json();
   } catch {
-    return error(400, "BAD_BODY", "The request was not a valid multipart form upload.");
+    return error(400, "BAD_BODY", "The request body could not be read as JSON.");
   }
 
-  const file = formData.get("file");
-  if (!(file instanceof File)) {
-    return error(400, "NO_FILE", "No file was attached to the upload.");
-  }
-
-  if (!ALLOWED_TYPES.includes(file.type)) {
-    return error(
-      415,
-      "UNSUPPORTED_TYPE",
-      `${file.type || "That file type"} is not supported for resume import.`,
-      "Upload a PDF resume.",
-    );
-  }
-
-  if (file.size > MAX_BYTES) {
-    return error(
-      413,
-      "FILE_TOO_LARGE",
-      "That resume is larger than 5 MB.",
-      "Export a smaller PDF and try again.",
-    );
-  }
-
-  let text: string;
-  try {
-    text = await extractPdfText(Buffer.from(await file.arrayBuffer()));
-  } catch {
+  const parsed = resumeTextSchema.safeParse(body);
+  if (!parsed.success) {
+    const first = parsed.error.issues[0];
     return error(
       422,
-      "PDF_PARSE_FAILED",
-      "That PDF could not be read.",
-      "If it is scanned images, export a text-based PDF instead.",
+      "INVALID_INPUT",
+      first?.message ?? "The request did not pass validation.",
+      first?.path.join(".") || undefined,
     );
   }
 
-  if (text.replace(/\s+/g, " ").trim().length < 50) {
+  if (parsed.data.text.replace(/\s+/g, " ").trim().length < 50) {
     return error(
       422,
       "NO_TEXT",
-      "No readable text was found in that PDF.",
+      "No readable text was found in that resume.",
       "If it is scanned images, export a text-based PDF instead.",
     );
   }
 
   try {
-    const result = await extractResumePatch(text);
+    const result = await extractResumePatch(parsed.data.text);
     return NextResponse.json({ ok: true, ...result });
   } catch (err) {
     const code = err instanceof Error ? err.message : "UNKNOWN";
@@ -113,7 +84,6 @@ export async function POST(request: Request) {
       "EMPTY_RESPONSE",
       "UNPARSEABLE_RESPONSE",
       "MISSING_API_KEY",
-      "PDF_PARSE_FAILED",
       "NO_TEXT",
     ];
 

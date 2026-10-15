@@ -2,12 +2,6 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
-  // pdf-parse (pdf.js + native canvas for screenshots) cannot be bundled by
-  // Turbopack — bundling it silently kills any route that imports it (the
-  // route never registers: GET falls to 404 and multipart POSTs fall through
-  // to the Server Action handler with 409). Load it from node_modules at
-  // runtime instead, where plain Node runs it fine.
-  serverExternalPackages: ["pdf-parse"],
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "**" },
