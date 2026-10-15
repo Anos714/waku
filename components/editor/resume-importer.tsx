@@ -14,10 +14,14 @@ import { useEditor } from "./editor-provider";
 import { Field, FieldGroup } from "./field-helpers";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { extractPdfTextFromFile } from "@/lib/resume/extract-pdf-text";
 import { createId } from "@/lib/utils";
 import type { ResumePatch } from "@/lib/ai/resume";
 
 type Status = "idle" | "uploading" | "reviewing" | "applied" | "error";
+
+/** Browser-side guard matching the server's text bound. */
+const MAX_PDF_BYTES = 5 * 1024 * 1024;
 
 type GroupKey = "basics" | "bio" | "skills" | "interests" | "projects";
 
@@ -63,13 +67,49 @@ export function ResumeImporter() {
     setStatus("uploading");
     setError(null);
 
-    try {
-      const payload = new FormData();
-      payload.append("file", file);
+    // The PDF never leaves this browser as bytes: text is extracted here and
+    // only the text is posted, so the server needs no PDF tooling at all.
+    if (file.size > MAX_PDF_BYTES) {
+      setStatus("error");
+      setError({
+        ok: false,
+        code: "FILE_TOO_LARGE",
+        message: "That resume is larger than 5 MB.",
+        hint: "Export a smaller PDF and try again.",
+      });
+      return;
+    }
 
+    let text: string;
+    try {
+      text = await extractPdfTextFromFile(file);
+    } catch {
+      setStatus("error");
+      setError({
+        ok: false,
+        code: "PDF_READ_FAILED",
+        message: "That PDF could not be read in this browser.",
+        hint: "If it is scanned images, export a text-based PDF instead.",
+      });
+      return;
+    }
+
+    if (text.length < 50) {
+      setStatus("error");
+      setError({
+        ok: false,
+        code: "NO_TEXT",
+        message: "No readable text was found in that PDF.",
+        hint: "If it is scanned images, export a text-based PDF instead.",
+      });
+      return;
+    }
+
+    try {
       const response = await fetch("/api/ai/resume", {
         method: "POST",
-        body: payload,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
       });
       const body = (await response.json()) as
         | { ok: true; patch: ResumePatch; warnings: string[]; model: string }
@@ -177,7 +217,7 @@ export function ResumeImporter() {
           </div>
         </div>
       ) : (
-        <Field id="resume-file" label="PDF resume" hint="Max 5 MB, never stored">
+        <Field id="resume-file" label="PDF resume" hint="Stays in your browser, max 5 MB">
           <div className="flex items-center gap-2.5">
             <label
               htmlFor="resume-file"

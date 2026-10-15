@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { PDFParse } from "pdf-parse";
 import { isSafeUrl } from "@/lib/validation/profile";
 import { groqJsonCompletion, hasGroqKey, resolveGroqCascade } from "./groq";
 import {
@@ -28,19 +27,6 @@ const clamp = (value: string, max: number): string => value.slice(0, max);
 
 function asString(value: unknown): string {
   return typeof value === "string" ? value : "";
-}
-
-/** PDF bytes to plain text. Throws PDF_PARSE_FAILED on unreadable input. */
-export async function extractPdfText(data: Buffer): Promise<string> {
-  const parser = new PDFParse({ data });
-  try {
-    const result = await parser.getText();
-    return result.text ?? "";
-  } catch {
-    throw new Error("PDF_PARSE_FAILED");
-  } finally {
-    await parser.destroy();
-  }
 }
 
 const resumeProjectSchema = z.object({
