@@ -22,7 +22,7 @@ export async function generateMetadata({
     };
   }
 
-  const title = `${resolved.name} — ${resolved.role}`.trim();
+  const title = `${resolved.name} | ${resolved.role}`.trim();
   const description = resolved.tagline || resolved.bio;
 
   return {

@@ -191,7 +191,7 @@ export function SharePanel() {
   }
 
   async function handleShare() {
-    const result = await shareUrl(profileUrl, `${profile.name} — Waku`);
+    const result = await shareUrl(profileUrl, `${profile.name} on Waku`);
     if (result === "shared") setShareState("shared");
   }
 
@@ -222,7 +222,7 @@ export function SharePanel() {
   return (
     <FieldGroup
       title="Share"
-      description="Preview links, QR codes and exports — all generated locally."
+      description="Preview links, QR codes and exports, all generated locally."
     >
       <Field id="share-url" label="Profile link">
         <div className="flex items-center gap-2">
@@ -270,7 +270,7 @@ export function SharePanel() {
             <p className="text-sm font-medium text-ink">Publish this page</p>
             <div className="mt-0.5 text-[0.6875rem] leading-relaxed text-ink-3">
               {config && !config.authEnabled ? (
-                "Publishing is not configured on this server — add DATABASE_URL to publish."
+                "Publishing is not configured on this server. Add DATABASE_URL to publish."
               ) : publishState === "published" ? (
                 "Anyone with the link can now see your profile."
               ) : session ? (
@@ -351,7 +351,7 @@ export function SharePanel() {
             />
             {config && (!config.providers.github || !config.providers.google) ? (
               <p className="col-span-full text-[0.6875rem] leading-relaxed text-ink-3">
-                Some providers are unavailable on this server — add their
+                Some providers are unavailable on this server. Add their
                 client ID and secret to{" "}
                 <span className="font-mono">.env.local</span> (see{" "}
                 <span className="font-mono">.env.example</span>) and restart.

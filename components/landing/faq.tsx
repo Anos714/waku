@@ -17,31 +17,31 @@ const FAQS = [
     id: "what-is-waku",
     question: "What is Waku, in one line?",
     answer:
-      "A personal identity builder. You build a profile page and a matching identity card in your browser, then publish it at a link you own — reachable by anyone, updated by you.",
+      "A personal identity builder. You build a profile page and a matching identity card in your browser, then publish it at a link you own: reachable by anyone, updated by you.",
   },
   {
     id: "account-needed",
     question: "Do I need an account to start?",
     answer:
-      "No. The editor opens on an example profile you overwrite field by field — nothing to install, no sign-up. Sign in with GitHub or Google only when you want your page live.",
+      "No. The editor opens on an example profile you overwrite field by field. Nothing to install, no sign-up. Sign in with GitHub or Google only when you want your page live.",
   },
   {
     id: "cost",
     question: "What does it cost?",
     answer:
-      "Nothing — Waku is free. Build, theme and publish as much as you like, and keep the link.",
+      "Nothing. Waku is free. Build, theme and publish as much as you like, and keep the link.",
   },
   {
     id: "where-it-lives",
     question: "Where does my page live once I publish it?",
     answer:
-      "At your own link — " + publicHost() + "/p/your-name — reachable by anyone with the URL. Republishing updates that same URL in place, so your link never changes and old shares keep working.",
+      "At your own link: " + publicHost() + "/p/your-name, reachable by anyone with the URL. Republishing updates that same URL in place, so your link never changes and old shares keep working.",
   },
   {
     id: "edit-after-publish",
     question: "Can I change my page after publishing?",
     answer:
-      "Yes. Sign back in, edit anything — the bio, the theme, the links, the photo — and hit publish again. The same URL updates in place; there is never a new link to hand out.",
+      "Yes. Sign back in, edit anything (the bio, the theme, the links, the photo) and hit publish again. The same URL updates in place; there is never a new link to hand out.",
   },
   {
     id: "draft-data",
@@ -53,7 +53,7 @@ const FAQS = [
     id: "share-besides-link",
     question: "What can I share besides the link?",
     answer:
-      "Four card layouts export at 2× as PNG — photo, name, tagline, handles and an optional QR code that opens your page. Drop one into a slide deck, a README or a forum signature.",
+      "Four card layouts export at 2× as PNG: photo, name, tagline, handles and an optional QR code that opens your page. Drop one into a slide deck, a README or a forum signature.",
   },
 ] as const;
 

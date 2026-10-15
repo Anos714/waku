@@ -60,7 +60,7 @@ export function FeaturedEditor() {
           <p className="text-[0.6875rem] text-ink-3">
             {sections.projects
               ? "Shown when the Featured projects section is on."
-              : "Hidden — enable the section above to show these."}
+              : "Hidden. Enable the section above to show these."}
           </p>
         </div>
         <Button

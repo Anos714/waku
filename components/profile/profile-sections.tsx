@@ -30,7 +30,6 @@ function SectionShell({
             className="eyebrow"
             style={{
               color: "var(--pt-ink-3)",
-              letterSpacing: "0.18em",
               fontFamily: "var(--pt-font-heading)",
             }}
           >
@@ -54,7 +53,6 @@ function SectionShell({
           className="eyebrow"
           style={{
             color: "var(--pt-ink-3)",
-            letterSpacing: "0.18em",
             // Section titles are headings — they follow the pairing's heading
             // stack so the Editorial serif (or Terminal mono) reaches them too,
             // not just the name.
@@ -167,6 +165,7 @@ export function ProjectsSection({
           if (screenshot) {
             // Mobile stacks image-over-text (a side-by-side row would crush
             // the text into ~200px); sm+ settles into thumb-beside-text.
+            // Link cards lift on hover in the landing grid's language.
             const body = (
               <div className="flex min-w-0 flex-1 items-start gap-3">
                 <ProjectBody project={{ ...project, title }} />
@@ -185,7 +184,7 @@ export function ProjectsSection({
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex flex-col gap-3 p-4 transition-colors hover:border-[var(--pt-accent)] sm:flex-row sm:items-start sm:gap-4"
+                    className="group flex flex-col gap-3 p-4 transition-[border-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-[var(--pt-accent)] hover:shadow-card-sm sm:flex-row sm:items-start sm:gap-4"
                     style={shellStyle}
                   >
                     <ProjectScreenshot src={screenshot} title={title} />
@@ -210,7 +209,7 @@ export function ProjectsSection({
                   href={url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-start gap-3 p-3.5 transition-colors hover:border-[var(--pt-accent)]"
+                  className="group flex items-start gap-3 p-3.5 transition-[border-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-[var(--pt-accent)] hover:shadow-card-sm"
                   style={shellStyle}
                 >
                   <ProjectBody project={{ ...project, title }} />

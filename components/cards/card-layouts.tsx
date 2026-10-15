@@ -355,24 +355,26 @@ function MinimalLayout({ profile, theme, qrDataUrl, profileUrl }: CardLayoutProp
       >
         {name}
       </h1>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "14px",
-          marginTop: "12px",
-          color: "var(--pt-accent)",
-          fontFamily: "var(--pt-font-heading)",
-          fontSize: "15px",
-          fontWeight: 700,
-          letterSpacing: "0.16em",
-          textTransform: "uppercase",
-        }}
-      >
-        <span style={{ height: 1, width: 34, background: "var(--pt-line)" }} />
-        {clampText(profile.role.trim() || "—", 48)}
-        <span style={{ height: 1, width: 34, background: "var(--pt-line)" }} />
-      </div>
+      {profile.role.trim() && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "14px",
+            marginTop: "12px",
+            color: "var(--pt-accent)",
+            fontFamily: "var(--pt-font-heading)",
+            fontSize: "15px",
+            fontWeight: 700,
+            letterSpacing: "0.16em",
+            textTransform: "uppercase",
+          }}
+        >
+          <span style={{ height: 1, width: 34, background: "var(--pt-line)" }} />
+          {clampText(profile.role.trim(), 48)}
+          <span style={{ height: 1, width: 34, background: "var(--pt-line)" }} />
+        </div>
+      )}
       {profile.tagline.trim() && (
         <p
           style={{

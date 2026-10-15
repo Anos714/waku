@@ -146,9 +146,17 @@ describe("extractResumePatch", () => {
     const body = JSON.parse(
       (mockFetch().mock.calls[0][1] as RequestInit).body as string,
     );
-    const prompt = body.messages.map((m: { content: string }) => m.content).join("\n");
+    const prompt: string = body.messages
+      .map((m: { content: string }) => m.content)
+      .join("\n");
     expect(prompt).toContain("ONLY facts present in the resume");
     expect(prompt).toContain("Never invent");
+    expect(prompt).toContain("Never use em dashes");
+    const withoutRule = prompt
+      .split("\n")
+      .filter((line) => !line.includes("em dashes"))
+      .join("\n");
+    expect(withoutRule).not.toContain("—");
   });
 
   it("falls back to Gemini when every Groq model is busy", async () => {

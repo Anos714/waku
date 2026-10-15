@@ -19,8 +19,8 @@ export default function TermsPage() {
       <Section number={1} title="Accepting these terms">
         <Points>
           <Point>
-            Using Waku — visiting, building a profile, publishing a page, or
-            leaving a rating — means you accept these terms.
+            Using Waku (visiting, building a profile, publishing a page, or
+            leaving a rating) means you accept these terms.
           </Point>
           <Point>If you do not, please do not use the service.</Point>
           <Point>
@@ -56,7 +56,7 @@ export default function TermsPage() {
             jurisdiction.
           </Point>
           <Point>
-            You are responsible for what happens under your account — tell us
+            You are responsible for what happens under your account. Tell us
             immediately if you think someone else has access to it.
           </Point>
           <Point>
@@ -68,7 +68,7 @@ export default function TermsPage() {
 
       <Section number={4} title="Your content">
         <Lead>
-          Everything you create here — your profile text, links and photos —
+          Everything you create here (your profile text, links and photos)
           stays yours. You own it.
         </Lead>
         <Points>
@@ -115,7 +115,7 @@ export default function TermsPage() {
         </Points>
         <Lead>
           We may remove content that breaks these rules, unpublish the page it is
-          on, or close the account behind it — at our discretion, without notice
+          on, or close the account behind it, at our discretion and without notice
           where the situation calls for speed.
         </Lead>
       </Section>
@@ -188,8 +188,8 @@ export default function TermsPage() {
             uninterrupted or error-free.
           </Point>
           <Point>
-            We may change, suspend or retire any feature — including a theme or
-            a card layout — after giving published pages a chance to adapt.
+            We may change, suspend or retire any feature, including a theme or
+            a card layout, after giving published pages a chance to adapt.
           </Point>
         </Points>
       </Section>
@@ -213,7 +213,7 @@ export default function TermsPage() {
           <Point>
             To the fullest extent the law allows, neither Waku nor its operator
             is liable for any indirect, incidental or consequential loss arising
-            from your use of the service — including loss of data, loss of a
+            from your use of the service, including loss of data, loss of a
             published link, or damage to reputation from content published by
             anyone.
           </Point>
@@ -233,8 +233,8 @@ export default function TermsPage() {
             keeping an account becomes legally or technically untenable.
           </Point>
           <Point>
-            Sections that by their nature survive — ownership, licences already
-            granted, disclaimers and liability caps — survive termination.
+            Sections that by their nature survive (ownership, licences already
+            granted, disclaimers and liability caps) survive termination.
           </Point>
         </Points>
       </Section>

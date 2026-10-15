@@ -12,12 +12,12 @@ const STEPS = [
   {
     number: "02",
     title: "Write and theme",
-    body: "Generate a bio, pick a theme, font and accent — the preview keeps up with every change.",
+    body: "Generate a bio, pick a theme, font and accent. The preview keeps up with every change.",
   },
   {
     number: "03",
     title: "Publish and share",
-    body: `Sign in with GitHub or Google, hit publish, and your page is live at a link you own — ${publicHost()}/p/you. Then grab the QR code and the PNG card. Nothing leaves your browser until you publish.`,
+    body: `Sign in with GitHub or Google, hit publish, and your page is live at a link you own: ${publicHost()}/p/you. Then grab the QR code and the PNG card. Nothing leaves your browser until you publish.`,
   },
 ];
 

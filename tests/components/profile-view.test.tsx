@@ -10,7 +10,7 @@ describe("ProfileView", () => {
     expect(
       screen.getByRole("heading", { level: 1, name: "Rahul Sain" }),
     ).toBeInTheDocument();
-    expect(screen.getByText("Software Developer — Full Stack Developer")).toBeInTheDocument();
+    expect(screen.getByText("Software Developer, Full Stack Developer")).toBeInTheDocument();
     // The location appears in the header and again as the contact row
     // "Based in".
     expect(screen.getAllByText("Alwar, Rajasthan, India")).toHaveLength(2);

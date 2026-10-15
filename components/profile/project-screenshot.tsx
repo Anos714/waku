@@ -29,7 +29,7 @@ export function ProjectScreenshot({ src, title }: { src: string; title: string }
     >
       <Image
         src={src}
-        alt={title ? `${title} — project screenshot` : "Project screenshot"}
+        alt={title ? `${title} screenshot` : "Project screenshot"}
         fill
         sizes="(max-width: 640px) 100vw, 144px"
         loading="lazy"

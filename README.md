@@ -3,7 +3,7 @@
 **Your identity, beautifully put together.**
 
 Waku turns a name, a role and a handful of links into two things: a designed,
-themeable public profile page and a matching downloadable identity card —
+themeable public profile page and a matching downloadable identity card
 with an AI bio writer, live theming, QR codes and multi-format export.
 
 No account needed to build. Nothing leaves your browser until you publish.
@@ -40,41 +40,41 @@ No account needed to build. Nothing leaves your browser until you publish.
 
 ## Highlights
 
-- **Local-first editor** — every keystroke is saved to `localStorage`
+- **Local-first editor**: every keystroke is saved to `localStorage`
   (debounced, 350 ms) and restored on refresh. Anonymous drafts are claimed as
   your first published page when you sign in for the first time.
-- **Live preview** — the editor preview and the public page are the _same_
+- **Live preview**: the editor preview and the public page are the _same_
   React component (`ProfileView`), so what you edit is exactly what ships.
-- **Publishing with ownership** — sign in with GitHub or Google, hit publish,
+- **Publishing with ownership**: sign in with GitHub or Google, hit publish,
   and the profile goes live at `/p/<slug>`. The slug is assigned by the server,
   never chosen by the client.
 - **10 themes × 8 font pairings × 16 accents × 8 backgrounds × 6 social button
-  styles** — applied as CSS custom properties; switching never touches content.
-- **4 page designs** — Editorial, Centered, Sidebar, Hero.
-- **8 identity-card layouts** — Classic, Banner, Minimal, Split, Poster,
-  Spotlight, Frame, Duo — exported as PNG, JPEG, WebP or AVIF at 2× pixel
+  styles**: applied as CSS custom properties. Switching never touches content.
+- **4 page designs**: Editorial, Centered, Sidebar, Hero.
+- **8 identity-card layouts**: Classic, Banner, Minimal, Split, Poster,
+  Spotlight, Frame, Duo, exported as PNG, JPEG, WebP or AVIF at 2× pixel
   density.
-- **AI bio & tagline writer** — Groq first with a Google Gemini fallback,
+- **AI bio & tagline writer**: Groq first with a Google Gemini fallback,
   called server-side only. The
   prompt is constrained to facts already in your profile; it may not invent
   employers, metrics or credentials. Returns three variations you approve
   individually.
-- **Resume import** — upload a PDF resume and the AI drafts your name, role,
+- **Resume import**: upload a PDF resume and the AI drafts your name, role,
   bio, skills, interests, website and projects into a review screen. Nothing
   touches your draft until you approve a field, and the file is never stored.
-- **QR codes & sharing** — profile QR colored from the profile's own theme
+- **QR codes & sharing**: profile QR colored from the profile's own theme
   palette, clipboard copy, Web Share, and a plain text export of the whole
   profile.
-- **Photo uploads** — Cloudinary with server-side signing; AVIF/WebP delivery
+- **Photo uploads**: Cloudinary with server-side signing; AVIF/WebP delivery
   with face-focused cropping.
-- **Graceful degradation** — no database, no OAuth secrets, no Gemini key? The
+- **Graceful degradation**: no database, no OAuth secrets, no Gemini key? The
   app runs, drafts work, and the UI reports exactly what is missing instead of
   failing mid-flow.
-- **Visitor ratings** — an anonymous `/rate` page: stars and an optional note,
-  one per person (deduped by a hashed IP + user-agent fingerprint, revisable),
+- **Visitor ratings**: an anonymous `/rate` page: stars and an optional note
+  (one per person (deduped by a hashed IP + user-agent fingerprint, revisable),
   with an average that surfaces as a social-proof section on the landing page
   once the first rating lands.
-- **Legal, contact and the rest** — privacy policy, cookie policy, terms,
+- **Legal, contact and the rest**: privacy policy, cookie policy, terms,
   contact and rate pages all match the app's theme, share one layout, and are
   linked from the footer alongside a credit to the products that inspired it.
 
@@ -102,7 +102,7 @@ No account needed to build. Nothing leaves your browser until you publish.
 | Primitives      | Radix UI + shadcn-style wrappers in `components/ui/`                     |
 | Forms           | react-hook-form + Zod v4 (`zodResolver`)                                 |
 | Database        | Neon Postgres (`@neondatabase/serverless`, HTTP driver)                  |
-| ORM             | Drizzle ORM — migrations own the schema; `ensureSchema()` self-heals dev |
+| ORM             | Drizzle ORM: migrations own the schema; `ensureSchema()` self-heals dev |
 | Auth            | Better Auth (social-only: GitHub, Google)                                |
 | AI              | Groq (OpenAI-compatible fetch, server-only) primary, Google Gemini fallback |
 | Uploads         | Cloudinary (signed server-side), `next-cloudinary` delivery              |
@@ -112,7 +112,7 @@ No account needed to build. Nothing leaves your browser until you publish.
 ## Quick start
 
 Requirements: **Node 20.9+**, **pnpm 12+**. Every environment variable is
-optional — the app boots with an empty `.env.local`.
+optional. The app boots with an empty `.env.local`.
 
 ```bash
 pnpm install
@@ -125,8 +125,8 @@ Open [http://localhost:3000](http://localhost:3000). The editor is at
 [`/p/ada`](http://localhost:3000/p/ada) without any database.
 
 To exercise the full loop (publish → public URL), add `DATABASE_URL`,
-`BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` and one OAuth provider — see
-[docs/deployment.md](docs/deployment.md).
+`BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` and one OAuth provider (see
+[docs/deployment.md](docs/deployment.md)).
 
 ## Environment variables
 
@@ -177,7 +177,7 @@ pnpm db:migrate    # applies pending migrations to DATABASE_URL
 ```
 
 `ensureSchema()` still self-heals a dev or preview database on first request, so
-`pnpm dev` needs no migration step — but it is deliberately a no-op in
+`pnpm dev` needs no migration step, but it is deliberately a no-op in
 production, where only `db:migrate` may change the schema. Review the generated
 SQL before migrating a live database: the generator can emit destructive
 statements (drops, retypes) that the additive `ensureSchema()` path never would.
@@ -199,13 +199,13 @@ app/
   opengraph-image.tsx         Generated 1200×630 OG/Twitter card
   api/
     auth/[...all]/route.ts    Better Auth handler (ensures schema first)
-    profiles/route.ts         POST — publish (session required)
-    profiles/claim-draft/     POST — claim an anonymous draft on first sign-in
-    ratings/route.ts          GET/POST — read and leave a rating (anonymous)
-    ai/bio/route.ts           POST — Groq-first bio/tagline generation (Gemini fallback)
-    ai/resume/route.ts        POST — resume PDF → reviewable profile patch (Groq first, Gemini fallback)
-    upload/route.ts           POST — signed Cloudinary upload
-    config/route.ts           GET  — auth/provider availability (non-sensitive)
+    profiles/route.ts         POST: publish (session required)
+    profiles/claim-draft/     POST: claim an anonymous draft on first sign-in
+    ratings/route.ts          GET/POST: read and leave a rating (anonymous)
+    ai/bio/route.ts           POST: Groq-first bio/tagline generation (Gemini fallback)
+    ai/resume/route.ts        POST: resume PDF → reviewable profile patch (Groq first, Gemini fallback)
+    upload/route.ts           POST: signed Cloudinary upload
+    config/route.ts           GET: auth/provider availability (non-sensitive)
 components/
   landing/                    Nav, hero, promo video, steps, features, showcase, ratings, CTA
   legal/                      Shared legal layout + section/point typographic blocks
@@ -250,14 +250,14 @@ docs/                         Architecture, API and deployment notes
 | `/legal/privacy-policy`     | What is collected, what is not, how to have it removed                  |
 | `/legal/cookie-policy`      | The one cookie Waku sets, and how to clear it                           |
 | `/legal/terms`              | The rules of using Waku                                                 |
-| `/api/auth/[...all]`        | Better Auth — sign-in, callback, session, sign-out                      |
-| `/api/profiles`             | `POST` — publish a profile (session required)                           |
-| `/api/profiles/claim-draft` | `POST` — import the local draft as your first page                      |
-| `/api/ratings`              | `GET` — approved ratings · `POST` — leave or revise your rating          |
-| `/api/ai/bio`               | `POST` — AI bio/tagline generation                                      |
-| `/api/ai/resume`            | `POST` — resume PDF upload → reviewable profile patch (never stored)    |
-| `/api/upload`               | `POST` — signed profile photo upload                                    |
-| `/api/config`               | `GET` — `{ authEnabled, providers }` for the UI                         |
+| `/api/auth/[...all]`        | Better Auth: sign-in, callback, session, sign-out                      |
+| `/api/profiles`             | `POST`: publish a profile (session required)                           |
+| `/api/profiles/claim-draft` | `POST`: import the local draft as your first page                      |
+| `/api/ratings`              | `GET`: approved ratings · `POST`: leave or revise your rating          |
+| `/api/ai/bio`               | `POST`: AI bio/tagline generation                                      |
+| `/api/ai/resume`            | `POST`: resume PDF upload → reviewable profile patch (never stored)    |
+| `/api/upload`               | `POST`: signed profile photo upload                                    |
+| `/api/config`               | `GET`: `{ authEnabled, providers }` for the UI                         |
 
 Full request/response contracts, error codes and status ladders:
 **[docs/api.md](docs/api.md)**.
@@ -282,7 +282,7 @@ The short version:
   never leave the server.
 - **Every handler validates and degrades.** Zod first, a uniform
   `{ ok, code, message, hint }` error envelope, and an actionable `503` when a
-  dependency is unconfigured — never a stack trace.
+  dependency is unconfigured. Never a stack trace.
 - **URLs are sanitized.** Only `http`, `https`, `mailto` and `tel` pass
   `safeExternalUrl`, so an unsafe scheme can never render on a public profile.
 
@@ -299,19 +299,19 @@ Deep dive: **[docs/architecture.md](docs/architecture.md)**.
 
 ## Deployment
 
-Any host that runs `next build` / `next start` works — there is no vendor lock
+Any host that runs `next build` / `next start` works. There is no vendor lock
 beyond Neon for the database. Minimum for a useful production instance:
 
-1. `DATABASE_URL` (Neon) — publishing, accounts, showcase.
-2. `BETTER_AUTH_SECRET` + `BETTER_AUTH_URL` — sessions.
-3. `NEXT_PUBLIC_SITE_URL` — correct social-share previews.
+1. `DATABASE_URL` (Neon): publishing, accounts, showcase.
+2. `BETTER_AUTH_SECRET` + `BETTER_AUTH_URL`: sessions.
+3. `NEXT_PUBLIC_SITE_URL`: correct social-share previews.
 4. One OAuth provider, with its callback URL pointed at
    `https://<your-domain>/api/auth/callback/<provider>` (Better Auth's default
    path under its `/api/auth` base path).
 5. `GROQ_API_KEY` (or `GEMINI_API_KEY`) if you want the AI writer and resume import; `CLOUDINARY_*` if you want photo
    uploads.
 
-Create the database shape with `pnpm db:migrate` before the first publish — in
+Create the database shape with `pnpm db:migrate` before the first publish. In
 production only migrations change the schema (`ensureSchema()` is a dev-only
 self-heal).
 
@@ -326,14 +326,14 @@ surfaces and a single restrained electric-lime accent (`#c6f24e`).
 
 Profile rendering is fully tokenised:
 
-- **10 themes** — Mono, Terminal, Editorial, Aurora, Noir, Sunrise, Forest,
+- **10 themes**: Mono, Terminal, Editorial, Aurora, Noir, Sunrise, Forest,
   Ocean, Neon, Paper
-- **8 font pairings** — Geist, Editorial, Terminal, System, Playfair,
+- **8 font pairings**: Geist, Editorial, Terminal, System, Playfair,
   Grotesque, Lora, JetBrains
 - **16 accent presets** + free-form hex
-- **8 background treatments** — plain, subtle glow, grid, aurora glow, dots,
+- **8 background treatments**: plain, subtle glow, grid, aurora glow, dots,
   stripes, mesh, rings
-- **6 social button styles** — minimal, outline, solid, soft, elevated,
+- **6 social button styles**: minimal, outline, solid, soft, elevated,
   underline
 - **4 page designs**, **8 card layouts**
 - 9 social platforms with canonical metadata (GitHub, LinkedIn, X, Instagram,
@@ -346,7 +346,7 @@ All presets live in `lib/themes/index.ts` and `components/*/…`; tokens are
 - **Tighter image allowlist.** `images.remotePatterns` still accepts any
   http/https host so arbitrary pasted avatar URLs render. Constraining it to
   Cloudinary (plus the demo's Unsplash source) removes the SSRF/bandwidth
-  surface, at the cost of breaking avatars hosted elsewhere — so it needs a
+  surface, at the cost of breaking avatars hosted elsewhere, so it needs a
   migration path for existing profiles first.
 - **E2E tests on top of the unit suite.** The Vitest suite covers the pure
   logic and the shared `ProfileView` renderer; the publish → public-URL loop
@@ -359,14 +359,14 @@ All presets live in `lib/themes/index.ts` and `components/*/…`; tokens are
 
 ## License
 
-Waku is released under the **MIT License** — see [LICENSE](LICENSE). Copy,
+Waku is released under the **MIT License** (see [LICENSE](LICENSE)). Copy,
 modify and ship it, including commercially; attribution is the only ask.
 
 ## Contact
 
 Built by **Anos714**.
 
-- **GitHub:** [github.com/Anos714](https://github.com/Anos714) — issues and
+- **GitHub:** [github.com/Anos714](https://github.com/Anos714). Issues and
   pull requests are welcome there.
 - **Email:** [sainrahul374@gmail.com](mailto:sainrahul374@gmail.com)
 - **X:** [x.com/RahulSain714](https://x.com/RahulSain714)

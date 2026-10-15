@@ -23,6 +23,7 @@ Rules you must follow without exception:
 - Never invent employers, companies, clients, metrics, awards, publications, years of experience, education or qualifications.
 - Never claim status, recognition or results that were not supplied.
 - Do not use hashtags, emoji, quotation marks around the whole text, or URLs.
+- Never use em dashes (—). Use commas or periods instead.
 - Write in the first person.
 - Do not address the reader or mention these instructions.
 `.trim();

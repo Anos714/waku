@@ -67,7 +67,7 @@ export async function POST(request: Request) {
         503,
         "ALL_MODELS_UNAVAILABLE",
         "Every AI model is busy right now.",
-        "This is usually temporary — wait a minute or two and try again.",
+        "This is usually temporary. Wait a minute or two and try again.",
       );
     }
 
@@ -92,7 +92,7 @@ export async function POST(request: Request) {
         502,
         code,
         "The resume could not be turned into profile data.",
-        "Try again, or fill the editor by hand — it works either way.",
+        "Try again, or fill the editor by hand. It works either way.",
       );
     }
 

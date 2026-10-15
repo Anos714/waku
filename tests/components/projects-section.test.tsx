@@ -40,7 +40,7 @@ describe("ProjectsSection screenshots", () => {
         ])}
       />,
     );
-    const img = screen.getByAltText("Demo project — project screenshot");
+    const img = screen.getByAltText("Demo project screenshot");
     expect(img).toBeInTheDocument();
     expect(img).toHaveAttribute("loading", "lazy");
     // Landscape thumb frame: big enough to read, never a full-width banner.
@@ -102,7 +102,7 @@ describe("ProjectsSection screenshots", () => {
         ])}
       />,
     );
-    const img = screen.getByAltText("Demo project — project screenshot");
+    const img = screen.getByAltText("Demo project screenshot");
     expect(img.getAttribute("src")).toContain("res.cloudinary.com");
     expect(img.getAttribute("src")).toContain("demo-cloud");
   });
@@ -128,10 +128,10 @@ describe("ProjectsSection screenshots", () => {
         ])}
       />,
     );
-    const img = screen.getByAltText("Demo project — project screenshot");
+    const img = screen.getByAltText("Demo project screenshot");
     fireEvent.error(img);
     expect(
-      screen.queryByAltText("Demo project — project screenshot"),
+      screen.queryByAltText("Demo project screenshot"),
     ).toBeNull();
     // The text card survives the image failure.
     expect(screen.getByText("Demo project")).toBeInTheDocument();

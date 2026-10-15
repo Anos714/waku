@@ -59,7 +59,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
   title: {
-    default: "Waku — Your identity, beautifully put together.",
+    default: "Waku: Your identity, beautifully put together.",
     template: "%s · Waku",
   },
   description:
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
     "AI bio generator",
   ],
   openGraph: {
-    title: "Waku — Your identity, beautifully put together.",
+    title: "Waku: Your identity, beautifully put together.",
     description:
       "Build a beautiful personal profile page and a matching shareable identity card.",
     type: "website",
@@ -83,7 +83,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Waku — Your identity, beautifully put together.",
+    title: "Waku: Your identity, beautifully put together.",
     description:
       "Build a beautiful personal profile page and a matching shareable identity card.",
   },

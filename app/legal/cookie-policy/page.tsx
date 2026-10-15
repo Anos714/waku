@@ -13,15 +13,15 @@ export default function CookiePolicyPage() {
     <LegalLayout
       eyebrow="Legal"
       title="Cookie Policy"
-      description="Waku uses one essential cookie to keep you signed in, and local storage to remember your draft. No tracking, no advertising — here is the whole picture."
+      description="Waku uses one essential cookie to keep you signed in, and local storage to remember your draft. No tracking, no advertising. Here is the whole picture."
       lastUpdated="October 13, 2026"
     >
       <Section number={1} title="What a cookie is">
         <Points>
           <Point>
             A cookie is a small file a website stores in your browser. It is how
-            a site remembers you between page loads — that you are signed in,
-            for instance.
+            a site remembers you between page loads (that you are signed in,
+            for instance).
           </Point>
           <Point>
             Cookies are not programs, and they cannot read anything else on your
@@ -35,7 +35,7 @@ export default function CookiePolicyPage() {
         <Points>
           <Point>
             <strong>The session cookie.</strong> Once you sign in, this signed
-            cookie proves you are you on the next request — it is what lets you
+            cookie proves you are you on the next request. It is what lets you
             publish. It contains no personal data, only an opaque session token;
             the matching session lives server-side and expires on its own.
           </Point>
@@ -43,7 +43,7 @@ export default function CookiePolicyPage() {
             Without it there is no way to stay signed in, so it is not optional.
           </Point>
           <Point>
-            It is set only after you choose to sign in — an anonymous visitor
+            It is set only after you choose to sign in. An anonymous visitor
             receives no cookie from us at all.
           </Point>
         </Points>
@@ -53,7 +53,7 @@ export default function CookiePolicyPage() {
         <Points>
           <Point>
             Waku stores your in-progress profile in your browser&rsquo;s local
-            storage, not in a cookie — which is why the editor works offline and
+            storage, not in a cookie, which is why the editor works offline and
             survives a refresh.
           </Point>
           <Point>
@@ -61,7 +61,7 @@ export default function CookiePolicyPage() {
           </Point>
           <Point>
             Clearing your browser&rsquo;s stored data removes the draft
-            permanently — and since we never received it, we cannot restore it.
+            permanently. Since we never received it, we cannot restore it.
           </Point>
         </Points>
       </Section>
@@ -83,8 +83,8 @@ export default function CookiePolicyPage() {
           <Point>
             <strong>Fingerprinting for identification.</strong> The rating
             fingerprint is a one-way hash used only to keep ratings
-            one-per-person — see the{" "}
-            <a href="/legal/privacy-policy">Privacy Policy</a>.
+            one-per-person (see the{" "}
+            <a href="/legal/privacy-policy">Privacy Policy</a>).
           </Point>
         </Points>
       </Section>
@@ -94,7 +94,7 @@ export default function CookiePolicyPage() {
           <Point>
             Signing in happens on GitHub&rsquo;s or Google&rsquo;s own pages.
             Those providers may set their own cookies on <em>their</em> domains
-            as part of that flow — we do not control them, and they are governed
+            as part of that flow. We do not control them, and they are governed
             by their own policies.
           </Point>
           <Point>
@@ -136,7 +136,7 @@ export default function CookiePolicyPage() {
       <Section number={8} title="Contact">
         <Points>
           <Point>
-            Anything unclear — <a href={mailto(CONTACT_EMAIL)}>{CONTACT_EMAIL}</a>.
+            Anything unclear? <a href={mailto(CONTACT_EMAIL)}>{CONTACT_EMAIL}</a>.
           </Point>
         </Points>
       </Section>

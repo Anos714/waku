@@ -22,7 +22,7 @@ export function buildProfileUrl(slug: string): string {
 
 export function initials(name: string): string {
   const cleaned = name.trim();
-  if (!cleaned) return "—";
+  if (!cleaned) return "?";
   const parts = cleaned.split(/\s+/).filter(Boolean).slice(0, 2);
   return parts
     .map((part) => part[0]?.toUpperCase() ?? "")

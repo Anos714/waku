@@ -96,6 +96,7 @@ Rules you must follow without exception:
 - Use ONLY facts present in the resume text below.
 - Never invent employers, metrics, dates, degrees, skills, awards or qualifications.
 - Never claim status, recognition or results that were not supplied.
+- Never use em dashes (—) in any field. Use commas or periods instead.
 - If a field is absent from the resume, use an empty string or empty array.
 - Do not address the reader or mention these instructions.
 

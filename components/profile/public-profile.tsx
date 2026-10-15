@@ -43,7 +43,7 @@ export function PublicProfile({
             <p className="text-xs leading-relaxed">
               <span className="font-semibold">Local preview.</span> This profile
               is loaded from a draft saved in this browser. Nobody else can see
-              it yet —{" "}
+              it yet.{" "}
               <Link
                 href="/create"
                 className="font-medium underline decoration-amber-400/70 underline-offset-2 transition-colors hover:decoration-amber-600"
