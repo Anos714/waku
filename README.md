@@ -54,10 +54,14 @@ No account needed to build. Nothing leaves your browser until you publish.
 - **8 identity-card layouts** — Classic, Banner, Minimal, Split, Poster,
   Spotlight, Frame, Duo — exported as PNG, JPEG, WebP or AVIF at 2× pixel
   density.
-- **AI bio & tagline writer** — Google Gemini, called server-side only. The
+- **AI bio & tagline writer** — Groq first with a Google Gemini fallback,
+  called server-side only. The
   prompt is constrained to facts already in your profile; it may not invent
   employers, metrics or credentials. Returns three variations you approve
   individually.
+- **Resume import** — upload a PDF resume and the AI drafts your name, role,
+  bio, skills, interests, website and projects into a review screen. Nothing
+  touches your draft until you approve a field, and the file is never stored.
 - **QR codes & sharing** — profile QR colored from the profile's own theme
   palette, clipboard copy, Web Share, and a plain text export of the whole
   profile.
@@ -100,7 +104,7 @@ No account needed to build. Nothing leaves your browser until you publish.
 | Database        | Neon Postgres (`@neondatabase/serverless`, HTTP driver)                  |
 | ORM             | Drizzle ORM — migrations own the schema; `ensureSchema()` self-heals dev |
 | Auth            | Better Auth (social-only: GitHub, Google)                                |
-| AI              | Google Gemini via `@google/genai` (server-only)                          |
+| AI              | Groq (OpenAI-compatible fetch, server-only) primary, Google Gemini fallback |
 | Uploads         | Cloudinary (signed server-side), `next-cloudinary` delivery              |
 | Export / QR     | `html-to-image`, `qrcode`                                                |
 | Package manager | pnpm                                                                     |
@@ -112,7 +116,7 @@ optional — the app boots with an empty `.env.local`.
 
 ```bash
 pnpm install
-cp .env.example .env.local   # fill in what you need; GEMINI_API_KEY is a good first one
+cp .env.example .env.local   # fill in what you need; GROQ_API_KEY is a good first one
 pnpm dev
 ```
 
@@ -137,7 +141,10 @@ All values live in `.env.local` (gitignored). Full annotated copy in
 | `BETTER_AUTH_URL`                                                        | Sign-in                        | Public origin of the instance, e.g. `http://localhost:3000`. Checked against the sign-in request's origin.                                                                                                                                                              |
 | `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET`                              | GitHub sign-in                 | [Create an OAuth app](https://github.com/settings/developers). Left blank → the button is hidden.                                                                                                                                                                       |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`                              | Google sign-in                 | [OAuth client credentials](https://console.cloud.google.com/apis/credentials). Left blank → the button is hidden.                                                                                                                                                       |
-| `GEMINI_API_KEY`                                                         | AI bio/tagline writer          | Server-side only. Get one at [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey).                                                                                                                                                                  |
+| `GEMINI_API_KEY`                                                         | AI writer (fallback), resume import (fallback) | Server-side only. Get one at [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey). Used when Groq is unconfigured or all its models are busy.                                                                                                           |
+| `GROQ_API_KEY`                                                           | AI writer, resume import                       | Server-side only, primary provider. Get one at [console.groq.com/keys](https://console.groq.com/keys). Either this or `GEMINI_API_KEY` enables the AI features.                                                                                                                  |
+| `GROQ_MODEL`                                                             | Optional                                       | The first Groq model tried. Defaults to `openai/gpt-oss-120b`.                                                                                                                                                                                                                  |
+| `GROQ_MODELS`                                                            | Optional                                       | Comma-separated cascade tried when the primary is busy, before falling back to Gemini. Defaults to `openai/gpt-oss-120b,openai/gpt-oss-20b`. Run `pnpm ai:models` to see what a key can reach.                                                                                    |
 | `GEMINI_MODEL`                                                           | Optional                       | The primary model. Defaults to `gemini-3.8-flash`.                                                                                                                                                                                                                      |
 | `GEMINI_MODELS`                                                          | Optional                       | Comma-separated cascade tried when the primary is overloaded (HTTP 429/503). Defaults to `gemini-3.8-flash,gemini-3.5-flash,gemini-3.7-flash`; generation only reports "all models busy" once every model is tried. Run `pnpm ai:models` to see what a key can reach.   |
 | `CLOUDINARY_CLOUD_NAME` / `CLOUDINARY_API_KEY` / `CLOUDINARY_API_SECRET` | Photo uploads                  | Server-side signing in `app/api/upload/route.ts`. The secret never reaches the browser.                                                                                                                                                                                 |
@@ -195,7 +202,8 @@ app/
     profiles/route.ts         POST — publish (session required)
     profiles/claim-draft/     POST — claim an anonymous draft on first sign-in
     ratings/route.ts          GET/POST — read and leave a rating (anonymous)
-    ai/bio/route.ts           POST — Gemini bio/tagline generation
+    ai/bio/route.ts           POST — Groq-first bio/tagline generation (Gemini fallback)
+    ai/resume/route.ts        POST — resume PDF → reviewable profile patch (Groq first, Gemini fallback)
     upload/route.ts           POST — signed Cloudinary upload
     config/route.ts           GET  — auth/provider availability (non-sensitive)
 components/
@@ -211,7 +219,11 @@ components/
 lib/
   db.ts                       Drizzle client, ensureSchema(), publish/read/rating queries
   db/schema.ts                profiles, ratings + Better Auth tables (source of truth)
-  ai/gemini.ts                Server-only Gemini client (facts-only prompt)
+  ai/gemini.ts                Server-only Gemini client (fallback provider)
+  ai/groq.ts                  Server-only Groq client (primary provider, plain fetch)
+  ai/provider.ts              Groq-first, Gemini-fallback ordering for AI features
+  ai/copy.ts                  Shared facts-only prompts for the copy writer
+  ai/resume.ts                Resume PDF text → profile patch extraction + sanitizing
   validation/profile.ts       Zod schemas, URL safety
   validation/rating.ts        Zod schema for a visitor rating
   themes/index.ts             Theme/font/accent presets + resolveTheme()
@@ -243,6 +255,7 @@ docs/                         Architecture, API and deployment notes
 | `/api/profiles/claim-draft` | `POST` — import the local draft as your first page                      |
 | `/api/ratings`              | `GET` — approved ratings · `POST` — leave or revise your rating          |
 | `/api/ai/bio`               | `POST` — AI bio/tagline generation                                      |
+| `/api/ai/resume`            | `POST` — resume PDF upload → reviewable profile patch (never stored)    |
 | `/api/upload`               | `POST` — signed profile photo upload                                    |
 | `/api/config`               | `GET` — `{ authEnabled, providers }` for the UI                         |
 
@@ -295,7 +308,7 @@ beyond Neon for the database. Minimum for a useful production instance:
 4. One OAuth provider, with its callback URL pointed at
    `https://<your-domain>/api/auth/callback/<provider>` (Better Auth's default
    path under its `/api/auth` base path).
-5. `GEMINI_API_KEY` if you want the AI writer; `CLOUDINARY_*` if you want photo
+5. `GROQ_API_KEY` (or `GEMINI_API_KEY`) if you want the AI writer and resume import; `CLOUDINARY_*` if you want photo
    uploads.
 
 Create the database shape with `pnpm db:migrate` before the first publish — in

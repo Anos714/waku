@@ -5,6 +5,7 @@ import { EditorProvider } from "./editor-provider";
 import { EditorHeader } from "./editor-header";
 import { DraftClaimer } from "./draft-claimer";
 import { BasicFields } from "./basic-fields";
+import { ResumeImporter } from "./resume-importer";
 import { SocialLinksEditor } from "./social-links-editor";
 import { FeaturedEditor } from "./featured-editor";
 import { AiBioGenerator } from "./ai-bio-generator";
@@ -77,6 +78,7 @@ export function EditorShell() {
             )}
             aria-hidden={mobileView !== "edit"}
           >
+            <ResumeImporter />
             <BasicFields />
             <AiBioGenerator />
             <SocialLinksEditor />

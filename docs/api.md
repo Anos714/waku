@@ -102,7 +102,8 @@ Same auth/validation ladder as `/api/profiles` (`MISSING_DATABASE` →
 
 ## `POST /api/ai/bio`
 
-Generates bio or tagline variations with Google Gemini. The API key lives on
+Generates bio or tagline variations with Groq first and Google Gemini as the
+fallback. The API keys live on
 the server; the browser only ever posts profile *inputs*.
 
 ### Request
@@ -125,14 +126,48 @@ the server; the browser only ever posts profile *inputs*.
 | `200` | — | `{ ok: true, variations: [{ id, text }], model }` — three variations. |
 | `400` | `BAD_BODY` | Body not readable as JSON. |
 | `422` | `INVALID_INPUT` | Zod rejection (`message` + path in `hint`). |
-| `503` | `MISSING_API_KEY` | `GEMINI_API_KEY` unset. Everything else keeps working. |
+| `503` | `MISSING_API_KEY` | Neither `GROQ_API_KEY` nor `GEMINI_API_KEY` set. Everything else keeps working. |
 | `502` | `EMPTY_RESPONSE` / `UNPARSEABLE_RESPONSE` / `NO_USABLE_VARIATIONS` | Model returned nothing, non-JSON, or no variation survived filtering. |
+| `500` | `GROQ_AUTH_FAILED` | Groq rejected the API key — check `GROQ_API_KEY`. |
 | `500` | `UNKNOWN` | Unexpected failure; the raw code is only surfaced in dev. |
 
 The system prompt is constrained to facts already present in the input — no
 invented employers, metrics, clients or credentials — and the response is
 parsed against a JSON schema before anything reaches the UI. Variations are
 applied only when the user explicitly accepts one.
+
+---
+
+## `POST /api/ai/resume`
+
+Maps an uploaded PDF resume to a profile patch with Groq first and Gemini as
+the fallback. Nothing is stored — the patch is returned for the user to
+review, and the uploaded bytes never leave the request.
+
+### Request
+
+`multipart/form-data` with a single field:
+
+| Field | Type | Constraints |
+| --- | --- | --- |
+| `file` | file | `application/pdf` · ≤ 5 MB |
+
+### Responses
+
+| Status | `code` | When |
+| --- | --- | --- |
+| `200` | — | `{ ok: true, patch: { name, role, bio, location, websiteUrl, skills[], interests[], projects[] }, warnings[], model }` — the reviewed draft, never applied automatically. |
+| `400` | `BAD_BODY` / `NO_FILE` | Not multipart, or no file attached. |
+| `415` | `UNSUPPORTED_TYPE` | Not a PDF. |
+| `413` | `FILE_TOO_LARGE` | Over 5 MB. |
+| `422` | `PDF_PARSE_FAILED` / `NO_TEXT` | Unreadable or textless PDF (e.g. scanned images). |
+| `503` | `MISSING_API_KEY` / `ALL_MODELS_UNAVAILABLE` | No key configured, or every model busy. |
+| `502` | `EMPTY_RESPONSE` / `UNPARSEABLE_RESPONSE` | Model output unusable. |
+| `500` | `GROQ_AUTH_FAILED` | Groq rejected the API key — check `GROQ_API_KEY`. |
+
+The extraction prompt is facts-only — anything absent from the resume comes
+back empty — and unsafe URLs are dropped with a warning before the patch
+reaches the UI.
 
 ---
 

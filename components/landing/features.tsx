@@ -86,7 +86,9 @@ export function Features() {
               <p className="mt-4 text-sm leading-relaxed text-ink-2">
                 Three variations written from your role, skills and interests —
                 never inventing employers, metrics or credentials. Edit
-                anything before it lands on your profile.
+                anything before it lands on your profile. Or skip the blank
+                page — import a PDF resume and review every field before it
+                fills the form.
               </p>
 
               <div
@@ -158,6 +160,21 @@ export function Features() {
                   “Translating mathematical ideas into instructions a machine
                   can run — and notes a human can read.”
                 </p>
+              </div>
+
+              <div
+                className="mt-3 flex items-center gap-2.5 rounded-xl border border-line bg-bg-subtle/60 p-3.5"
+                aria-hidden="true"
+              >
+                <span className="flex shrink-0 items-center gap-1.5 rounded-md bg-surface-2 px-2 py-1.5 font-mono text-[0.6875rem] text-ink-2 ring-1 ring-inset ring-line">
+                  <FileText className="h-3.5 w-3.5 text-ink-3" />
+                  resume.pdf
+                </span>
+                <ArrowRight className="h-3.5 w-3.5 shrink-0 text-ink-3" />
+                <span className="truncate text-xs text-ink-2">
+                  name · role · skills ·{" "}
+                  <span className="font-medium text-ink">projects</span>
+                </span>
               </div>
             </div>
           </BentoCard>
