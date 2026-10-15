@@ -1,5 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { generateProfileCopy, resolveModelCascade } from "@/lib/ai/gemini";
+import {
+  generateProfileCopy,
+  geminiJsonCompletion,
+  resolveModelCascade,
+  UPSTREAM_TIMEOUT_MS,
+} from "@/lib/ai/gemini";
 import type { AiGenerationInput } from "@/types";
 
 const mockGenerateContent = vi.fn();
@@ -149,5 +154,22 @@ describe("generateProfileCopy cascade", () => {
     delete env.GEMINI_API_KEY;
     await expect(generateProfileCopy(INPUT)).rejects.toThrow("MISSING_API_KEY");
     expect(mockGenerateContent).not.toHaveBeenCalled();
+  });
+
+  it("fails a stalled model into the cascade instead of hanging", async () => {
+    vi.useFakeTimers();
+    try {
+      mockGenerateContent.mockReturnValueOnce(new Promise(() => {}));
+
+      const pending = geminiJsonCompletion("gemini-3.8-flash", "sys", "user");
+      const assertion = expect(pending).rejects.toMatchObject({
+        message: "GEMINI_TIMEOUT",
+        status: 503,
+      });
+      await vi.advanceTimersByTimeAsync(UPSTREAM_TIMEOUT_MS);
+      await assertion;
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
