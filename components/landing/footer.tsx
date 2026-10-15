@@ -73,14 +73,6 @@ const LISTINGS: {
     width: 248,
     height: 66,
   },
-  {
-    href: "https://launchaf.com/",
-    src: "https://launchaf.com/api/badge/light?v=launchaf-blue-2026-2",
-    alt: "Featured on LaunchAF",
-    width: 200,
-    height: 56,
-    attrs: { "data-launchaf-badge": "true" },
-  },
 ];
 
 const WORDMARK_GRADIENT =
