@@ -126,7 +126,9 @@ export type CardLayoutId =
   | "poster"
   | "spotlight"
   | "frame"
-  | "duo";
+  | "duo"
+  | "signal"
+  | "capsule";
 
 /**
  * Layout templates for the profile page itself. Each is a full rendering of

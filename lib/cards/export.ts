@@ -15,6 +15,8 @@ export const CARD_DESIGN_SIZES: Record<string, CardDesignSize> = {
   spotlight: { width: 1200, height: 630 },
   frame: { width: 1200, height: 630 },
   duo: { width: 1200, height: 720 },
+  signal: { width: 1200, height: 630 },
+  capsule: { width: 1200, height: 630 },
 };
 
 const PIXEL_RATIO = 2;

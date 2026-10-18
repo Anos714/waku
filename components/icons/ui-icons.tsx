@@ -213,6 +213,15 @@ export function Clock(props: IconProps) {
   );
 }
 
+export function Lock(props: IconProps) {
+  return (
+    <Base {...props}>
+      <Solid d="M6.4 10.6h11.2a1.6 1.6 0 0 1 1.6 1.6v6.4a1.6 1.6 0 0 1-1.6 1.6H6.4a1.6 1.6 0 0 1-1.6-1.6v-6.4a1.6 1.6 0 0 1 1.6-1.6Z" w={1.6} />
+      <Line d="M8.6 10.6V8.4a3.4 3.4 0 0 1 6.8 0v2.2" w={2.4} />
+    </Base>
+  );
+}
+
 export function RotateCcw(props: IconProps) {
   return (
     <Base {...props}>

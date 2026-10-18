@@ -193,6 +193,8 @@ export const profileSchema = z.object({
       "spotlight",
       "frame",
       "duo",
+      "signal",
+      "capsule",
     ])
     .default("classic"),
   profileDesign: z
