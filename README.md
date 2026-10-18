@@ -51,9 +51,10 @@ No account needed to build. Nothing leaves your browser until you publish.
 - **10 themes × 8 font pairings × 16 accents × 8 backgrounds × 6 social button
   styles**: applied as CSS custom properties. Switching never touches content.
 - **4 page designs**: Editorial, Centered, Sidebar, Hero.
-- **8 identity-card layouts**: Classic, Banner, Minimal, Split, Poster,
-  Spotlight, Frame, Duo, exported as PNG, JPEG, WebP or AVIF at 2× pixel
-  density.
+- **10 identity-card layouts**: Classic, Banner, Minimal, Split, Poster,
+  Spotlight, Frame, Duo, plus two signed-in premium layouts (Signal, Capsule),
+  exported as PNG, JPEG, WebP or AVIF at 2× pixel density. The eight original
+  layouts stay free for everyone, anonymous included.
 - **AI bio & tagline writer**: Groq first with a Google Gemini fallback,
   called server-side only. The
   prompt is constrained to facts already in your profile; it may not invent
@@ -62,6 +63,12 @@ No account needed to build. Nothing leaves your browser until you publish.
 - **Resume import**: upload a PDF resume and the AI drafts your name, role,
   bio, skills, interests, website and projects into a review screen. Nothing
   touches your draft until you approve a field, and the file is never stored.
+- **GitHub import & rank**: sign in, then pull your own repositories (public and
+  private) into featured work with the same review-before-apply flow. Every
+  account that connects GitHub gets a deterministic **rank** scored on public
+  signal only (stars, followers, projects, languages) and appears on the public
+  [leaderboard](/leaderboard). Anonymous builders are untouched: no sign-in, no
+  rank, the full editor as before.
 - **QR codes & sharing**: profile QR colored from the profile's own theme
   palette, clipboard copy, Web Share, and a plain text export of the whole
   profile.
@@ -195,6 +202,7 @@ app/
   p/[slug]/page.tsx           Public profile (SSR + client fallback)
   contact/page.tsx            Contact page (channels + mailto form)
   rate/page.tsx               Ratings page (stars form + wall + average)
+  leaderboard/page.tsx        Public leaderboard (ranked by GitHub signal)
   legal/                      Privacy policy, cookie policy, terms
   opengraph-image.tsx         Generated 1200×630 OG/Twitter card
   api/
@@ -204,6 +212,7 @@ app/
     ratings/route.ts          GET/POST: read and leave a rating (anonymous)
     ai/bio/route.ts           POST: Groq-first bio/tagline generation (Gemini fallback)
     ai/resume/route.ts        POST: resume PDF → reviewable profile patch (Groq first, Gemini fallback)
+    github/repos/route.ts     POST: import GitHub repos + persist public stats (session required)
     upload/route.ts           POST: signed Cloudinary upload
     config/route.ts           GET: auth/provider availability (non-sensitive)
 components/
@@ -211,6 +220,7 @@ components/
   legal/                      Shared legal layout + section/point typographic blocks
   contact/                    Contact form (composes a mailto draft)
   rating/                     Star rating form + ratings wall
+  leaderboard/                Rank wall list
   editor/                     Editor shell, form sections, AI writer, theming, share panel
   profile/                    ProfileView (shared renderer), designs, avatars, sections
   cards/                      Identity card, 8 layouts, export menus
@@ -218,17 +228,20 @@ components/
   icons/                      Brand + platform glyphs
 lib/
   db.ts                       Drizzle client, ensureSchema(), publish/read/rating queries
-  db/schema.ts                profiles, ratings + Better Auth tables (source of truth)
+  db/schema.ts                profiles, ratings, github_stats + Better Auth tables (source of truth)
   ai/gemini.ts                Server-only Gemini client (fallback provider)
   ai/groq.ts                  Server-only Groq client (primary provider, plain fetch)
   ai/provider.ts              Groq-first, Gemini-fallback ordering for AI features
   ai/copy.ts                  Shared facts-only prompts for the copy writer
   ai/resume.ts                Resume PDF text → profile patch extraction + sanitizing
+  github/                     Server-only GitHub client + pure repo/stats mapping
+  rank/score.ts               Deterministic public-signal rank (0–100) and tiers
   validation/profile.ts       Zod schemas, URL safety
   validation/rating.ts        Zod schema for a visitor rating
   themes/index.ts             Theme/font/accent presets + resolveTheme()
   profile/                    storage, slug, qr, format, demo, platforms, data access
   cards/export.ts             html-to-image export (dynamic import)
+  cards/premium.ts            Card entitlements (free layouts vs signed-in premium)
   site.ts                     Site origin (metadata base), repo URL, contact email, mailto()
 types/index.ts                Domain models (Profile, ThemeSettings, …)
 proxy.ts                      Optimistic cookie gate on POST /api/profiles*
@@ -247,6 +260,7 @@ docs/                         Architecture, API and deployment notes
 | `/p/[slug]`                 | Public profile page (demo: `/p/ada`)                                    |
 | `/contact`                  | Contact page: email + GitHub, and a form that drafts a message          |
 | `/rate`                     | Rate Waku in stars, read what other visitors said                       |
+| `/leaderboard`              | Builders ranked by their public GitHub signal                           |
 | `/legal/privacy-policy`     | What is collected, what is not, how to have it removed                  |
 | `/legal/cookie-policy`      | The one cookie Waku sets, and how to clear it                           |
 | `/legal/terms`              | The rules of using Waku                                                 |
@@ -256,6 +270,7 @@ docs/                         Architecture, API and deployment notes
 | `/api/ratings`              | `GET`: approved ratings · `POST`: leave or revise your rating          |
 | `/api/ai/bio`               | `POST`: AI bio/tagline generation                                      |
 | `/api/ai/resume`            | `POST`: resume PDF upload → reviewable profile patch (never stored)    |
+| `/api/github/repos`         | `POST`: import the signed-in user's GitHub repos → reviewable patch + public stats |
 | `/api/upload`               | `POST`: signed profile photo upload                                    |
 | `/api/config`               | `GET`: `{ authEnabled, providers }` for the UI                         |
 
@@ -335,7 +350,7 @@ Profile rendering is fully tokenised:
   stripes, mesh, rings
 - **6 social button styles**: minimal, outline, solid, soft, elevated,
   underline
-- **4 page designs**, **8 card layouts**
+- **4 page designs**, **10 card layouts** (2 premium, free-unlocked on sign-in)
 - 9 social platforms with canonical metadata (GitHub, LinkedIn, X, Instagram,
   YouTube, Bluesky, Mastodon, portfolio, email)
 
