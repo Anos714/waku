@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   AlertTriangle,
   Check,
@@ -72,6 +72,15 @@ interface AuthConfig {
   githubRepos: boolean;
 }
 
+type SyncOutcome =
+  | { status: "synced"; stats: GithubStatsPayload }
+  | { status: "unconnected" }
+  | { status: "failed" };
+
+/** Per-browser throttle for the automatic rank sync. */
+const SYNC_KEY = "waku.github.sync.v1";
+const SYNC_THROTTLE_MS = 60 * 60 * 1000;
+
 /**
  * GitHub import: pull the signed-in user's repositories, let them review every
  * group, and only then write the selected fields into the draft.
@@ -88,6 +97,47 @@ export function GithubImporter() {
   const [review, setReview] = useState<ReviewState | null>(null);
   const [error, setError] = useState<ErrorResponse | null>(null);
   const [connecting, setConnecting] = useState(false);
+  const [syncedStats, setSyncedStats] = useState<GithubStatsPayload | null>(null);
+  const [syncFailed, setSyncFailed] = useState(false);
+
+  // Sync the public-stats snapshot so a GitHub-connected account gets a rank
+  // without importing anything first. The fetch returns an outcome; the effect
+  // and the retry button both apply it. A not-connected response is not an error
+  // (the connect flow handles it); anything else is surfaced quietly so a broken
+  // rank never looks like a missing feature.
+  const syncRank = useCallback(async (): Promise<SyncOutcome> => {
+    try {
+      const response = await fetch("/api/github/sync", { method: "POST" });
+      const body = (await response.json()) as {
+        ok?: boolean;
+        stats?: GithubStatsPayload;
+        code?: string;
+      };
+
+      if (response.ok && body.ok && body.stats) {
+        return { status: "synced", stats: body.stats };
+      }
+      if (body.code === "GITHUB_NOT_CONNECTED") return { status: "unconnected" };
+      return { status: "failed" };
+    } catch {
+      // A rank sync must never interrupt the editor.
+      return { status: "failed" };
+    }
+  }, []);
+
+  const applyOutcome = useCallback((outcome: SyncOutcome) => {
+    if (outcome.status === "synced") {
+      setSyncedStats(outcome.stats);
+      setSyncFailed(false);
+      try {
+        window.localStorage.setItem(SYNC_KEY, String(Date.now()));
+      } catch {
+        // Ignore: the throttle is best-effort.
+      }
+      return;
+    }
+    if (outcome.status === "failed") setSyncFailed(true);
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -105,9 +155,25 @@ export function GithubImporter() {
     };
   }, []);
 
+  const userId = session?.user?.id;
+  useEffect(() => {
+    if (!config?.githubRepos || !userId) return;
+
+    try {
+      const last = Number(window.localStorage.getItem(SYNC_KEY) ?? 0);
+      if (last && Date.now() - last < SYNC_THROTTLE_MS) return;
+    } catch {
+      // localStorage unavailable: fall through and try anyway.
+    }
+
+    void syncRank().then(applyOutcome);
+  }, [config?.githubRepos, userId, syncRank, applyOutcome]);
+
   // Anonymous visitors keep the original editor: nothing renders until both the
   // session and the server capability are known to be present.
   if (isPending || !config?.githubRepos || !session) return null;
+
+  const syncedRank = syncedStats ? computeRank(syncedStats) : null;
 
   async function importRepos() {
     setStatus("fetching");
@@ -254,6 +320,25 @@ export function GithubImporter() {
               Public and private repos, ranked by stars. Only what you approve
               lands in the draft.
             </p>
+            {syncedRank ? (
+              <p className="mt-1 text-xs text-ink-3">
+                Rank{" "}
+                <span className="font-medium text-ink">{syncedRank.score}/100</span>
+                {" · "}
+                <span className="font-medium text-ink">{syncedRank.tier.label}</span>
+              </p>
+            ) : null}
+            {syncFailed && !syncedRank ? (
+              <button
+                type="button"
+                onClick={() => {
+                  void syncRank().then(applyOutcome);
+                }}
+                className="mt-1 text-xs font-medium text-ink-2 underline-offset-2 hover:text-ink hover:underline"
+              >
+                Rank failed to sync. Try again
+              </button>
+            ) : null}
           </div>
           <Button
             type="button"

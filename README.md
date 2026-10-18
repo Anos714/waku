@@ -67,8 +67,9 @@ No account needed to build. Nothing leaves your browser until you publish.
   private) into featured work with the same review-before-apply flow. Every
   account that connects GitHub gets a deterministic **rank** scored on public
   signal only (stars, followers, projects, languages) and appears on the public
-  [leaderboard](/leaderboard). Anonymous builders are untouched: no sign-in, no
-  rank, the full editor as before.
+  [leaderboard](/leaderboard). The rank syncs automatically on load, so simply
+  connecting GitHub is enough to be ranked. Anonymous builders are untouched: no
+  sign-in, no rank, the full editor as before.
 - **QR codes & sharing**: profile QR colored from the profile's own theme
   palette, clipboard copy, Web Share, and a plain text export of the whole
   profile.
@@ -213,6 +214,7 @@ app/
     ai/bio/route.ts           POST: Groq-first bio/tagline generation (Gemini fallback)
     ai/resume/route.ts        POST: resume PDF → reviewable profile patch (Groq first, Gemini fallback)
     github/repos/route.ts     POST: import GitHub repos + persist public stats (session required)
+    github/sync/route.ts      POST: auto-persist the public stats snapshot → rank (session required)
     upload/route.ts           POST: signed Cloudinary upload
     config/route.ts           GET: auth/provider availability (non-sensitive)
 components/
@@ -271,6 +273,7 @@ docs/                         Architecture, API and deployment notes
 | `/api/ai/bio`               | `POST`: AI bio/tagline generation                                      |
 | `/api/ai/resume`            | `POST`: resume PDF upload → reviewable profile patch (never stored)    |
 | `/api/github/repos`         | `POST`: import the signed-in user's GitHub repos → reviewable patch + public stats |
+| `/api/github/sync`          | `POST`: auto-sync the public stats snapshot → rank (called on editor load) |
 | `/api/upload`               | `POST`: signed profile photo upload                                    |
 | `/api/config`               | `GET`: `{ authEnabled, providers }` for the UI                         |
 

@@ -208,6 +208,33 @@ exists for autofill; no private signal ever becomes part of a public number.
 
 ---
 
+## `POST /api/github/sync`
+
+Reads the same public stats snapshot as above and **persists** it, then returns
+the resulting rank. This is the automatic path: the editor calls it once on load
+for a GitHub-connected account (throttled to once an hour per browser) so a rank
+appears on the leaderboard without requiring an import first. It takes no body
+and writes nothing to the draft.
+
+Because a rank is the entire point of this route, a failed write is reported
+instead of swallowed (unlike the import route, where stats are best-effort).
+
+### Responses
+
+| Status | `code` | When |
+| --- | --- | --- |
+| `200` | — | `{ ok: true, stats, rank: { score, tier, factors } }`. |
+| `401` | `UNAUTHENTICATED` | No session. |
+| `409` | `GITHUB_NOT_CONNECTED` | Signed in, but no GitHub account linked. |
+| `403` | `GITHUB_REAUTH_REQUIRED` | The stored token lacks the required scopes — reconnect GitHub. |
+| `502` | `GITHUB_SYNC_FAILED` / `GITHUB_NETWORK_ERROR` / `GITHUB_REQUEST_FAILED` | The snapshot could not be saved, or GitHub was unreachable. |
+| `503` | `MISSING_GITHUB` | `DATABASE_URL` or the `GITHUB_CLIENT_*` credentials are unset. |
+
+Only a GitHub-connected account can be ranked, so appearing here means an account
+has a public signal to measure. The leaderboard reads the persisted snapshot.
+
+---
+
 ## `POST /api/upload`
 
 Uploads a profile photo to Cloudinary with a server-computed signature.
