@@ -1,11 +1,12 @@
 import { drizzle } from "drizzle-orm/neon-http";
 import { neon } from "@neondatabase/serverless";
 import { nanoid } from "nanoid";
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, sql } from "drizzle-orm";
 import { profileSchema } from "@/lib/validation/profile";
 import { generateProfileSlug } from "@/lib/profile/slug";
+import { computeRank } from "@/lib/rank/score";
 import type { Profile } from "@/types";
-import { account, profiles, ratings, session, user, verification } from "./db/schema";
+import { account, githubStats, profiles, ratings, session, user, verification } from "./db/schema";
 
 /**
  * Server-only data access for published profiles and Better Auth, backed by
@@ -21,7 +22,7 @@ export function hasDatabase(): boolean {
   return Boolean(process.env.DATABASE_URL?.trim());
 }
 
-export { profiles, ratings, user, session, account, verification };
+export { profiles, ratings, user, session, account, verification, githubStats };
 
 // Drizzle's query builder only accepts a live client, so the connection is
 // created lazily; callers must check hasDatabase() first.
@@ -112,6 +113,20 @@ const SCHEMA_STATEMENTS = [
      CONSTRAINT ratings_fingerprint_unique UNIQUE (fingerprint)
    )`,
   `CREATE INDEX IF NOT EXISTS ratings_created_at_idx ON ratings (created_at)`,
+  `CREATE TABLE IF NOT EXISTS "github_stats" (
+     user_id text PRIMARY KEY REFERENCES "user"(id) ON DELETE CASCADE,
+     login text NOT NULL,
+     followers integer NOT NULL DEFAULT 0,
+     public_repos integer NOT NULL DEFAULT 0,
+     total_stars integer NOT NULL DEFAULT 0,
+     repo_count integer NOT NULL DEFAULT 0,
+     top_languages jsonb NOT NULL DEFAULT '[]',
+     score integer NOT NULL DEFAULT 0,
+     updated_at timestamptz NOT NULL DEFAULT now()
+   )`,
+  `ALTER TABLE "github_stats" ADD COLUMN IF NOT EXISTS score integer NOT NULL DEFAULT 0`,
+  `CREATE INDEX IF NOT EXISTS github_stats_total_stars_idx ON "github_stats" (total_stars)`,
+  `CREATE INDEX IF NOT EXISTS github_stats_score_idx ON "github_stats" (score)`,
 ];
 
 // The schema only needs creating once per process — the tables persist in the
@@ -382,6 +397,170 @@ export async function unpublishProfile(
     return true;
   } catch {
     return false;
+  }
+}
+
+/* ------------------------------------------------------------------- github */
+
+export interface GithubStatsSnapshot {
+  login: string;
+  followers: number;
+  publicRepos: number;
+  totalStars: number;
+  repoCount: number;
+  topLanguages: string[];
+}
+
+/**
+ * The access token GitHub issued for `userId`, or null when that user has no
+ * linked GitHub account. Server-only: callers must never forward this value to
+ * the browser.
+ */
+export async function getGithubAccessToken(userId: string): Promise<string | null> {
+  if (!db) return null;
+
+  try {
+    const rows = await db
+      .select({ accessToken: account.accessToken })
+      .from(account)
+      .where(and(eq(account.userId, userId), eq(account.providerId, "github")))
+      .limit(1);
+    return rows[0]?.accessToken ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Persists a GitHub stats snapshot for a user, replacing any previous one.
+ * Best-effort: an import still succeeds even when this write fails, so a
+ * failing leaderboard never blocks a working autofill.
+ */
+export async function saveGithubStats(
+  userId: string,
+  stats: GithubStatsSnapshot,
+): Promise<boolean> {
+  if (!db) return false;
+
+  try {
+    await ensureSchema();
+    const now = new Date();
+    const score = computeRank({
+      totalStars: stats.totalStars,
+      followers: stats.followers,
+      publicRepos: stats.publicRepos,
+      repoCount: stats.repoCount,
+      topLanguages: stats.topLanguages,
+    }).score;
+    const values = {
+      userId,
+      login: stats.login,
+      followers: stats.followers,
+      publicRepos: stats.publicRepos,
+      totalStars: stats.totalStars,
+      repoCount: stats.repoCount,
+      topLanguages: stats.topLanguages,
+      score,
+      updatedAt: now,
+    };
+    await db
+      .insert(githubStats)
+      .values(values)
+      .onConflictDoUpdate({
+        target: githubStats.userId,
+        set: {
+          login: stats.login,
+          followers: stats.followers,
+          publicRepos: stats.publicRepos,
+          totalStars: stats.totalStars,
+          repoCount: stats.repoCount,
+          topLanguages: stats.topLanguages,
+          score,
+          updatedAt: now,
+        },
+      });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export interface LeaderboardEntry {
+  userId: string;
+  login: string;
+  name: string;
+  image: string | null;
+  score: number;
+  totalStars: number;
+  followers: number;
+  publicRepos: number;
+  /** The user's newest published page, when they have one. */
+  slug: string | null;
+}
+
+/**
+ * The public leaderboard: every account with a stored GitHub snapshot, ranked by
+ * score then stars. Only users who connected GitHub have a snapshot, so this is
+ * exactly the set that has a public signal to rank on.
+ *
+ * Returns an empty list when the database is unavailable — callers render an
+ * empty state rather than a broken grid.
+ */
+export async function listLeaderboard(limit = 25): Promise<LeaderboardEntry[]> {
+  if (!db) return [];
+
+  try {
+    await ensureSchema();
+
+    const rows = await db
+      .select({
+        userId: githubStats.userId,
+        login: githubStats.login,
+        score: githubStats.score,
+        totalStars: githubStats.totalStars,
+        followers: githubStats.followers,
+        publicRepos: githubStats.publicRepos,
+        name: user.name,
+        image: user.image,
+      })
+      .from(githubStats)
+      .innerJoin(user, eq(user.id, githubStats.userId))
+      .orderBy(desc(githubStats.score), desc(githubStats.totalStars))
+      .limit(limit);
+
+    if (rows.length === 0) return [];
+
+    // A user may own several pages; the leaderboard links to the newest one.
+    const slugRows = await db
+      .select({
+        ownerId: profiles.ownerId,
+        slug: profiles.slug,
+        publishedAt: profiles.publishedAt,
+      })
+      .from(profiles)
+      .where(
+        inArray(
+          profiles.ownerId,
+          rows.map((row) => row.userId),
+        ),
+      );
+
+    const newestSlug = new Map<string, { slug: string; at: number }>();
+    for (const row of slugRows) {
+      if (!row.ownerId) continue;
+      const at = row.publishedAt ? row.publishedAt.getTime() : 0;
+      const current = newestSlug.get(row.ownerId);
+      if (!current || at > current.at) {
+        newestSlug.set(row.ownerId, { slug: row.slug, at });
+      }
+    }
+
+    return rows.map((row) => ({
+      ...row,
+      slug: newestSlug.get(row.userId)?.slug ?? null,
+    }));
+  } catch {
+    return [];
   }
 }
 
