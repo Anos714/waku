@@ -111,38 +111,5 @@ export const ratings = pgTable(
   ],
 );
 
-/**
- * A public GitHub stats snapshot, keyed by the owning user. Captured whenever a
- * signed-in user imports repositories, so the rank/leaderboard can score an
- * account without re-hitting the GitHub API on every read.
- *
- * Only public signal is stored: stars, followers and public repository counts.
- * The `repo` OAuth scope exists for autofill; nothing private is ever totalled
- * here.
- */
-export const githubStats = pgTable(
-  "github_stats",
-  {
-    userId: text("user_id")
-      .primaryKey()
-      .references(() => user.id, { onDelete: "cascade" }),
-    login: text("login").notNull(),
-    followers: integer("followers").notNull().default(0),
-    publicRepos: integer("public_repos").notNull().default(0),
-    totalStars: integer("total_stars").notNull().default(0),
-    repoCount: integer("repo_count").notNull().default(0),
-    topLanguages: jsonb("top_languages").notNull().default([]),
-    /** Cached rank score (0–100) so the leaderboard can sort on an index. */
-    score: integer("score").notNull().default(0),
-    updatedAt: timestamp("updated_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
-  },
-  (table) => [
-    index("github_stats_total_stars_idx").on(table.totalStars),
-    index("github_stats_score_idx").on(table.score),
-  ],
-);
-
 /** The subset of the schema Better Auth's Drizzle adapter needs. */
 export const authSchema = { user, account, session, verification };

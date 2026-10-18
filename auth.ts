@@ -57,17 +57,7 @@ export const auth = betterAuth({
     : undefined,
   socialProviders: {
     ...(hasGithub()
-      ? {
-          github: {
-            clientId: githubClientId!,
-            clientSecret: githubClientSecret!,
-            // `read:user` gives the profile, followers and public repos;
-            // `repo` adds the user's private repositories for autofill. The
-            // stats snapshot only ever totals public signal, so private access
-            // stays confined to the editor.
-            scope: ["read:user", "repo"],
-          },
-        }
+      ? { github: { clientId: githubClientId!, clientSecret: githubClientSecret! } }
       : {}),
     ...(hasGoogle()
       ? { google: { clientId: googleClientId!, clientSecret: googleClientSecret! } }

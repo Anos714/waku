@@ -126,18 +126,7 @@ profiles(
   owner_id    text → user.id,
   published_at / updated_at timestamptz
 )
-github_stats(
-  user_id     text primary key → user.id,
-  login, followers, public_repos, total_stars, repo_count,
-  top_languages jsonb, updated_at timestamptz
-)
 ```
-
-`github_stats` is a public snapshot captured when a signed-in user imports
-repositories (`lib/github/*`, `app/api/github/repos/route.ts`). It exists so a
-rank or leaderboard can score an account without re-hitting the GitHub API on
-every read, and it totals **public, non-fork** signal only — the `repo` OAuth
-scope stays confined to autofill.
 
 Storing the profile as JSONB means the Zod-validated object round-trips
 untouched; adding a field to `Profile` needs no schema change. Ownership

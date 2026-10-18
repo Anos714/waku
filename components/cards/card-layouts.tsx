@@ -936,207 +936,10 @@ function DuoLayout({ profile, theme, qrDataUrl, profileUrl }: CardLayoutProps) {
   );
 }
 
-/* ------------------------------------------------------------------ Signal */
-
-function SignalLayout({ profile, theme, qrDataUrl, profileUrl }: CardLayoutProps) {
-  const name = clampText(profile.name.trim() || "Unnamed", 40);
-  const radius =
-    theme.avatarShape === "square" ? 10 : theme.avatarShape === "rounded" ? 34 : 112;
-
-  return (
-    <div style={{ height: "100%", display: "flex" }}>
-      <div style={{ width: 18, flexShrink: 0, background: "var(--pt-accent)" }} />
-      <div
-        style={{
-          flex: 1,
-          minWidth: 0,
-          display: "flex",
-          flexDirection: "column",
-          padding: "54px 62px",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "flex-start",
-            justifyContent: "space-between",
-            gap: "32px",
-          }}
-        >
-          <div style={{ minWidth: 0 }}>
-            {profile.role.trim() && (
-              <div
-                style={{
-                  color: "var(--pt-accent)",
-                  fontFamily: "var(--pt-font-heading)",
-                  fontSize: "15px",
-                  fontWeight: 700,
-                  letterSpacing: "0.18em",
-                  textTransform: "uppercase",
-                  marginBottom: 12,
-                }}
-              >
-                {clampText(profile.role.trim(), 52)}
-              </div>
-            )}
-            <h1
-              style={{
-                color: "var(--pt-ink)",
-                fontFamily: "var(--pt-font-heading)",
-                fontSize: "60px",
-                lineHeight: 1.02,
-                letterSpacing: "-0.03em",
-                fontWeight: 600,
-                margin: 0,
-                maxWidth: "720px",
-              }}
-            >
-              {name}
-            </h1>
-          </div>
-          <ProfileAvatar
-            name={name}
-            src={profile.avatarUrl}
-            size={116}
-            radius={radius}
-            plain
-            style={{ boxShadow: "inset 0 0 0 1px var(--pt-line)" }}
-          />
-        </div>
-
-        {profile.tagline.trim() && (
-          <p
-            style={{
-              color: "var(--pt-ink-2)",
-              fontSize: "21px",
-              lineHeight: 1.45,
-              margin: "20px 0 0",
-              maxWidth: qrDataUrl ? "620px" : "860px",
-            }}
-          >
-            {clampText(profile.tagline.trim(), 130)}
-          </p>
-        )}
-
-        <div
-          style={{
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "space-between",
-            gap: "32px",
-            marginTop: "auto",
-            paddingTop: "30px",
-          }}
-        >
-          <div style={{ display: "flex", flexDirection: "column", gap: "18px", minWidth: 0 }}>
-            <CardSocials links={profile.socials} />
-            <BrandMark url={profileUrl} />
-          </div>
-          {qrDataUrl && <QrTile dataUrl={qrDataUrl} size={128} label="Scan to view profile" />}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ----------------------------------------------------------------- Capsule */
-
-function CapsuleLayout({ profile, theme, qrDataUrl, profileUrl }: CardLayoutProps) {
-  const name = clampText(profile.name.trim() || "Unnamed", 30);
-  const radius =
-    theme.avatarShape === "square" ? 8 : theme.avatarShape === "rounded" ? 22 : 60;
-
-  return (
-    <div
-      style={{
-        position: "relative",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-        padding: "56px 64px",
-      }}
-    >
-      <div
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "18px",
-          padding: "14px 28px 14px 14px",
-          borderRadius: 999,
-          border: "1px solid var(--pt-line)",
-          background: "var(--pt-surface)",
-        }}
-      >
-        <ProfileAvatar name={name} src={profile.avatarUrl} size={68} radius={radius} plain />
-        <div style={{ textAlign: "left", minWidth: 0 }}>
-          <h1
-            style={{
-              color: "var(--pt-ink)",
-              fontFamily: "var(--pt-font-heading)",
-              fontSize: "34px",
-              lineHeight: 1.05,
-              letterSpacing: "-0.02em",
-              fontWeight: 600,
-              margin: 0,
-            }}
-          >
-            {name}
-          </h1>
-          {profile.role.trim() && (
-            <div
-              style={{
-                color: "var(--pt-accent)",
-                fontSize: "13px",
-                fontWeight: 700,
-                letterSpacing: "0.16em",
-                textTransform: "uppercase",
-                marginTop: 4,
-              }}
-            >
-              {clampText(profile.role.trim(), 44)}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {profile.tagline.trim() && (
-        <p
-          style={{
-            color: "var(--pt-ink-2)",
-            fontSize: "21px",
-            lineHeight: 1.45,
-            margin: "28px 0 0",
-            maxWidth: "720px",
-          }}
-        >
-          {clampText(profile.tagline.trim(), 120)}
-        </p>
-      )}
-
-      <div style={{ marginTop: 30 }}>
-        <CardSocials links={profile.socials} align="center" />
-      </div>
-
-      <div style={{ position: "absolute", left: 62, bottom: 48 }}>
-        <BrandMark url={profileUrl} />
-      </div>
-      {qrDataUrl && (
-        <div style={{ position: "absolute", right: 56, bottom: 40 }}>
-          <QrTile dataUrl={qrDataUrl} size={120} label="Scan to view profile" />
-        </div>
-      )}
-    </div>
-  );
-}
-
 export const CARD_LAYOUTS: {
   id: Profile["cardLayout"];
   name: string;
   description: string;
-  premium?: boolean;
 }[] = [
   { id: "classic", name: "Classic", description: "Avatar, statement name, QR corner" },
   { id: "banner", name: "Banner", description: "Accent band with overlapping portrait" },
@@ -1146,8 +949,6 @@ export const CARD_LAYOUTS: {
   { id: "spotlight", name: "Spotlight", description: "Centered under an accent halo" },
   { id: "frame", name: "Frame", description: "Thin inner border, gallery feel" },
   { id: "duo", name: "Duo", description: "Identity panel beside the content" },
-  { id: "signal", name: "Signal", description: "Accent spine, editorial split", premium: true },
-  { id: "capsule", name: "Capsule", description: "Rounded identity pill, centered", premium: true },
 ];
 
 export function renderCardLayout(props: CardLayoutProps): React.ReactNode {
@@ -1166,10 +967,6 @@ export function renderCardLayout(props: CardLayoutProps): React.ReactNode {
       return <FrameLayout {...props} />;
     case "duo":
       return <DuoLayout {...props} />;
-    case "signal":
-      return <SignalLayout {...props} />;
-    case "capsule":
-      return <CapsuleLayout {...props} />;
     default:
       return <ClassicLayout {...props} />;
   }

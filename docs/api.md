@@ -170,71 +170,6 @@ reaches the UI.
 
 ---
 
-## `POST /api/github/repos`
-
-Reads the signed-in user's own GitHub repositories (public and private) and
-returns a reviewable patch plus a public stats snapshot. Requires a session; the
-stored OAuth access token is read server-side and never leaves the server.
-Nothing is written to the draft here — the editor shows every group for approval
-first. The stats snapshot is best-effort, so a failing write never blocks the
-import.
-
-### Request
-
-```jsonc
-{
-  "limit": 6 // optional, 1–12; the number of top repos suggested (default 6)
-}
-```
-
-Repos are filtered to non-forks, non-archived, and sorted by stars with a recent
-push as the tiebreak. A private repo keeps its name but drops its URL, so an
-imported private project never renders a link that 404s for visitors.
-
-### Responses
-
-| Status | `code` | When |
-| --- | --- | --- |
-| `200` | — | `{ ok: true, profile: { login, name, bio, websiteUrl, avatarUrl, followers, publicRepos }, projects[], skills[], stats, warnings[] }`. |
-| `401` | `UNAUTHENTICATED` | No session. |
-| `409` | `GITHUB_NOT_CONNECTED` | Signed in, but no GitHub account linked — the UI offers "Connect GitHub". |
-| `403` | `GITHUB_REAUTH_REQUIRED` | The stored token lacks the required scopes (a session created before `repo` was requested) — reconnect GitHub. |
-| `502` | `GITHUB_NETWORK_ERROR` / `GITHUB_REQUEST_FAILED` | GitHub unreachable or returned an error. |
-| `503` | `MISSING_GITHUB` | `DATABASE_URL` or the `GITHUB_CLIENT_*` credentials are unset. |
-
-The `stats` snapshot (`followers`, `publicRepos`, `totalStars`, `repoCount`,
-`topLanguages`) totals **public, non-fork** repos only. The `repo` OAuth scope
-exists for autofill; no private signal ever becomes part of a public number.
-
----
-
-## `POST /api/github/sync`
-
-Reads the same public stats snapshot as above and **persists** it, then returns
-the resulting rank. This is the automatic path: the editor calls it once on load
-for a GitHub-connected account (throttled to once an hour per browser) so a rank
-appears on the leaderboard without requiring an import first. It takes no body
-and writes nothing to the draft.
-
-Because a rank is the entire point of this route, a failed write is reported
-instead of swallowed (unlike the import route, where stats are best-effort).
-
-### Responses
-
-| Status | `code` | When |
-| --- | --- | --- |
-| `200` | — | `{ ok: true, stats, rank: { score, tier, factors } }`. |
-| `401` | `UNAUTHENTICATED` | No session. |
-| `409` | `GITHUB_NOT_CONNECTED` | Signed in, but no GitHub account linked. |
-| `403` | `GITHUB_REAUTH_REQUIRED` | The stored token lacks the required scopes — reconnect GitHub. |
-| `502` | `GITHUB_SYNC_FAILED` / `GITHUB_NETWORK_ERROR` / `GITHUB_REQUEST_FAILED` | The snapshot could not be saved, or GitHub was unreachable. |
-| `503` | `MISSING_GITHUB` | `DATABASE_URL` or the `GITHUB_CLIENT_*` credentials are unset. |
-
-Only a GitHub-connected account can be ranked, so appearing here means an account
-has a public signal to measure. The leaderboard reads the persisted snapshot.
-
----
-
 ## `POST /api/upload`
 
 Uploads a profile photo to Cloudinary with a server-computed signature.
@@ -278,8 +213,7 @@ database required.
 {
   "ok": true,
   "authEnabled": true,
-  "providers": { "github": true, "google": false },
-  "githubRepos": true
+  "providers": { "github": true, "google": false }
 }
 ```
 
@@ -287,10 +221,6 @@ database required.
   drafts stay local instead of showing a sign-in flow that cannot work.
 - `providers` — a provider is `true` only when both its id and secret are set;
   the UI hides buttons for `false`.
-- `githubRepos` — `true` only when the database is available **and** the GitHub
-  provider is configured. The editor mounts the "Import from GitHub" panel only
-  when this is `true`; otherwise the panel stays hidden and the anonymous editor
-  is unchanged.
 
 ---
 
@@ -361,7 +291,6 @@ Sign-in is social-only; callback URLs are
 | `400` | Body could not be parsed |
 | `401` | No session / no auth cookie |
 | `404` | (pages only) unknown slug — handled by the client resolver |
-| `409` | Signed in, but the feature needs an account link (e.g. GitHub not connected) |
 | `413` | Upload over the size cap |
 | `422` | Zod validation failure |
 | `500` | Unexpected; raw detail only in dev |

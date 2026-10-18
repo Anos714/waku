@@ -31,7 +31,6 @@ const LINKS = [
   { label: "How it works", href: "/#how-it-works" },
   { label: "Features", href: "/#features" },
   { label: "Showcase", href: "/#showcase" },
-  { label: "Leaderboard", href: "/leaderboard" },
   { label: "FAQ", href: "/#faq" },
 ];
 
